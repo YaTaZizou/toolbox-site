@@ -41,8 +41,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </nav>
         <main>{children}</main>
-        <footer className="border-t border-gray-800 mt-20 py-8 text-center text-gray-600 text-sm">
-          © 2025 ToolBox — Tous vos outils en un seul endroit
+        <footer className="border-t border-gray-800 mt-20 py-10 text-center text-gray-600 text-sm">
+          <div className="flex flex-wrap justify-center gap-6 mb-4 text-gray-500">
+            <Link href="/mentions-legales" className="hover:text-gray-300 transition-colors">Mentions légales</Link>
+            <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Politique de confidentialité</Link>
+            <Link href="/conditions" className="hover:text-gray-300 transition-colors">Conditions d'utilisation</Link>
+          </div>
+          <p>© 2026 ToolBox — Tous vos outils en un seul endroit</p>
         </footer>
       </body>
     </html>

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const ext = format === "jpeg" ? "jpg" : format;
     const originalName = file.name.replace(/\.[^.]+$/, "");
 
-    return new NextResponse(outputBuffer, {
+    return new NextResponse(new Uint8Array(outputBuffer), {
       headers: {
         "Content-Type": mimeType,
         "Content-Disposition": `attachment; filename="${originalName}.${ext}"`,

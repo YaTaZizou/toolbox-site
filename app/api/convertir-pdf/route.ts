@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
       const outputBuffer = await mergedPdf.save();
 
-      return new NextResponse(new Uint8Array(outputBuffer), {
+      return new Response(outputBuffer.buffer as ArrayBuffer, {
         headers: {
           "Content-Type": "application/pdf",
           "Content-Disposition": `attachment; filename="fusion.pdf"`,
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
       const outputBuffer = await pdf.save();
 
-      return new NextResponse(new Uint8Array(outputBuffer), {
+      return new Response(outputBuffer.buffer as ArrayBuffer, {
         headers: {
           "Content-Type": "application/pdf",
           "Content-Disposition": `attachment; filename="images.pdf"`,

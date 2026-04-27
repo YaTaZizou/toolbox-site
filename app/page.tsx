@@ -23,7 +23,8 @@ const categories = [
       { href: "/pdf", emoji: "🖼️", title: "Images → PDF", description: "Convertis tes JPG/PNG en fichier PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/pdf", emoji: "✂️", title: "Découper un PDF", description: "Extrait des pages spécifiques d'un PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/pdf", emoji: "🔒", title: "Protéger un PDF", description: "Ajoute un mot de passe à ton PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf-images", emoji: "📸", title: "PDF → Images", description: "Convertis chaque page d'un PDF en image.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+      { href: "/pdf-images", emoji: "📸", title: "PDF → Images", description: "Convertis chaque page d'un PDF en image.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/modifier-pdf", emoji: "📝", title: "Modifier un PDF", description: "Pivote, supprime ou réorganise les pages.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {
@@ -33,8 +34,9 @@ const categories = [
     titleColor: "text-orange-400",
     tools: [
       { href: "/image", emoji: "🔄", title: "Convertisseur d'Images", description: "JPG, PNG, WebP, AVIF + compression.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/modifier-image", emoji: "✏️", title: "Modifier une Image", description: "Redimensionne, pivote ou retourne.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/gif", emoji: "🎞️", title: "Créateur de GIF", description: "Crée des GIFs animés depuis tes images.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/video", emoji: "🎬", title: "Compresseur Vidéo", description: "Réduis le poids de tes vidéos MP4.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
-      { href: "/gif", emoji: "🎞️", title: "Créateur de GIF", description: "Crée des GIFs depuis une vidéo ou des images.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
     ],
   },
   {

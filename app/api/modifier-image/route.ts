@@ -1,0 +1,51 @@
+import sharp from "sharp";
+import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
+export async function POST(req: NextRequest) {
+  try {
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
+    const action = formData.get("action") as string;
+
+    if (!file) return NextResponse.json({ error: "Fichier manquant" }, { status: 400 });
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    let pipeline = sharp(buffer);
+    const mime = file.type || "image/jpeg";
+    const ext = mime === "image/jpeg" ? "jpg" : (mime.split("/")[1] || "jpg");
+
+    if (action === "redimensionner") {
+      const width = formData.get("width") ? Number(formData.get("width")) : undefined;
+      const height = formData.get("height") ? Number(formData.get("height")) : undefined;
+      const keepRatio = formData.get("keepRatio") === "true";
+      if (!width && !height)
+        return NextResponse.json({ error: "Largeur ou hauteur requise" }, { status: 400 });
+      pipeline = pipeline.resize(width || null, height || null, {
+        fit: keepRatio ? "inside" : "fill",
+        withoutEnlargement: false,
+      });
+    } else if (action === "pivoter") {
+      const angle = Number(formData.get("angle") || 90);
+      pipeline = pipeline.rotate(angle);
+    } else if (action === "retourner") {
+      const direction = formData.get("direction") as string;
+      pipeline = direction === "horizontal" ? pipeline.flop() : pipeline.flip();
+    } else {
+      return NextResponse.json({ error: "Action invalide" }, { status: 400 });
+    }
+
+    const outputBuffer = await pipeline.toBuffer();
+    return new Response(new Uint8Array(outputBuffer), {
+      headers: {
+        "Content-Type": mime,
+        "Content-Disposition": `attachment; filename="modifie.${ext}"`,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Erreur lors du traitement" }, { status: 500 });
+  }
+}

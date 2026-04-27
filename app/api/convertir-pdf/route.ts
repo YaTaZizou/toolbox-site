@@ -14,22 +14,15 @@ export async function POST(req: NextRequest) {
       if (files.length < 2) return NextResponse.json({ error: "Minimum 2 fichiers PDF requis" }, { status: 400 });
 
       const mergedPdf = await PDFDocument.create();
-
       for (const file of files) {
         const buffer = Buffer.from(await file.arrayBuffer());
         const pdf = await PDFDocument.load(buffer);
         const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         pages.forEach((page) => mergedPdf.addPage(page));
       }
-
       const outputBuffer = await mergedPdf.save();
-
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="fusion.pdf"`,
-          "Content-Length": outputBuffer.length.toString(),
-        },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="fusion.pdf"` },
       });
     }
 
@@ -38,32 +31,71 @@ export async function POST(req: NextRequest) {
       if (files.length === 0) return NextResponse.json({ error: "Aucune image reçue" }, { status: 400 });
 
       const pdf = await PDFDocument.create();
-
       for (const file of files) {
         const buffer = Buffer.from(await file.arrayBuffer());
         const mime = file.type;
-
         let image;
-        if (mime === "image/jpeg" || mime === "image/jpg") {
-          image = await pdf.embedJpg(buffer);
-        } else if (mime === "image/png") {
-          image = await pdf.embedPng(buffer);
-        } else {
-          continue;
-        }
-
+        if (mime === "image/jpeg" || mime === "image/jpg") image = await pdf.embedJpg(buffer);
+        else if (mime === "image/png") image = await pdf.embedPng(buffer);
+        else continue;
         const page = pdf.addPage([image.width, image.height]);
         page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
       }
-
       const outputBuffer = await pdf.save();
+      return new Response(outputBuffer.buffer as ArrayBuffer, {
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="images.pdf"` },
+      });
+    }
+
+    if (action === "decouper") {
+      const file = formData.get("files") as File;
+      const pagesParam = formData.get("pages") as string;
+      if (!file || !pagesParam) return NextResponse.json({ error: "Fichier ou pages manquants" }, { status: 400 });
+
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const srcPdf = await PDFDocument.load(buffer);
+      const totalPages = srcPdf.getPageCount();
+
+      const pageNumbers: number[] = [];
+      for (const part of pagesParam.split(",")) {
+        const trimmed = part.trim();
+        if (trimmed.includes("-")) {
+          const [start, end] = trimmed.split("-").map(Number);
+          for (let i = start; i <= Math.min(end, totalPages); i++) pageNumbers.push(i - 1);
+        } else {
+          const n = Number(trimmed);
+          if (n >= 1 && n <= totalPages) pageNumbers.push(n - 1);
+        }
+      }
+
+      if (pageNumbers.length === 0) return NextResponse.json({ error: "Aucune page valide" }, { status: 400 });
+
+      const newPdf = await PDFDocument.create();
+      const copied = await newPdf.copyPages(srcPdf, pageNumbers);
+      copied.forEach((p) => newPdf.addPage(p));
+      const outputBuffer = await newPdf.save();
 
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="images.pdf"`,
-          "Content-Length": outputBuffer.length.toString(),
-        },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="decoupage.pdf"` },
+      });
+    }
+
+    if (action === "proteger") {
+      const file = formData.get("files") as File;
+      const password = formData.get("password") as string;
+      if (!file || !password) return NextResponse.json({ error: "Fichier ou mot de passe manquant" }, { status: 400 });
+
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const pdf = await PDFDocument.load(buffer);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const outputBuffer = await pdf.save({
+        userPassword: password,
+        ownerPassword: password + "_owner",
+        permissions: { printing: "lowResolution", copying: false, modifying: false },
+      } as any);
+
+      return new Response(outputBuffer.buffer as ArrayBuffer, {
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="protege.pdf"` },
       });
     }
 

@@ -1,53 +1,60 @@
 import Link from "next/link";
 
-const tools = [
+const categories = [
   {
-    href: "/pseudo",
-    emoji: "🎭",
-    title: "Générateur de Pseudo",
-    description: "Crée des pseudos uniques et originaux grâce à l'IA. Gaming, réseaux sociaux, streaming...",
-    color: "from-purple-500 to-pink-500",
-    badge: "IA",
+    id: "ia",
+    title: "🤖 Générateurs IA",
+    color: "border-purple-500/30 bg-purple-500/5",
+    titleColor: "text-purple-400",
+    tools: [
+      { href: "/pseudo", emoji: "🎭", title: "Générateur de Pseudo", description: "Pseudos uniques pour gaming, réseaux sociaux, streaming...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
+      { href: "/bio", emoji: "✍️", title: "Générateur de Bio", description: "Bio percutante pour Instagram, TikTok, LinkedIn...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
+      { href: "/texte", emoji: "📝", title: "Générateur de Texte", description: "Posts, emails, descriptions, accroches...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
+      { href: "/logo", emoji: "🎨", title: "Générateur de Logo", description: "Crée un logo unique avec l'IA en quelques secondes.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+    ],
   },
   {
-    href: "/bio",
-    emoji: "✍️",
-    title: "Générateur de Bio",
-    description: "Génère une bio percutante pour Instagram, Twitter, LinkedIn ou TikTok en quelques secondes.",
-    color: "from-blue-500 to-cyan-500",
-    badge: "IA",
+    id: "pdf",
+    title: "📄 Outils PDF",
+    color: "border-red-500/30 bg-red-500/5",
+    titleColor: "text-red-400",
+    tools: [
+      { href: "/pdf", emoji: "🔗", title: "Fusionner des PDFs", description: "Combine plusieurs PDFs en un seul fichier.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pdf", emoji: "🖼️", title: "Images → PDF", description: "Convertis tes JPG/PNG en fichier PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pdf-decouper", emoji: "✂️", title: "Découper un PDF", description: "Extrait des pages spécifiques d'un PDF.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+      { href: "/pdf-proteger", emoji: "🔒", title: "Protéger un PDF", description: "Ajoute un mot de passe à ton PDF.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+      { href: "/pdf-images", emoji: "📸", title: "PDF → Images", description: "Convertis chaque page d'un PDF en image.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+    ],
   },
   {
-    href: "/texte",
-    emoji: "📝",
-    title: "Générateur de Texte IA",
-    description: "Rédige des posts, descriptions, emails, accroches ou tout autre contenu avec l'IA.",
-    color: "from-green-500 to-emerald-500",
-    badge: "IA",
+    id: "media",
+    title: "🖼️ Images & Vidéo",
+    color: "border-orange-500/30 bg-orange-500/5",
+    titleColor: "text-orange-400",
+    tools: [
+      { href: "/image", emoji: "🔄", title: "Convertisseur d'Images", description: "JPG, PNG, WebP, AVIF + compression.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/video", emoji: "🎬", title: "Compresseur Vidéo", description: "Réduis le poids de tes vidéos MP4.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+      { href: "/gif", emoji: "🎞️", title: "Créateur de GIF", description: "Crée des GIFs depuis une vidéo ou des images.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+    ],
   },
   {
-    href: "/image",
-    emoji: "🖼️",
-    title: "Convertisseur d'Images",
-    description: "Convertis et compresse tes images en JPG, PNG, WebP ou AVIF instantanément.",
-    color: "from-orange-500 to-yellow-500",
-    badge: "Nouveau",
-  },
-  {
-    href: "/pdf",
-    emoji: "📄",
-    title: "Outils PDF",
-    description: "Fusionne plusieurs PDFs en un seul ou convertis tes images JPG/PNG en PDF.",
-    color: "from-red-500 to-orange-500",
-    badge: "Nouveau",
+    id: "utils",
+    title: "⚡ Outils Rapides",
+    color: "border-blue-500/30 bg-blue-500/5",
+    titleColor: "text-blue-400",
+    tools: [
+      { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/lien", emoji: "🔗", title: "Raccourcisseur de Lien", description: "Raccourcis tes URLs en un clic.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+    ],
   },
 ];
 
 export default function Home() {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-20">
+    <div className="max-w-6xl mx-auto px-4 py-16">
       {/* Hero */}
-      <div className="text-center mb-20">
+      <div className="text-center mb-16">
         <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-purple-400 text-sm mb-6">
           ⚡ Tous vos outils en un seul endroit
         </div>
@@ -60,42 +67,38 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Outils disponibles */}
-      <h2 className="text-2xl font-semibold mb-8 text-gray-200">🛠️ Outils disponibles</h2>
-      <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6 mb-20">
-        {tools.map((tool) => (
-          <Link key={tool.href} href={tool.href} className="group">
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 h-full hover:border-gray-600 transition-all hover:scale-[1.02]">
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl mb-4`}>
-                {tool.emoji}
+      {/* Catégories */}
+      <div className="space-y-12">
+        {categories.map((cat) => (
+          <div key={cat.id}>
+            <h2 className={`text-xl font-bold mb-5 ${cat.titleColor}`}>{cat.title}</h2>
+            <div className={`border rounded-2xl p-6 ${cat.color}`}>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {cat.tools.map((tool) =>
+                  tool.available ? (
+                    <Link key={tool.href + tool.title} href={tool.href}>
+                      <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 h-full hover:border-gray-500 transition-all hover:scale-[1.02] cursor-pointer">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-2xl">{tool.emoji}</span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full ${tool.badgeColor}`}>{tool.badge}</span>
+                        </div>
+                        <h3 className="font-semibold text-white text-sm mb-1">{tool.title}</h3>
+                        <p className="text-gray-500 text-xs leading-relaxed">{tool.description}</p>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div key={tool.href + tool.title} className="bg-gray-900/40 border border-gray-800/50 rounded-xl p-4 h-full opacity-50 cursor-not-allowed">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-2xl">{tool.emoji}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${tool.badgeColor}`}>{tool.badge}</span>
+                      </div>
+                      <h3 className="font-semibold text-gray-400 text-sm mb-1">{tool.title}</h3>
+                      <p className="text-gray-600 text-xs leading-relaxed">{tool.description}</p>
+                    </div>
+                  )
+                )}
               </div>
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-semibold text-white">{tool.title}</h3>
-                <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">{tool.badge}</span>
-              </div>
-              <p className="text-gray-400 text-sm leading-relaxed">{tool.description}</p>
             </div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Bientôt disponible */}
-      <h2 className="text-2xl font-semibold mb-8 text-gray-200">🚀 Bientôt disponible</h2>
-      <div className="grid md:grid-cols-3 gap-6">
-        {[
-          { emoji: "🎬", title: "Convertisseur Vidéo", desc: "MP4, GIF, compression vidéo" },
-          { emoji: "✂️", title: "Découper un PDF", desc: "Extrait des pages spécifiques" },
-          { emoji: "🔒", title: "Protéger un PDF", desc: "Ajoute un mot de passe" },
-        ].map((item) => (
-          <div key={item.title} className="bg-gray-900/50 border border-gray-800/50 rounded-2xl p-6 opacity-60">
-            <div className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-2xl mb-4">
-              {item.emoji}
-            </div>
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-semibold text-gray-400">{item.title}</h3>
-              <span className="text-xs bg-gray-700 text-gray-500 px-2 py-0.5 rounded-full">Bientôt</span>
-            </div>
-            <p className="text-gray-600 text-sm">{item.desc}</p>
           </div>
         ))}
       </div>

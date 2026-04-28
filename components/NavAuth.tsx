@@ -47,8 +47,8 @@ export default function NavAuth() {
 
   return (
     <Link
-      href="/login"
-      className="bg-gray-800 hover:bg-gray-700 text-white text-sm px-4 py-2 rounded-xl transition-colors"
+      href="/connexion"
+      className="bg-purple-600 hover:bg-purple-500 text-white text-sm px-4 py-2 rounded-xl transition-colors"
     >
       Connexion
     </Link>

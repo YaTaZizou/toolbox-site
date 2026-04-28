@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import NavAuth from "@/components/NavAuth";
+import { SidebarAd } from "@/components/AdBanner";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -40,7 +41,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </nav>
-        <main>{children}</main>
+        <div className="flex justify-center">
+          {/* Pub gauche — visible uniquement sur grands écrans */}
+          <aside className="hidden xl:flex w-[180px] flex-shrink-0 sticky top-20 self-start h-[calc(100vh-80px)] justify-center overflow-hidden">
+            <SidebarAd slot="left" />
+          </aside>
+
+          {/* Contenu principal */}
+          <main className="flex-1 min-w-0 max-w-[900px]">{children}</main>
+
+          {/* Pub droite — visible uniquement sur grands écrans */}
+          <aside className="hidden xl:flex w-[180px] flex-shrink-0 sticky top-20 self-start h-[calc(100vh-80px)] justify-center overflow-hidden">
+            <SidebarAd slot="right" />
+          </aside>
+        </div>
         <footer className="border-t border-gray-800 mt-20 py-10 text-center text-gray-600 text-sm">
           <div className="flex flex-wrap justify-center gap-6 mb-4 text-gray-500">
             <Link href="/mentions-legales" className="hover:text-gray-300 transition-colors">Mentions légales</Link>

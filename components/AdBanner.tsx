@@ -32,6 +32,31 @@ export function AdBanner() {
   );
 }
 
+export function SidebarAd({ slot }: { slot: "left" | "right" }) {
+  useEffect(() => {
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch {}
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center gap-2 pt-2">
+      <p className="text-xs text-gray-700">PUB</p>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block", width: "160px", minHeight: "600px" }}
+        data-ad-client="ca-pub-9277300744556228"
+        data-ad-slot="auto"
+        data-ad-format="vertical"
+        data-full-width-responsive="false"
+      />
+      <Link href="/premium" className="text-xs text-gray-700 hover:text-yellow-400 transition-colors text-center leading-tight">
+        ⭐ Sans pub<br />2,99€/mois
+      </Link>
+    </div>
+  );
+}
+
 export function AdBeforeDownload({ onContinue }: { onContinue: () => void }) {
   useEffect(() => {
     try {

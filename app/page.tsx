@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { SearchBar } from "@/components/SearchBar";
 
 type Tool = {
   href: string;
@@ -70,6 +71,7 @@ const categories: Category[] = [
       { href: "/video", emoji: "🎬", title: "Convertisseur Vidéo", description: "Convertis et compresse tes vidéos MP4, WebM, MOV...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/supprimer-fond", emoji: "✂️", title: "Suppression de Fond", description: "Supprime le fond de tes images avec l'IA.", badge: "IA", badgeColor: "bg-orange-500/20 text-orange-400", available: true },
       { href: "/audio", emoji: "🎵", title: "Convertisseur Audio", description: "Convertis en MP3, WAV, OGG, FLAC, OPUS...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/amelioration-image", emoji: "✨", title: "Amélioration d'Image", description: "Augmente la résolution jusqu'à 4× avec l'IA.", badge: "⭐ Premium", badgeColor: "bg-yellow-500/20 text-yellow-400", available: true },
     ],
   },
   {
@@ -106,6 +108,15 @@ const categories: Category[] = [
   },
 ];
 
+// Aplatir tous les outils pour la recherche
+const allTools = categories.flatMap((cat) =>
+  cat.tools.map((tool) => ({
+    ...tool,
+    category: cat.title,
+    categoryEmoji: cat.emoji,
+  }))
+);
+
 const totalAvailable = categories.reduce(
   (acc, cat) => acc + cat.tools.filter((t) => t.available).length,
   0
@@ -116,7 +127,7 @@ export default function Home() {
     <div className="max-w-6xl mx-auto px-4 py-16">
 
       {/* ── Hero ── */}
-      <div className="hero-glow text-center mb-20 relative">
+      <div className="hero-glow text-center mb-10 relative">
         <div className="animate-fade-in" style={{ animationDelay: "0ms" }}>
           <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-purple-400 text-sm mb-6">
             ⚡ {totalAvailable} outils disponibles gratuitement
@@ -173,6 +184,9 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* ── Barre de recherche ── */}
+      <SearchBar tools={allTools} />
 
       {/* ── Catégories ── */}
       <div className="space-y-14">

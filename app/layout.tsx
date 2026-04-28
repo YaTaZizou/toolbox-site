@@ -30,11 +30,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="text-lg font-black text-white group-hover:text-purple-400 transition-colors">ToolBox</span>
             </Link>
             <div className="flex items-center gap-1 text-sm text-gray-400">
-              <Link href="/pdf" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden md:block">PDF</Link>
-              <Link href="/image" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden md:block">Images</Link>
-              <Link href="/pseudo" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden lg:block">IA</Link>
-              <Link href="/qrcode" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden lg:block">QR Code</Link>
-              <div className="w-px h-4 bg-gray-700 mx-2 hidden md:block" />
               <Link href="/premium" className="flex items-center gap-1.5 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 text-yellow-400 font-semibold px-3 py-1.5 rounded-lg transition-all text-xs">
                 ⭐ Premium
               </Link>

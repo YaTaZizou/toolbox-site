@@ -39,12 +39,20 @@ export default function NavAuth() {
   if (email) {
     return (
       <div className="flex items-center gap-3">
-        <span className="text-gray-500 text-xs hidden md:block truncate max-w-[120px]">{email}</span>
+        <Link
+          href="/profil"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
+          <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center text-xs font-bold text-white">
+            {email.slice(0, 2).toUpperCase()}
+          </div>
+          <span className="text-gray-400 text-xs hidden md:block truncate max-w-[100px]">{email}</span>
+        </Link>
         <button
           onClick={logout}
-          className="text-xs text-gray-500 hover:text-red-400 transition-colors"
+          className="text-xs text-gray-600 hover:text-red-400 transition-colors"
         >
-          Déconnexion
+          ↪
         </button>
       </div>
     );

@@ -1,0 +1,209 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { createBrowserClient } from "@supabase/ssr";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import type { User } from "@supabase/supabase-js";
+
+export default function ProfilPage() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Changement de mot de passe
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdSuccess, setPwdSuccess] = useState("");
+  const [pwdError, setPwdError] = useState("");
+
+  // Suppression de compte
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  const router = useRouter();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      setLoading(false);
+    });
+  }, []);
+
+  async function changePassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setPwdError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    setPwdLoading(true);
+    setPwdError("");
+    setPwdSuccess("");
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      setPwdError(error.message);
+    } else {
+      setPwdSuccess("Mot de passe mis à jour !");
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+    setPwdLoading(false);
+  }
+
+  async function deleteAccount() {
+    if (deleteConfirm !== "SUPPRIMER") return;
+    setDeleteLoading(true);
+    setDeleteError("");
+
+    await supabase.auth.signOut();
+    const res = await fetch("/api/delete-account", { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json();
+      setDeleteError(data.error || "Erreur lors de la suppression.");
+      setDeleteLoading(false);
+      return;
+    }
+
+    router.push("/connexion");
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    router.push("/connexion");
+    router.refresh();
+  }
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-24 text-center text-gray-500">
+        Chargement...
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
+  const initials = user.email?.slice(0, 2).toUpperCase() ?? "??";
+  const memberSince = new Date(user.created_at).toLocaleDateString("fr-FR", {
+    year: "numeric", month: "long", day: "numeric",
+  });
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-16">
+      <Link href="/" className="text-gray-500 hover:text-gray-300 text-sm mb-8 inline-flex items-center gap-1 transition-colors">
+        ← Retour
+      </Link>
+
+      {/* Header profil */}
+      <div className="flex items-center gap-5 mb-10">
+        <div className="w-16 h-16 rounded-2xl bg-purple-600 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0">
+          {initials}
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold">{user.email}</h1>
+          <p className="text-gray-500 text-sm mt-0.5">Membre depuis le {memberSince}</p>
+        </div>
+      </div>
+
+      {/* Statut */}
+      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 mb-4 flex items-center justify-between">
+        <div>
+          <p className="font-semibold text-white">Abonnement</p>
+          <p className="text-sm text-gray-500 mt-0.5">Accès à tous les outils gratuits</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full font-medium">
+            Gratuit
+          </span>
+          <Link
+            href="/premium"
+            className="bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full transition-colors"
+          >
+            ⭐ Passer Premium
+          </Link>
+        </div>
+      </div>
+
+      {/* Changer mot de passe */}
+      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-4">
+        <h2 className="font-bold text-white mb-4">🔑 Changer le mot de passe</h2>
+        <form onSubmit={changePassword} className="space-y-3">
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Nouveau mot de passe</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              minLength={6}
+              placeholder="••••••••"
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Confirmer le mot de passe</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={6}
+              placeholder="••••••••"
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+            />
+          </div>
+          {pwdError && <p className="text-red-400 text-sm">{pwdError}</p>}
+          {pwdSuccess && <p className="text-green-400 text-sm">✓ {pwdSuccess}</p>}
+          <button
+            type="submit"
+            disabled={pwdLoading}
+            className="bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors"
+          >
+            {pwdLoading ? "Mise à jour..." : "Mettre à jour"}
+          </button>
+        </form>
+      </div>
+
+      {/* Déconnexion */}
+      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-4">
+        <h2 className="font-bold text-white mb-2">👋 Déconnexion</h2>
+        <p className="text-gray-500 text-sm mb-4">Tu seras redirigé vers la page de connexion.</p>
+        <button
+          onClick={logout}
+          className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors"
+        >
+          Se déconnecter
+        </button>
+      </div>
+
+      {/* Zone danger */}
+      <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-6">
+        <h2 className="font-bold text-red-400 mb-2">⚠️ Zone dangereuse</h2>
+        <p className="text-gray-500 text-sm mb-4">
+          La suppression est <strong className="text-gray-300">irréversible</strong>. Tape <code className="text-red-400 bg-red-500/10 px-1 rounded">SUPPRIMER</code> pour confirmer.
+        </p>
+        <input
+          type="text"
+          value={deleteConfirm}
+          onChange={(e) => setDeleteConfirm(e.target.value)}
+          placeholder="SUPPRIMER"
+          className="w-full bg-gray-900 border border-red-500/30 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-red-500 transition-colors text-sm mb-3"
+        />
+        {deleteError && <p className="text-red-400 text-sm mb-3">{deleteError}</p>}
+        <button
+          onClick={deleteAccount}
+          disabled={deleteConfirm !== "SUPPRIMER" || deleteLoading}
+          className="bg-red-600 hover:bg-red-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors"
+        >
+          {deleteLoading ? "Suppression..." : "Supprimer mon compte"}
+        </button>
+      </div>
+    </div>
+  );
+}

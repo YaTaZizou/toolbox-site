@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 type Tool = {
   href: string;
@@ -174,8 +175,10 @@ export default function Home() {
       {/* ── Catégories ── */}
       <div className="space-y-14">
         {categories.map((cat, catIdx) => (
+          <div key={cat.id}>
+          {/* Pub entre catégories (après la 2e et la 4e) */}
+          {(catIdx === 2 || catIdx === 4) && <AdBanner />}
           <div
-            key={cat.id}
             className="animate-fade-in-up"
             style={{ animationDelay: `${catIdx * 80 + 300}ms` }}
           >
@@ -228,6 +231,7 @@ export default function Home() {
                 )}
               </div>
             </div>
+          </div>
           </div>
         ))}
       </div>

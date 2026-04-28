@@ -7,16 +7,19 @@ declare global {
   interface Window { adsbygoogle: unknown[] }
 }
 
+function pushAd() {
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  } catch {}
+}
+
+/* ── Bannière horizontale (homepage entre catégories, bas de page) ── */
 export function AdBanner() {
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {}
-  }, []);
+  useEffect(() => { pushAd(); }, []);
 
   return (
     <div className="w-full text-center my-6">
-      <p className="text-xs text-gray-600 mb-2">PUBLICITÉ</p>
+      <p className="text-xs text-gray-600 mb-1">PUBLICITÉ</p>
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
@@ -25,19 +28,16 @@ export function AdBanner() {
         data-ad-format="auto"
         data-full-width-responsive="true"
       />
-      <Link href="/premium" className="text-xs text-gray-600 hover:text-yellow-400 transition-colors mt-2 inline-block">
+      <Link href="/premium" className="text-xs text-gray-600 hover:text-yellow-400 transition-colors mt-1 inline-block">
         ⭐ Supprimer les pubs — 2,99€/mois
       </Link>
     </div>
   );
 }
 
+/* ── Sidebar verticale gauche / droite ── */
 export function SidebarAd({ slot }: { slot: "left" | "right" }) {
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {}
-  }, []);
+  useEffect(() => { pushAd(); }, []);
 
   return (
     <div className="flex flex-col items-center gap-2 pt-2">
@@ -57,12 +57,33 @@ export function SidebarAd({ slot }: { slot: "left" | "right" }) {
   );
 }
 
+/* ── Bannière sticky en bas de l'écran (très visible sur mobile) ── */
+export function StickyBottomAd() {
+  useEffect(() => { pushAd(); }, []);
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-gray-950/95 backdrop-blur border-t border-gray-800/60 py-1 px-2 flex items-center justify-center gap-3">
+      <p className="text-xs text-gray-600 shrink-0">PUB</p>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "inline-block", width: "320px", height: "50px" }}
+        data-ad-client="ca-pub-9277300744556228"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+      />
+      <Link
+        href="/premium"
+        className="text-xs text-yellow-500 hover:text-yellow-400 transition-colors shrink-0 font-medium"
+      >
+        ✕ Pubs
+      </Link>
+    </div>
+  );
+}
+
+/* ── Pop-up pub avant téléchargement ── */
 export function AdBeforeDownload({ onContinue }: { onContinue: () => void }) {
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {}
-  }, []);
+  useEffect(() => { pushAd(); }, []);
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur z-50 flex items-center justify-center p-4">

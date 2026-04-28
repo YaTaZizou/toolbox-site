@@ -3,7 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import NavAuth from "@/components/NavAuth";
-import { SidebarAd } from "@/components/AdBanner";
+import { SidebarAd, StickyBottomAd } from "@/components/AdBanner";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -44,13 +44,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </aside>
 
           {/* Contenu principal */}
-          <main className="flex-1 min-w-0 max-w-[900px]">{children}</main>
+          <main className="flex-1 min-w-0 max-w-[900px] pb-16">{children}</main>
 
           {/* Pub droite — visible uniquement sur grands écrans */}
           <aside className="hidden xl:flex w-[180px] flex-shrink-0 sticky top-20 self-start h-[calc(100vh-80px)] justify-center overflow-hidden">
             <SidebarAd slot="right" />
           </aside>
         </div>
+        <StickyBottomAd />
         <footer className="border-t border-gray-800/60 mt-24 py-12 text-sm">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">

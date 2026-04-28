@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useAiLimit } from "@/hooks/useAiLimit";
+import { AiLimitBanner } from "@/components/AiLimitBanner";
 
 export default function CorrecteurPage() {
   const [text, setText] = useState("");

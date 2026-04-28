@@ -10,8 +10,19 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ToolBox — Tous vos outils en un seul endroit",
-  description: "Générateurs IA, convertisseurs de fichiers et bien plus encore.",
+  title: { default: "ToolBox — Outils gratuits en ligne", template: "%s | ToolBox" },
+  description: "Générateurs IA, outils PDF, convertisseurs d'images, traducteur et bien plus. Gratuit, rapide, sans inscription.",
+  keywords: ["outils en ligne", "générateur IA", "convertisseur PDF", "traducteur", "compresseur image", "gratuit"],
+  authors: [{ name: "ToolBox" }],
+  metadataBase: new URL("https://alltoolbox.fr"),
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: "ToolBox",
+    title: "ToolBox — Outils gratuits en ligne",
+    description: "Générateurs IA, outils PDF, convertisseurs d'images, traducteur et bien plus. Gratuit, rapide, sans inscription.",
+  },
+  twitter: { card: "summary_large_image", title: "ToolBox — Outils gratuits en ligne" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

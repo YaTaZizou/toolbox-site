@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useAiLimit } from "@/hooks/useAiLimit";
+import { AiLimitBanner } from "@/components/AiLimitBanner";
 
 const LANGUAGES = [
   "Français", "English", "Español", "Deutsch", "Italiano",
@@ -16,10 +18,12 @@ export default function TraducteurPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   async function translate(value: string, fromLang: string, toLang: string) {
-    if (!value.trim() || value.trim().length < 2) { setResult(""); return; }
+    if (!value.trim() || value.trim().length < 2 || !canUse) { setResult(""); return; }
+    increment();
     setLoading(true);
     setError("");
     try {
@@ -72,6 +76,8 @@ export default function TraducteurPage() {
         </div>
         <p className="text-gray-400">Traduction automatique en temps réel dans plus de 12 langues.</p>
       </div>
+
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} />}
 
       {/* Sélecteurs */}
       <div className="flex items-center gap-3 mb-4">

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useAiLimit } from "@/hooks/useAiLimit";
+import { AiLimitBanner } from "@/components/AiLimitBanner";
 
 const types = [
   { label: "Post réseaux sociaux", value: "post" },
@@ -18,10 +20,12 @@ export default function TextePage() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
   const [copied, setCopied] = useState(false);
 
   async function generate() {
-    if (!input.trim()) return;
+    if (!input.trim() || !canUse) return;
+    increment();
     setLoading(true);
     setError("");
     setResult("");

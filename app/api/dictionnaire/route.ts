@@ -1,0 +1,35 @@
+import Anthropic from "@anthropic-ai/sdk";
+import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
+export async function POST(req: NextRequest) {
+  try {
+    const { word, language } = await req.json();
+    if (!word?.trim()) return NextResponse.json({ error: "Mot manquant" }, { status: 400 });
+
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    const message = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      messages: [{
+        role: "user",
+        content: `Donne la définition du mot "${word}" en ${language || "français"}.
+Réponds en JSON avec exactement ce format :
+{"word": "${word}", "nature": "nom/verbe/adjectif/etc", "definition": "définition claire", "examples": ["exemple 1", "exemple 2"], "synonymes": ["syn1", "syn2", "syn3"], "antonymes": ["ant1", "ant2"]}
+Ne mets rien d'autre que le JSON.`,
+      }],
+    });
+
+    const raw = (message.content[0] as { text: string }).text.trim();
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return NextResponse.json({ error: "Réponse invalide" }, { status: 500 });
+
+    return NextResponse.json(JSON.parse(jsonMatch[0]));
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Erreur lors de la recherche" }, { status: 500 });
+  }
+}

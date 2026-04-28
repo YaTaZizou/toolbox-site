@@ -1,0 +1,40 @@
+import Anthropic from "@anthropic-ai/sdk";
+import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
+export async function POST(req: NextRequest) {
+  try {
+    const { text, language } = await req.json();
+    if (!text?.trim()) return NextResponse.json({ error: "Texte manquant" }, { status: 400 });
+
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    const message = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 4096,
+      messages: [{
+        role: "user",
+        content: `Tu es un correcteur professionnel. Corrige le texte suivant en ${language || "français"}.
+Corrige : orthographe, grammaire, conjugaison, ponctuation, style.
+Réponds en JSON avec exactement ce format :
+{"corrected": "texte corrigé ici", "changes": ["correction 1", "correction 2", ...]}
+Ne mets rien d'autre que le JSON.
+
+Texte à corriger :
+${text}`,
+      }],
+    });
+
+    const raw = (message.content[0] as { text: string }).text.trim();
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return NextResponse.json({ error: "Réponse invalide" }, { status: 500 });
+
+    const result = JSON.parse(jsonMatch[0]);
+    return NextResponse.json(result);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Erreur lors de la correction" }, { status: 500 });
+  }
+}

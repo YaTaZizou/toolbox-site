@@ -66,7 +66,7 @@ const categories: Category[] = [
       { href: "/image", emoji: "🔄", title: "Convertisseur d'Images", description: "JPG, PNG, WebP, AVIF + compression.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/modifier-image", emoji: "✏️", title: "Modifier une Image", description: "Redimensionne, pivote ou retourne.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/gif", emoji: "🎞️", title: "Créateur de GIF", description: "Crée des GIFs animés depuis tes images.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/video", emoji: "🎬", title: "Compresseur Vidéo", description: "Réduis le poids de tes vidéos MP4.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+      { href: "/video", emoji: "🎬", title: "Convertisseur Vidéo", description: "Convertis et compresse tes vidéos MP4, WebM, MOV...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {

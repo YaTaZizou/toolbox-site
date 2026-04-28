@@ -37,6 +37,8 @@ const categories: Category[] = [
       { href: "/bio", emoji: "✍️", title: "Générateur de Bio", description: "Bio percutante pour Instagram, TikTok, LinkedIn...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
       { href: "/texte", emoji: "📝", title: "Générateur de Texte", description: "Posts, emails, descriptions, accroches...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
       { href: "/logo", emoji: "🎨", title: "Générateur de Logo", description: "Crée un logo unique avec l'IA en quelques secondes.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+      { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {
@@ -99,8 +101,6 @@ const categories: Category[] = [
     borderColor: "border-orange-500/20",
     bgColor: "bg-orange-500/5",
     tools: [
-      { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/unites", emoji: "📏", title: "Convertisseur d'Unités", description: "Distance, poids, température, vitesse...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/couleurs", emoji: "🎨", title: "Palette de Couleurs", description: "Génère des palettes harmonieuses.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/lien", emoji: "🔗", title: "Raccourcisseur de Lien", description: "Raccourcis tes URLs en un clic.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },

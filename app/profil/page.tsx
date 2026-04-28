@@ -6,18 +6,22 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 
+type Profile = {
+  is_subscribed: boolean;
+  subscription_end_date: string | null;
+};
+
 export default function ProfilPage() {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Changement de mot de passe
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [pwdLoading, setPwdLoading] = useState(false);
   const [pwdSuccess, setPwdSuccess] = useState("");
   const [pwdError, setPwdError] = useState("");
 
-  // Suppression de compte
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
@@ -29,8 +33,16 @@ export default function ProfilPage() {
   );
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(async ({ data }) => {
       setUser(data.user);
+      if (data.user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("is_subscribed, subscription_end_date")
+          .eq("id", data.user.id)
+          .single();
+        setProfile(prof ?? { is_subscribed: false, subscription_end_date: null });
+      }
       setLoading(false);
     });
   }, []);
@@ -44,7 +56,6 @@ export default function ProfilPage() {
     setPwdLoading(true);
     setPwdError("");
     setPwdSuccess("");
-
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) {
       setPwdError(error.message);
@@ -60,7 +71,6 @@ export default function ProfilPage() {
     if (deleteConfirm !== "SUPPRIMER") return;
     setDeleteLoading(true);
     setDeleteError("");
-
     await supabase.auth.signOut();
     const res = await fetch("/api/delete-account", { method: "DELETE" });
     if (!res.ok) {
@@ -69,7 +79,6 @@ export default function ProfilPage() {
       setDeleteLoading(false);
       return;
     }
-
     router.push("/connexion");
   }
 
@@ -94,6 +103,14 @@ export default function ProfilPage() {
     year: "numeric", month: "long", day: "numeric",
   });
 
+  const isPremium = profile?.is_subscribed === true;
+  const endDate = profile?.subscription_end_date
+    ? new Date(profile.subscription_end_date).toLocaleDateString("fr-FR", {
+        year: "numeric", month: "long", day: "numeric",
+      })
+    : null;
+  const isLifetime = profile?.subscription_end_date?.startsWith("2099");
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
       <Link href="/" className="text-gray-500 hover:text-gray-300 text-sm mb-8 inline-flex items-center gap-1 transition-colors">
@@ -102,31 +119,56 @@ export default function ProfilPage() {
 
       {/* Header profil */}
       <div className="flex items-center gap-5 mb-10">
-        <div className="w-16 h-16 rounded-2xl bg-purple-600 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0">
-          {initials}
+        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white flex-shrink-0 ${isPremium ? "bg-yellow-500" : "bg-purple-600"}`}>
+          {isPremium ? "⭐" : initials}
         </div>
         <div>
-          <h1 className="text-2xl font-bold">{user.email}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold">{user.email}</h1>
+            {isPremium && (
+              <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-0.5 rounded-full font-semibold border border-yellow-500/30">
+                PREMIUM
+              </span>
+            )}
+          </div>
           <p className="text-gray-500 text-sm mt-0.5">Membre depuis le {memberSince}</p>
         </div>
       </div>
 
-      {/* Statut */}
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 mb-4 flex items-center justify-between">
+      {/* Statut abonnement */}
+      <div className={`rounded-2xl p-5 mb-4 flex items-center justify-between border ${
+        isPremium
+          ? "bg-yellow-500/5 border-yellow-500/20"
+          : "bg-gray-900 border-gray-800"
+      }`}>
         <div>
           <p className="font-semibold text-white">Abonnement</p>
-          <p className="text-sm text-gray-500 mt-0.5">Accès à tous les outils gratuits</p>
+          {isPremium ? (
+            <p className="text-sm text-yellow-400 mt-0.5">
+              {isLifetime ? "⭐ Premium à vie — Merci !" : `Actif jusqu'au ${endDate}`}
+            </p>
+          ) : (
+            <p className="text-sm text-gray-500 mt-0.5">Accès à tous les outils gratuits</p>
+          )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full font-medium">
-            Gratuit
-          </span>
-          <Link
-            href="/premium"
-            className="bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full transition-colors"
-          >
-            ⭐ Passer Premium
-          </Link>
+          {isPremium ? (
+            <span className="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1 rounded-full font-bold border border-yellow-500/30">
+              ⭐ Premium
+            </span>
+          ) : (
+            <>
+              <span className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full font-medium">
+                Gratuit
+              </span>
+              <Link
+                href="/premium"
+                className="bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full transition-colors"
+              >
+                ⭐ Passer Premium
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
@@ -186,7 +228,8 @@ export default function ProfilPage() {
       <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-6">
         <h2 className="font-bold text-red-400 mb-2">⚠️ Zone dangereuse</h2>
         <p className="text-gray-500 text-sm mb-4">
-          La suppression est <strong className="text-gray-300">irréversible</strong>. Tape <code className="text-red-400 bg-red-500/10 px-1 rounded">SUPPRIMER</code> pour confirmer.
+          La suppression est <strong className="text-gray-300">irréversible</strong>. Tape{" "}
+          <code className="text-red-400 bg-red-500/10 px-1 rounded">SUPPRIMER</code> pour confirmer.
         </p>
         <input
           type="text"

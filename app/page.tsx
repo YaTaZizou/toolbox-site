@@ -68,6 +68,8 @@ const categories: Category[] = [
       { href: "/modifier-image", emoji: "✏️", title: "Modifier une Image", description: "Redimensionne, pivote ou retourne.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/gif", emoji: "🎞️", title: "Créateur de GIF", description: "Crée des GIFs animés depuis tes images.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/video", emoji: "🎬", title: "Convertisseur Vidéo", description: "Convertis et compresse tes vidéos MP4, WebM, MOV...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/supprimer-fond", emoji: "✂️", title: "Suppression de Fond", description: "Supprime le fond de tes images avec l'IA.", badge: "IA", badgeColor: "bg-orange-500/20 text-orange-400", available: true },
+      { href: "/audio", emoji: "🎵", title: "Convertisseur Audio", description: "Convertis en MP3, WAV, OGG, FLAC, OPUS...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {

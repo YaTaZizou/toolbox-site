@@ -23,18 +23,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${geist.className} bg-gray-950 text-white min-h-screen`}>
-        <nav className="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
+        <nav className="border-b border-gray-800/60 bg-gray-950/80 backdrop-blur-xl sticky top-0 z-50">
           <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold text-white hover:text-purple-400 transition-colors">
-              ⚡ ToolBox
+            <Link href="/" className="flex items-center gap-2 group">
+              <span className="text-xl group-hover:scale-110 transition-transform inline-block">⚡</span>
+              <span className="text-lg font-black text-white group-hover:text-purple-400 transition-colors">ToolBox</span>
             </Link>
-            <div className="flex items-center gap-5 text-sm text-gray-400">
-              <Link href="/pseudo" className="hover:text-white transition-colors hidden md:block">Pseudo</Link>
-              <Link href="/bio" className="hover:text-white transition-colors hidden md:block">Bio</Link>
-              <Link href="/texte" className="hover:text-white transition-colors hidden md:block">Texte IA</Link>
-              <Link href="/image" className="hover:text-white transition-colors hidden md:block">Images</Link>
-              <Link href="/pdf" className="hover:text-white transition-colors hidden md:block">PDF</Link>
-              <Link href="/premium" className="text-yellow-400 hover:text-yellow-300 font-medium transition-colors">
+            <div className="flex items-center gap-1 text-sm text-gray-400">
+              <Link href="/pdf" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden md:block">PDF</Link>
+              <Link href="/image" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden md:block">Images</Link>
+              <Link href="/pseudo" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden lg:block">IA</Link>
+              <Link href="/qrcode" className="hover:text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-all hidden lg:block">QR Code</Link>
+              <div className="w-px h-4 bg-gray-700 mx-2 hidden md:block" />
+              <Link href="/premium" className="flex items-center gap-1.5 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 text-yellow-400 font-semibold px-3 py-1.5 rounded-lg transition-all text-xs">
                 ⭐ Premium
               </Link>
               <NavAuth />
@@ -55,13 +56,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <SidebarAd slot="right" />
           </aside>
         </div>
-        <footer className="border-t border-gray-800 mt-20 py-10 text-center text-gray-600 text-sm">
-          <div className="flex flex-wrap justify-center gap-6 mb-4 text-gray-500">
-            <Link href="/mentions-legales" className="hover:text-gray-300 transition-colors">Mentions légales</Link>
-            <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Politique de confidentialité</Link>
-            <Link href="/conditions" className="hover:text-gray-300 transition-colors">Conditions d'utilisation</Link>
+        <footer className="border-t border-gray-800/60 mt-24 py-12 text-sm">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-2 text-gray-400">
+                <span>⚡</span>
+                <span className="font-bold text-white">ToolBox</span>
+                <span className="text-gray-600">— Tous vos outils en un seul endroit</span>
+              </div>
+              <div className="flex flex-wrap justify-center gap-5 text-gray-600">
+                <Link href="/mentions-legales" className="hover:text-gray-300 transition-colors">Mentions légales</Link>
+                <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Confidentialité</Link>
+                <Link href="/conditions" className="hover:text-gray-300 transition-colors">CGU</Link>
+              </div>
+              <p className="text-gray-700">© 2026 ToolBox</p>
+            </div>
           </div>
-          <p>© 2026 ToolBox — Tous vos outils en un seul endroit</p>
         </footer>
       </body>
     </html>

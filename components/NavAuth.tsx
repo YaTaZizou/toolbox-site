@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { createBrowserClient } from "@supabase/ssr";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +9,11 @@ export default function NavAuth() {
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -25,7 +30,7 @@ export default function NavAuth() {
 
   async function logout() {
     await supabase.auth.signOut();
-    router.push("/");
+    router.push("/connexion");
     router.refresh();
   }
 

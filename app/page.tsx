@@ -83,7 +83,6 @@ const categories: Category[] = [
       { href: "/dictionnaire", emoji: "📖", title: "Dictionnaire", description: "Définitions, synonymes et antonymes.", badge: "IA", badgeColor: "bg-blue-500/20 text-blue-400", available: true },
       { href: "/convertir-texte", emoji: "🔡", title: "Convertisseur de Texte", description: "Majuscules, slug, camelCase et plus.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/compteur", emoji: "📊", title: "Compteur de Mots", description: "Mots, caractères, temps de lecture.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/lorem", emoji: "📄", title: "Lorem Ipsum", description: "Génère du texte de remplissage.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {

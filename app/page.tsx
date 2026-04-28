@@ -27,7 +27,7 @@ const categories: Category[] = [
   {
     id: "ia",
     emoji: "🤖",
-    title: "Générateurs IA",
+    title: "Générateurs",
     cardClass: "card-purple",
     titleColor: "text-purple-400",
     borderColor: "border-purple-500/20",
@@ -50,10 +50,10 @@ const categories: Category[] = [
     borderColor: "border-red-500/20",
     bgColor: "bg-red-500/5",
     tools: [
-      { href: "/pdf", emoji: "🔗", title: "Fusionner des PDFs", description: "Combine plusieurs PDFs en un seul fichier.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf", emoji: "🖼️", title: "Images → PDF", description: "Convertis tes JPG/PNG en fichier PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf", emoji: "✂️", title: "Découper un PDF", description: "Extrait des pages spécifiques d'un PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf", emoji: "🔒", title: "Protéger un PDF", description: "Ajoute un mot de passe à ton PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pdf?tab=fusionner", emoji: "🔗", title: "Fusionner des PDFs", description: "Combine plusieurs PDFs en un seul fichier.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pdf?tab=image-vers-pdf", emoji: "🖼️", title: "Images → PDF", description: "Convertis tes JPG/PNG en fichier PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pdf?tab=decouper", emoji: "✂️", title: "Découper un PDF", description: "Extrait des pages spécifiques d'un PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pdf?tab=proteger", emoji: "🔒", title: "Protéger un PDF", description: "Ajoute un mot de passe à ton PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/pdf-images", emoji: "📸", title: "PDF → Images", description: "Convertis chaque page d'un PDF en image.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/modifier-pdf", emoji: "📝", title: "Modifier un PDF", description: "Pivote, supprime ou réorganise les pages.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
@@ -174,8 +174,6 @@ export default function Home() {
         >
           {[
             { value: `${totalAvailable}`, label: "outils disponibles" },
-            { value: "100%", label: "gratuit" },
-            { value: "0", label: "inscription requise" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="text-2xl font-black text-white">{stat.value}</p>

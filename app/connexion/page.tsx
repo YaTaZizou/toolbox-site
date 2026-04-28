@@ -32,8 +32,7 @@ function ConnexionForm() {
       if (error) {
         setError("Email ou mot de passe incorrect.");
       } else {
-        router.push(redirect);
-        router.refresh();
+        window.location.href = redirect;
       }
     } else {
       const { error } = await supabase.auth.signUp({ email, password });

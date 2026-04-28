@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 type Action = "fusionner" | "image-vers-pdf" | "decouper" | "proteger";
@@ -12,8 +13,11 @@ const tabs: { value: Action; emoji: string; label: string; desc: string }[] = [
   { value: "proteger", emoji: "🔒", label: "Protéger", desc: "Ajouter un mot de passe" },
 ];
 
-export default function PdfPage() {
-  const [action, setAction] = useState<Action>("fusionner");
+function PdfTool() {
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get("tab") as Action) ?? "fusionner";
+
+  const [action, setAction] = useState<Action>(initialTab);
   const [files, setFiles] = useState<File[]>([]);
   const [pages, setPages] = useState("");
   const [password, setPassword] = useState("");
@@ -101,18 +105,20 @@ export default function PdfPage() {
     (action !== "decouper" || pages.trim().length > 0) &&
     (action !== "proteger" || password.length >= 4);
 
+  const current = tabs.find((t) => t.value === action)!;
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
       <Link href="/" className="text-gray-500 hover:text-gray-300 text-sm mb-8 inline-flex items-center gap-1 transition-colors">
         ← Retour
       </Link>
 
-      <div className="mb-10">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-4xl">📄</span>
-          <h1 className="text-3xl font-bold">Outils PDF</h1>
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-4xl">{current.emoji}</span>
+          <h1 className="text-3xl font-bold">{current.label} PDF</h1>
         </div>
-        <p className="text-gray-400">Tout ce dont tu as besoin pour gérer tes fichiers PDF.</p>
+        <p className="text-gray-400">{current.desc}</p>
       </div>
 
       {/* Onglets */}
@@ -121,13 +127,12 @@ export default function PdfPage() {
           <button
             key={t.value}
             onClick={() => handleTab(t.value)}
-            className={`p-4 rounded-2xl border text-left transition-all ${
+            className={`p-3 rounded-2xl border text-left transition-all ${
               action === t.value ? "border-red-500 bg-red-500/10" : "border-gray-800 bg-gray-900 hover:border-gray-600"
             }`}
           >
-            <span className="text-2xl block mb-1">{t.emoji}</span>
+            <span className="text-xl block mb-1">{t.emoji}</span>
             <p className="font-semibold text-white text-sm">{t.label}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{t.desc}</p>
           </button>
         ))}
       </div>
@@ -170,17 +175,12 @@ export default function PdfPage() {
         </div>
       )}
 
-      {/* Options spécifiques */}
       {action === "decouper" && files.length > 0 && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl px-4 py-4 mb-4">
           <label className="block text-sm text-gray-400 mb-2">Pages à extraire</label>
-          <input
-            type="text"
-            value={pages}
-            onChange={(e) => setPages(e.target.value)}
+          <input type="text" value={pages} onChange={(e) => setPages(e.target.value)}
             placeholder="Ex: 1, 3, 5-8, 12"
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-red-500 transition-colors text-sm"
-          />
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-red-500 transition-colors text-sm" />
           <p className="text-xs text-gray-600 mt-2">Sépare par des virgules. Utilise un tiret pour une plage (ex: 2-5)</p>
         </div>
       )}
@@ -188,23 +188,16 @@ export default function PdfPage() {
       {action === "proteger" && files.length > 0 && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl px-4 py-4 mb-4">
           <label className="block text-sm text-gray-400 mb-2">Mot de passe</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
             placeholder="Min. 4 caractères"
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-red-500 transition-colors text-sm"
-          />
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-red-500 transition-colors text-sm" />
         </div>
       )}
 
       {files.length > 0 && (
-        <button
-          onClick={convert}
-          disabled={loading || !canSubmit}
-          className="w-full bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
-        >
-          {loading ? "Traitement en cours..." : `⬇️ ${tabs.find(t => t.value === action)?.label}`}
+        <button onClick={convert} disabled={loading || !canSubmit}
+          className="w-full bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors">
+          {loading ? "Traitement en cours..." : `⬇️ ${current.label}`}
         </button>
       )}
 
@@ -217,7 +210,6 @@ export default function PdfPage() {
           ✓ Téléchargement démarré !
         </div>
       )}
-
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl px-4 py-3 mt-4 text-sm">
           {error}
@@ -225,4 +217,8 @@ export default function PdfPage() {
       )}
     </div>
   );
+}
+
+export default function PdfPage() {
+  return <Suspense><PdfTool /></Suspense>;
 }

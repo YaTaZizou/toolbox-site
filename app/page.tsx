@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
 import { SearchBar } from "@/components/SearchBar";
+import { RecentTools } from "@/components/RecentTools";
 
 type Tool = {
   href: string;
@@ -39,6 +40,7 @@ const categories: Category[] = [
       { href: "/logo", emoji: "🎨", title: "Générateur de Logo", description: "Crée un logo unique avec l'IA en quelques secondes.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
       { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/hash", emoji: "🔐", title: "Générateur de Hash", description: "MD5, SHA-256, SHA-512 en temps réel.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {
@@ -74,6 +76,7 @@ const categories: Category[] = [
       { href: "/supprimer-fond", emoji: "✂️", title: "Suppression de Fond", description: "Supprime le fond de tes images avec l'IA.", badge: "IA", badgeColor: "bg-orange-500/20 text-orange-400", available: true },
       { href: "/audio", emoji: "🎵", title: "Convertisseur Audio", description: "Convertis en MP3, WAV, OGG, FLAC, OPUS...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/amelioration-image", emoji: "✨", title: "Amélioration d'Image", description: "Augmente la résolution jusqu'à 4× avec l'IA.", badge: "⭐ Premium", badgeColor: "bg-yellow-500/20 text-yellow-400", available: true },
+      { href: "/filigrane", emoji: "🖊️", title: "Ajout de Filigrane", description: "Protège tes images avec un filigrane personnalisé.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {
@@ -90,6 +93,7 @@ const categories: Category[] = [
       { href: "/dictionnaire", emoji: "📖", title: "Dictionnaire", description: "Définitions, synonymes et antonymes.", badge: "IA", badgeColor: "bg-blue-500/20 text-blue-400", available: true },
       { href: "/convertir-texte", emoji: "🔡", title: "Convertisseur de Texte", description: "Majuscules, slug, camelCase et plus.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/compteur", emoji: "📊", title: "Compteur de Mots", description: "Mots, caractères, temps de lecture.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/ocr", emoji: "🔍", title: "OCR — Image en Texte", description: "Extrait le texte de n'importe quelle image.", badge: "IA", badgeColor: "bg-blue-500/20 text-blue-400", available: true },
     ],
   },
   {
@@ -103,10 +107,24 @@ const categories: Category[] = [
     tools: [
       { href: "/unites", emoji: "📏", title: "Convertisseur d'Unités", description: "Distance, poids, température, vitesse...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/couleurs", emoji: "🎨", title: "Palette de Couleurs", description: "Génère des palettes harmonieuses.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/formateur-json", emoji: "{ }", title: "Formateur JSON", description: "Formate, minifie et valide tes données JSON.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/lien", emoji: "🔗", title: "Raccourcisseur de Lien", description: "Raccourcis tes URLs en un clic.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
     ],
   },
 ];
+
+// Tri alphabétique par titre dans chaque catégorie (outils disponibles d'abord, "Bientôt" à la fin)
+function sortTools(tools: Tool[]): Tool[] {
+  return [...tools].sort((a, b) => {
+    if (a.available && !b.available) return -1;
+    if (!a.available && b.available) return 1;
+    return a.title.localeCompare(b.title, "fr", { sensitivity: "base" });
+  });
+}
+
+categories.forEach((cat) => {
+  cat.tools = sortTools(cat.tools);
+});
 
 // Aplatir tous les outils pour la recherche
 const allTools = categories.flatMap((cat) =>
@@ -185,6 +203,9 @@ export default function Home() {
 
       {/* ── Barre de recherche ── */}
       <SearchBar tools={allTools} />
+
+      {/* ── Outils récents ── */}
+      <RecentTools />
 
       {/* ── Catégories ── */}
       <div className="space-y-14">

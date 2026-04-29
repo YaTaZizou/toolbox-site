@@ -3,13 +3,19 @@ import { MetadataRoute } from "next";
 const BASE = "https://alltoolbox.fr";
 
 const tools = [
-  "/pseudo", "/bio", "/texte",
+  // Générateurs
+  "/pseudo", "/bio", "/texte", "/qrcode", "/mot-de-passe", "/hash",
+  // PDF
   "/pdf", "/pdf-images", "/modifier-pdf",
+  // Images & Médias
   "/image", "/modifier-image", "/gif", "/video", "/audio",
-  "/supprimer-fond", "/amelioration-image",
+  "/supprimer-fond", "/amelioration-image", "/filigrane",
+  // Texte & Langue
   "/traducteur", "/correcteur", "/dictionnaire",
-  "/convertir-texte", "/compteur",
-  "/qrcode", "/mot-de-passe", "/unites", "/couleurs",
+  "/convertir-texte", "/compteur", "/ocr",
+  // Outils Rapides
+  "/unites", "/couleurs", "/formateur-json",
+  // Pages
   "/premium",
 ];
 

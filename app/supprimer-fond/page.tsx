@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useAiLimit } from "@/hooks/useAiLimit";
+import { AiLimitBanner } from "@/components/AiLimitBanner";
 
 export default function SupprimerFondPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -11,6 +13,7 @@ export default function SupprimerFondPage() {
   const [progress, setProgress] = useState("");
   const [bgColor, setBgColor] = useState<string>("transparent");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
 
   function onFile(f: File) {
     setFile(f);
@@ -22,7 +25,8 @@ export default function SupprimerFondPage() {
   }
 
   const removeBackground = useCallback(async () => {
-    if (!file) return;
+    if (!file || !canUse) return;
+    increment();
     setStatus("loading");
     setProgress("Chargement du modèle IA...");
     setOutputUrl(null);
@@ -48,7 +52,7 @@ export default function SupprimerFondPage() {
       console.error(e);
       setStatus("error");
     }
-  }, [file]);
+  }, [file, canUse, increment]);
 
   const BG_OPTIONS = [
     { label: "Transparent", value: "transparent", style: "bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHJlY3Qgd2lkdGg9IjgiIGhlaWdodD0iOCIgZmlsbD0iI2NjYyIvPjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNjY2MiLz48L3N2Zz4=')]" },
@@ -85,16 +89,23 @@ export default function SupprimerFondPage() {
         <p className="text-gray-400">Supprime le fond de tes images automatiquement grâce à l&apos;IA.</p>
       </div>
 
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} />}
+
       {/* Drop zone */}
       <div
-        onClick={() => inputRef.current?.click()}
+        onClick={() => canUse ? inputRef.current?.click() : null}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
+          if (!canUse) return;
           const f = e.dataTransfer.files[0];
           if (f && f.type.startsWith("image/")) onFile(f);
         }}
-        className="border-2 border-dashed border-gray-700 hover:border-gray-500 rounded-2xl p-10 text-center cursor-pointer transition-colors mb-4"
+        className={`border-2 border-dashed rounded-2xl p-10 text-center transition-colors mb-4 ${
+          canUse
+            ? "border-gray-700 hover:border-gray-500 cursor-pointer"
+            : "border-gray-800 opacity-50 cursor-not-allowed"
+        }`}
       >
         <input
           ref={inputRef}
@@ -102,6 +113,7 @@ export default function SupprimerFondPage() {
           accept="image/*"
           className="hidden"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }}
+          disabled={!canUse}
         />
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -118,9 +130,10 @@ export default function SupprimerFondPage() {
       {file && status === "idle" && (
         <button
           onClick={removeBackground}
-          className="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 rounded-xl transition-colors mb-4"
+          disabled={!canUse}
+          className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors mb-4"
         >
-          ✂️ Supprimer le fond
+          {!canUse ? "⭐ Limite atteinte — Passer Premium" : "✂️ Supprimer le fond"}
         </button>
       )}
 

@@ -1,20 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = [
-  "/",
-  "/connexion",
-  "/mentions-legales",
-  "/confidentialite",
-  "/conditions",
-];
+/**
+ * Routes qui nécessitent une connexion obligatoire.
+ * Tout le reste est public (outils gratuits accessibles sans compte).
+ */
+const PROTECTED_PATHS = ["/profil"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Toujours autoriser les routes publiques et API
+  // Toujours laisser passer les assets statiques et API
   if (
-    PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith("/api/") ||
     pathname.startsWith("/_next/") ||
     pathname.includes(".")
@@ -22,6 +19,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
+  // Si la route n'est pas protégée, laisser passer sans vérifier l'auth
+  const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p));
+  if (!isProtected) {
+    return NextResponse.next({ request });
+  }
+
+  // ── Route protégée : vérifier la session Supabase ─────────────────────
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -49,7 +53,6 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Si pas connecté → rediriger vers /connexion
   if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = "/connexion";

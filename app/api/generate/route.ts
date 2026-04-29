@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { isPremiumRequest } from "@/lib/apiAuth";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -26,6 +28,20 @@ Retourne UNIQUEMENT le texte final, sans introduction ni explication.`,
 
 export async function POST(req: NextRequest) {
   try {
+    // ── Rate limiting (server-side) ──────────────────────────────────────
+    const premium = await isPremiumRequest(req);
+    if (!premium) {
+      const ip = getClientIp(req);
+      const { allowed } = checkRateLimit(`generate:${ip}`);
+      if (!allowed) {
+        return NextResponse.json(
+          { error: "Limite quotidienne atteinte. Passe Premium pour un accès illimité." },
+          { status: 429 }
+        );
+      }
+    }
+    // ────────────────────────────────────────────────────────────────────
+
     const { type, input } = await req.json();
 
     if (!type || !input || !prompts[type]) {
@@ -34,6 +50,11 @@ export async function POST(req: NextRequest) {
 
     if (input.trim().length < 2) {
       return NextResponse.json({ error: "Veuillez entrer plus de détails" }, { status: 400 });
+    }
+
+    // Limite de taille pour éviter les abus coûteux
+    if (input.length > 2000) {
+      return NextResponse.json({ error: "Texte trop long (max 2000 caractères)" }, { status: 400 });
     }
 
     const message = await client.messages.create({
@@ -50,8 +71,10 @@ export async function POST(req: NextRequest) {
         const parsed = JSON.parse(text);
         return NextResponse.json({ result: parsed });
       } catch {
-        // Fallback : extraire les lignes comme liste
-        const lines = text.split("\n").map(l => l.replace(/^[-•*\d.]\s*/, "").replace(/^"|"$/g, "").trim()).filter(Boolean);
+        const lines = text
+          .split("\n")
+          .map((l) => l.replace(/^[-•*\d.]\s*/, "").replace(/^"|"$/g, "").trim())
+          .filter(Boolean);
         return NextResponse.json({ result: lines.slice(0, type === "pseudo" ? 8 : 3) });
       }
     }
@@ -59,6 +82,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ result: text });
   } catch (error) {
     console.error("Erreur generate:", error);
-    return NextResponse.json({ error: "Erreur lors de la génération. Réessaie dans quelques secondes." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Erreur lors de la génération. Réessaie dans quelques secondes." },
+      { status: 500 }
+    );
   }
 }

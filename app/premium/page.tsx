@@ -1,10 +1,60 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+
+type Plan = "monthly" | "annual";
+
+const FEATURES_FREE = [
+  { label: "Outils PDF", ok: true },
+  { label: "Convertisseur image", ok: true },
+  { label: "Convertisseur vidéo & audio", ok: true },
+  { label: "QR Code, hash, JSON...", ok: true },
+  { label: "Générateurs IA (5/jour)", ok: true },
+  { label: "OCR — Image en texte (5/jour)", ok: true },
+  { label: "Générateurs IA illimités", ok: false },
+  { label: "Amélioration d'image IA", ok: false },
+  { label: "Sans publicité", ok: false },
+  { label: "Accès prioritaire aux nouveaux outils", ok: false },
+];
+
+const FEATURES_PREMIUM = [
+  { label: "Outils PDF", ok: true },
+  { label: "Convertisseur image", ok: true },
+  { label: "Convertisseur vidéo & audio", ok: true },
+  { label: "QR Code, hash, JSON...", ok: true },
+  { label: "Générateurs IA illimités", ok: true },
+  { label: "OCR — Image en texte illimité", ok: true },
+  { label: "Amélioration d'image IA", ok: true },
+  { label: "Sans publicité", ok: true },
+  { label: "Accès prioritaire aux nouveaux outils", ok: true },
+  { label: "Support prioritaire", ok: true },
+];
+
+const FAQ = [
+  {
+    q: "Comment fonctionne l'abonnement ?",
+    a: "L'abonnement est mensuel ou annuel, sans engagement. Tu peux annuler à tout moment depuis ton espace membre. Le prélèvement est automatique à chaque renouvellement.",
+  },
+  {
+    q: "Est-ce que je peux annuler à tout moment ?",
+    a: "Oui, à tout moment et sans frais. Ton accès Premium reste actif jusqu'à la fin de la période payée.",
+  },
+  {
+    q: "Y a-t-il une garantie satisfait ou remboursé ?",
+    a: "Oui ! Si tu n'es pas satisfait dans les 7 jours suivant ton abonnement, écris-nous et nous te remboursons intégralement.",
+  },
+  {
+    q: "Quels moyens de paiement acceptez-vous ?",
+    a: "Carte bancaire (Visa, Mastercard, American Express) via Stripe. Paiement 100% sécurisé.",
+  },
+  {
+    q: "La différence entre mensuel et annuel ?",
+    a: "Le plan annuel est facturé en une seule fois à 24,99€/an, soit l'équivalent de 2,08€/mois — une économie de 30% par rapport au mensuel.",
+  },
+];
 
 function PremiumContent() {
   const searchParams = useSearchParams();
@@ -15,10 +65,14 @@ function PremiumContent() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         setUser({ id: user.id, email: user.email! });
         const { data: profile } = await supabase
@@ -33,13 +87,13 @@ function PremiumContent() {
     load();
   }, []);
 
-  async function startCheckout() {
+  async function startCheckout(plan: Plan) {
     if (!user) return;
     setCheckoutLoading(true);
     const res = await fetch("/api/stripe-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id, email: user.email }),
+      body: JSON.stringify({ userId: user.id, email: user.email, plan }),
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
@@ -51,79 +105,239 @@ function PremiumContent() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+    <div className="max-w-3xl mx-auto px-4 py-16">
+      {/* Alerts */}
       {success && (
-        <div className="bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl px-6 py-4 mb-10">
+        <div className="bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl px-6 py-4 mb-10 text-center">
           🎉 Abonnement activé ! Bienvenue dans ToolBox Premium !
         </div>
       )}
       {canceled && (
-        <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-2xl px-6 py-4 mb-10">
+        <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-2xl px-6 py-4 mb-10 text-center">
           Paiement annulé. Tu peux réessayer quand tu veux.
         </div>
       )}
 
-      <div className="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full px-4 py-1.5 text-yellow-400 text-sm mb-6">
-        ⭐ ToolBox Premium
+      {/* Hero */}
+      <div className="text-center mb-14">
+        <div className="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full px-4 py-1.5 text-yellow-400 text-sm mb-6">
+          ⭐ ToolBox Premium
+        </div>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          {isSubscribed ? "Tu es déjà Premium !" : "Tous les outils. Sans limites."}
+        </h1>
+        <p className="text-gray-400 text-lg max-w-xl mx-auto">
+          {isSubscribed
+            ? "Profite de tous les outils sans aucune restriction."
+            : "Supprime toutes les pubs, libère les générateurs IA et accède à tous les outils premium."}
+        </p>
       </div>
 
-      <h1 className="text-4xl font-bold mb-4">
-        {isSubscribed ? "Tu es Premium !" : "Passe à Premium"}
-      </h1>
-      <p className="text-gray-400 text-lg mb-12">
-        {isSubscribed
-          ? "Profite de tous les outils sans aucune publicité."
-          : "Supprime toutes les pubs pour seulement 2,99€/mois."}
-      </p>
-
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 mb-8">
-        <div className="text-5xl font-bold mb-2">
-          2,99€<span className="text-2xl font-normal text-gray-400">/mois</span>
+      {/* Active badge */}
+      {isSubscribed && (
+        <div className="bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl p-6 text-center mb-10">
+          <p className="text-2xl mb-2">🏆</p>
+          <p className="font-bold text-lg mb-1">Abonnement actif</p>
+          <p className="text-green-500/80 text-sm">Profite de tous les outils sans restriction !</p>
         </div>
-        <p className="text-gray-500 mb-8">Résiliable à tout moment</p>
+      )}
 
-        <ul className="space-y-3 text-left mb-8">
-          {[
-            "✅ Zéro publicité sur tout le site",
-            "✅ Accès à tous les outils",
-            "✅ Générateurs IA illimités",
-            "✅ Conversions de fichiers illimitées",
-            "✅ Accès prioritaire aux nouveaux outils",
-          ].map((item) => (
-            <li key={item} className="text-gray-300">{item}</li>
-          ))}
-        </ul>
-
-        {isSubscribed ? (
-          <div className="bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl px-4 py-3">
-            ✓ Abonnement actif — profite bien !
+      {/* Plans — only shown if not subscribed */}
+      {!isSubscribed && (
+        <>
+          {/* Plan toggle */}
+          <div className="flex justify-center mb-8">
+            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-1 flex gap-1">
+              <button
+                onClick={() => setSelectedPlan("monthly")}
+                className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  selectedPlan === "monthly"
+                    ? "bg-gray-700 text-white"
+                    : "text-gray-500 hover:text-gray-300"
+                }`}
+              >
+                Mensuel
+              </button>
+              <button
+                onClick={() => setSelectedPlan("annual")}
+                className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${
+                  selectedPlan === "annual"
+                    ? "bg-yellow-500 text-black"
+                    : "text-gray-500 hover:text-gray-300"
+                }`}
+              >
+                Annuel
+                <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
+                  selectedPlan === "annual" ? "bg-black/20 text-black" : "bg-yellow-500/20 text-yellow-400"
+                }`}>
+                  -30%
+                </span>
+              </button>
+            </div>
           </div>
-        ) : user ? (
-          <button
-            onClick={startCheckout}
-            disabled={checkoutLoading}
-            className="w-full bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-black font-bold py-4 rounded-xl transition-colors text-lg"
-          >
-            {checkoutLoading ? "Redirection..." : "⭐ S'abonner pour 2,99€/mois"}
-          </button>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-gray-400 text-sm mb-4">Crée un compte pour t'abonner</p>
+
+          {/* Price card */}
+          <div className="bg-gray-900 border border-yellow-500/30 rounded-2xl p-8 mb-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="text-5xl font-black">
+                    {selectedPlan === "annual" ? "2,08€" : "2,99€"}
+                  </span>
+                  <span className="text-gray-400 text-lg">/mois</span>
+                </div>
+                {selectedPlan === "annual" ? (
+                  <p className="text-gray-500 text-sm">
+                    Facturé <span className="text-yellow-400 font-semibold">24,99€/an</span> · Économise 11€ vs mensuel
+                  </p>
+                ) : (
+                  <p className="text-gray-500 text-sm">Facturé 2,99€/mois · Sans engagement</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2 min-w-[200px]">
+                {user ? (
+                  <button
+                    onClick={() => startCheckout(selectedPlan)}
+                    disabled={checkoutLoading}
+                    className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-black font-bold py-4 px-8 rounded-xl transition-colors text-lg whitespace-nowrap"
+                  >
+                    {checkoutLoading
+                      ? "Redirection..."
+                      : selectedPlan === "annual"
+                      ? "⭐ S'abonner — 24,99€/an"
+                      : "⭐ S'abonner — 2,99€/mois"}
+                  </button>
+                ) : (
+                  <div className="space-y-2">
+                    <Link
+                      href="/inscription"
+                      className="block text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 px-8 rounded-xl transition-colors text-base"
+                    >
+                      Créer un compte gratuit
+                    </Link>
+                    <Link
+                      href="/connexion"
+                      className="block text-center border border-gray-700 hover:border-gray-500 text-gray-300 font-medium py-3 px-8 rounded-xl transition-colors text-sm"
+                    >
+                      J&apos;ai déjà un compte
+                    </Link>
+                  </div>
+                )}
+                <p className="text-xs text-gray-600 text-center">
+                  🔒 Paiement sécurisé · Annulable à tout moment
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Guarantee */}
+          <div className="flex items-center gap-3 bg-gray-900/50 border border-gray-800 rounded-xl px-4 py-3 mb-10 text-sm text-gray-400">
+            <span className="text-xl">🛡️</span>
+            <span>
+              <strong className="text-white">Garantie 7 jours satisfait ou remboursé.</strong>{" "}
+              Si tu n&apos;es pas satisfait, on te rembourse sans question.
+            </span>
+          </div>
+        </>
+      )}
+
+      {/* Comparison table */}
+      <div className="mb-14">
+        <h2 className="text-2xl font-bold text-center mb-6">Gratuit vs Premium</h2>
+        <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+          {/* Header */}
+          <div className="grid grid-cols-3 border-b border-gray-800">
+            <div className="p-4 text-sm text-gray-500 font-medium">Fonctionnalité</div>
+            <div className="p-4 text-sm text-center text-gray-400 font-semibold border-l border-gray-800">Gratuit</div>
+            <div className="p-4 text-sm text-center text-yellow-400 font-semibold border-l border-gray-800">
+              ⭐ Premium
+            </div>
+          </div>
+          {/* Rows */}
+          {FEATURES_FREE.map((feat, i) => (
+            <div
+              key={i}
+              className={`grid grid-cols-3 border-b border-gray-800/50 last:border-0 ${
+                i % 2 === 0 ? "" : "bg-gray-900/50"
+              }`}
+            >
+              <div className="p-4 text-sm text-gray-300">{feat.label}</div>
+              <div className="p-4 text-center border-l border-gray-800">
+                {feat.ok ? (
+                  <span className="text-green-400 text-lg">✓</span>
+                ) : (
+                  <span className="text-gray-700 text-lg">✕</span>
+                )}
+              </div>
+              <div className="p-4 text-center border-l border-gray-800">
+                <span className="text-green-400 text-lg">✓</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Social proof */}
+      <div className="grid md:grid-cols-3 gap-4 mb-14">
+        {[
+          { emoji: "🚀", stat: "10 000+", label: "utilisateurs" },
+          { emoji: "⭐", stat: "4,8/5", label: "satisfaction" },
+          { emoji: "🔧", stat: "25+", label: "outils disponibles" },
+        ].map((s) => (
+          <div key={s.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
+            <p className="text-2xl mb-1">{s.emoji}</p>
+            <p className="text-2xl font-bold text-white">{s.stat}</p>
+            <p className="text-gray-500 text-sm">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* FAQ */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold text-center mb-6">Questions fréquentes</h2>
+        <div className="space-y-2">
+          {FAQ.map((faq, i) => (
+            <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+              <button
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                className="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-200 hover:text-white transition-colors"
+              >
+                {faq.q}
+                <span className={`text-gray-500 transition-transform ${openFaq === i ? "rotate-180" : ""}`}>▾</span>
+              </button>
+              {openFaq === i && (
+                <div className="px-5 pb-4 text-gray-400 text-sm leading-relaxed border-t border-gray-800/50 pt-3">
+                  {faq.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      {!isSubscribed && (
+        <div className="text-center">
+          <p className="text-gray-500 text-sm mb-4">Prêt à débloquer tout ToolBox ?</p>
+          {user ? (
+            <button
+              onClick={() => startCheckout(selectedPlan)}
+              disabled={checkoutLoading}
+              className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-black font-bold py-4 px-10 rounded-2xl transition-colors text-lg"
+            >
+              {checkoutLoading ? "Redirection..." : "⭐ Passer Premium maintenant"}
+            </button>
+          ) : (
             <Link
               href="/inscription"
-              className="block w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 rounded-xl transition-colors text-lg"
+              className="inline-block bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 px-10 rounded-2xl transition-colors text-lg"
             >
               Créer un compte gratuit
             </Link>
-            <Link
-              href="/login"
-              className="block w-full border border-gray-700 hover:border-gray-500 text-gray-300 font-medium py-3 rounded-xl transition-colors"
-            >
-              J'ai déjà un compte
-            </Link>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,13 +1,33 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { isPremiumRequest } from "@/lib/apiAuth";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   try {
+    // ── Rate limiting (server-side) ──────────────────────────────────────
+    const premium = await isPremiumRequest(req);
+    if (!premium) {
+      const ip = getClientIp(req);
+      const { allowed } = checkRateLimit(`traducteur:${ip}`);
+      if (!allowed) {
+        return NextResponse.json(
+          { error: "Limite quotidienne atteinte. Passe Premium pour un accès illimité." },
+          { status: 429 }
+        );
+      }
+    }
+    // ────────────────────────────────────────────────────────────────────
+
     const { text, from, to } = await req.json();
-    if (!text?.trim() || !to) return NextResponse.json({ error: "Texte ou langue manquante" }, { status: 400 });
+    if (!text?.trim() || !to)
+      return NextResponse.json({ error: "Texte ou langue manquante" }, { status: 400 });
+
+    if (text.length > 3000)
+      return NextResponse.json({ error: "Texte trop long (max 3000 caractères)" }, { status: 400 });
 
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const source = from === "auto" ? "la langue détectée automatiquement" : from;
@@ -15,10 +35,12 @@ export async function POST(req: NextRequest) {
     const message = await anthropic.messages.create({
       model: "claude-3-5-haiku-20241022",
       max_tokens: 2048,
-      messages: [{
-        role: "user",
-        content: `Traduis ce texte depuis ${source} vers ${to}. Réponds UNIQUEMENT avec la traduction, sans explication ni commentaire :\n\n${text}`,
-      }],
+      messages: [
+        {
+          role: "user",
+          content: `Traduis ce texte depuis ${source} vers ${to}. Réponds UNIQUEMENT avec la traduction, sans explication ni commentaire :\n\n${text}`,
+        },
+      ],
     });
 
     const translation = (message.content[0] as { text: string }).text;

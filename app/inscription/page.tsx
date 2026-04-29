@@ -41,13 +41,57 @@ export default function InscriptionPage() {
   if (success) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <span className="text-6xl mb-6 block">📧</span>
-          <h2 className="text-2xl font-bold mb-3">Vérifie ton email !</h2>
-          <p className="text-gray-400">On t'a envoyé un lien de confirmation à <span className="text-white">{email}</span>. Clique dessus pour activer ton compte.</p>
-          <Link href="/login" className="inline-block mt-6 text-purple-400 hover:text-purple-300 text-sm">
-            ← Retour à la connexion
-          </Link>
+        <div className="w-full max-w-md">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center">
+            {/* Icône animée */}
+            <div className="w-20 h-20 bg-purple-500/10 border border-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-4xl">📧</span>
+            </div>
+
+            <h2 className="text-2xl font-bold mb-2">Vérifie ton email !</h2>
+            <p className="text-gray-400 mb-6">
+              Un lien de confirmation a été envoyé à{" "}
+              <span className="text-white font-semibold">{email}</span>
+            </p>
+
+            {/* Étapes */}
+            <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4 text-left space-y-3 mb-6">
+              {[
+                { step: "1", text: "Ouvre ta boîte mail" },
+                { step: "2", text: "Trouve l'email de ToolBox (vérifie les spams)" },
+                { step: "3", text: "Clique sur le lien de confirmation" },
+                { step: "4", text: "Ton compte est activé — connecte-toi !" },
+              ].map(({ step, text }) => (
+                <div key={step} className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-purple-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+                    {step}
+                  </span>
+                  <span className="text-gray-300 text-sm">{text}</span>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-gray-600 mb-5">
+              ⚠️ Sans confirmation, tu ne pourras pas te connecter.
+            </p>
+
+            <Link
+              href="/connexion"
+              className="block w-full text-center bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 rounded-xl transition-colors"
+            >
+              Aller à la connexion →
+            </Link>
+
+            <p className="text-xs text-gray-600 mt-4">
+              Email non reçu ?{" "}
+              <button
+                onClick={() => setSuccess(false)}
+                className="text-purple-400 hover:text-purple-300 underline"
+              >
+                Ressayer avec une autre adresse
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -97,8 +141,13 @@ export default function InscriptionPage() {
               disabled={loading}
               className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors"
             >
-              {loading ? "Création..." : "Créer mon compte"}
+              {loading ? "Création en cours..." : "Créer mon compte"}
             </button>
+
+            <p className="text-center text-xs text-gray-600 mt-3 flex items-center justify-center gap-1.5">
+              <span>📧</span>
+              Un email de vérification sera envoyé à ton adresse
+            </p>
           </form>
 
           <p className="text-center text-gray-500 text-sm mt-6">

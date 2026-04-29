@@ -35,6 +35,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Limite de taille : 8 Mo en base64 ≈ 6 Mo image réelle
+    const MAX_BASE64_LENGTH = 8 * 1024 * 1024;
+    if (typeof image !== "string" || image.length > MAX_BASE64_LENGTH) {
+      return NextResponse.json(
+        { error: "Image trop volumineuse (max 6 Mo)" },
+        { status: 413 }
+      );
+    }
+
     const message = await client.messages.create({
       model: "claude-3-5-haiku-20241022",
       max_tokens: 2048,

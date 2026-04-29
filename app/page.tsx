@@ -154,18 +154,24 @@ export default function Home() {
         </div>
 
         <h1
-          className="text-6xl md:text-7xl font-black mb-5 gradient-text animate-fade-in-up"
+          className="text-5xl md:text-6xl font-black mb-3 gradient-text animate-fade-in-up"
           style={{ animationDelay: "80ms" }}
         >
-          ToolBox
+          Tous vos outils<br className="hidden md:block" /> en un seul endroit.
         </h1>
+        <p
+          className="text-base text-gray-500 font-semibold tracking-wide animate-fade-in-up mb-3"
+          style={{ animationDelay: "120ms" }}
+        >
+          ToolBox
+        </p>
 
         <p
           className="text-lg text-gray-400 max-w-xl mx-auto mb-8 animate-fade-in-up"
           style={{ animationDelay: "160ms" }}
         >
-          Générateurs IA, outils PDF, images et bien plus encore.
-          <br />Gratuit, rapide et sans prise de tête.
+          PDF, IA, images, vidéo, texte — sans installation,
+          <br />sans inscription forcée, sans filigrane.
         </p>
 
         <div
@@ -183,11 +189,13 @@ export default function Home() {
 
         {/* Stats */}
         <div
-          className="flex flex-wrap justify-center gap-6 mt-12 animate-fade-in"
+          className="flex flex-wrap justify-center gap-8 mt-12 animate-fade-in"
           style={{ animationDelay: "320ms" }}
         >
           {[
             { value: `${totalAvailable}`, label: "outils disponibles" },
+            { value: "100%", label: "en ligne, aucune install" },
+            { value: "Gratuit", label: "sans inscription forcée" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="text-2xl font-black text-white">{stat.value}</p>

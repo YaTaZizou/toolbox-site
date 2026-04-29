@@ -115,7 +115,7 @@ export default function InscriptionPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="ton@email.com"
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition-colors"
+                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition-colors"
               />
             </div>
             <div>
@@ -126,7 +126,7 @@ export default function InscriptionPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="Min. 6 caractères"
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition-colors"
+                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition-colors"
               />
             </div>
 
@@ -152,7 +152,7 @@ export default function InscriptionPage() {
 
           <p className="text-center text-gray-500 text-sm mt-6">
             Déjà un compte ?{" "}
-            <Link href="/login" className="text-purple-400 hover:text-purple-300">
+            <Link href="/connexion" className="text-purple-400 hover:text-purple-300">
               Se connecter
             </Link>
           </p>

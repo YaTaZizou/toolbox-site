@@ -123,7 +123,7 @@ export default function CompresserPdfPage() {
       const compressedBytes = await pdfDoc.save(saveOptions);
       const compressedSize = compressedBytes.byteLength;
 
-      const blob = new Blob([compressedBytes], { type: "application/pdf" });
+      const blob = new Blob([compressedBytes.buffer as ArrayBuffer], { type: "application/pdf" });
       const baseName = file.name.replace(/\.pdf$/i, "");
 
       setResult({

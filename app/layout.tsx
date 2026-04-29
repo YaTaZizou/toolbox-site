@@ -18,14 +18,29 @@ export const metadata: Metadata = {
   keywords: ["outils en ligne", "générateur IA", "convertisseur PDF", "traducteur", "compresseur image", "gratuit"],
   authors: [{ name: "ToolBox" }],
   metadataBase: new URL("https://alltoolbox.fr"),
+  icons: {
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/icon-192.png",
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",
     siteName: "ToolBox",
     title: "ToolBox — Outils gratuits en ligne",
     description: "Générateurs IA, outils PDF, convertisseurs d'images, traducteur et bien plus. Gratuit, rapide, sans inscription.",
+    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
   },
-  twitter: { card: "summary_large_image", title: "ToolBox — Outils gratuits en ligne" },
+  twitter: {
+    card: "summary_large_image",
+    title: "ToolBox — Outils gratuits en ligne",
+    images: ["/icon-512.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

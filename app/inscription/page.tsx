@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export default function InscriptionPage() {
+function InscriptionForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   async function signup(e: React.FormEvent) {
     e.preventDefault();
@@ -43,7 +47,6 @@ export default function InscriptionPage() {
       <div className="min-h-[80vh] flex items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center">
-            {/* Icône animée */}
             <div className="w-20 h-20 bg-purple-500/10 border border-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl">📧</span>
             </div>
@@ -54,7 +57,6 @@ export default function InscriptionPage() {
               <span className="text-white font-semibold">{email}</span>
             </p>
 
-            {/* Étapes */}
             <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4 text-left space-y-3 mb-6">
               {[
                 { step: "1", text: "Ouvre ta boîte mail" },
@@ -76,7 +78,7 @@ export default function InscriptionPage() {
             </p>
 
             <Link
-              href="/connexion"
+              href={`/connexion${redirect !== "/" ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
               className="block w-full text-center bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 rounded-xl transition-colors"
             >
               Aller à la connexion →
@@ -103,6 +105,11 @@ export default function InscriptionPage() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Créer un compte</h1>
           <p className="text-gray-400">Gratuit et sans carte bancaire</p>
+          {redirect !== "/" && (
+            <p className="text-xs text-yellow-400 mt-2 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg inline-block">
+              ⭐ Tu seras redirigé vers Premium après connexion
+            </p>
+          )}
         </div>
 
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
@@ -139,8 +146,14 @@ export default function InscriptionPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors"
+              className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
             >
+              {loading && (
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+              )}
               {loading ? "Création en cours..." : "Créer mon compte"}
             </button>
 
@@ -152,12 +165,23 @@ export default function InscriptionPage() {
 
           <p className="text-center text-gray-500 text-sm mt-6">
             Déjà un compte ?{" "}
-            <Link href="/connexion" className="text-purple-400 hover:text-purple-300">
+            <Link
+              href={`/connexion${redirect !== "/" ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
+              className="text-purple-400 hover:text-purple-300"
+            >
               Se connecter
             </Link>
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function InscriptionPage() {
+  return (
+    <Suspense>
+      <InscriptionForm />
+    </Suspense>
   );
 }

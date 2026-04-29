@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { supabase } from "@/lib/supabase";
+import { useEffect, useState, useMemo, Suspense } from "react";
+import { createBrowserClient } from "@supabase/ssr";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 type Plan = "monthly" | "annual";
+
+const TOTAL_TOOLS = 29;
 
 const FEATURES_FREE = [
   { label: "Outils PDF", ok: true },
@@ -17,7 +19,7 @@ const FEATURES_FREE = [
   { label: "Générateurs IA illimités", ok: false },
   { label: "Amélioration d'image IA", ok: false },
   { label: "Sans publicité", ok: false },
-  { label: "Accès prioritaire aux nouveaux outils", ok: false },
+  { label: "Accès en avant-première aux nouveaux outils", ok: false },
 ];
 
 const FEATURES_PREMIUM = [
@@ -29,7 +31,7 @@ const FEATURES_PREMIUM = [
   { label: "OCR — Image en texte illimité", ok: true },
   { label: "Amélioration d'image IA", ok: true },
   { label: "Sans publicité", ok: true },
-  { label: "Accès prioritaire aux nouveaux outils", ok: true },
+  { label: "Accès en avant-première aux nouveaux outils", ok: true },
   { label: "Support prioritaire", ok: true },
 ];
 
@@ -44,15 +46,19 @@ const FAQ = [
   },
   {
     q: "Y a-t-il une garantie satisfait ou remboursé ?",
-    a: "Oui ! Si tu n'es pas satisfait dans les 7 jours suivant ton abonnement, écris-nous et nous te remboursons intégralement.",
+    a: "Oui ! Si tu n'es pas satisfait dans les 7 jours suivant ton abonnement, écris-nous et nous te remboursons intégralement, sans question.",
   },
   {
     q: "Quels moyens de paiement acceptez-vous ?",
-    a: "Carte bancaire (Visa, Mastercard, American Express) via Stripe. Paiement 100% sécurisé.",
+    a: "Carte bancaire (Visa, Mastercard, American Express) via Stripe. Paiement 100% sécurisé et chiffré.",
   },
   {
     q: "La différence entre mensuel et annuel ?",
     a: "Le plan annuel est facturé en une seule fois à 24,99€/an, soit l'équivalent de 2,08€/mois — une économie de 30% par rapport au mensuel.",
+  },
+  {
+    q: "Mes données sont-elles en sécurité ?",
+    a: "Oui. Les fichiers traités ne sont jamais stockés sur nos serveurs. Tout est traité en mémoire et supprimé immédiatement après.",
   },
 ];
 
@@ -68,24 +74,29 @@ function PremiumContent() {
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  const supabase = useMemo(
+    () =>
+      createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      ),
+    []
+  );
+
   useEffect(() => {
-    async function load() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setUser({ id: user.id, email: user.email! });
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (data.user) {
+        setUser({ id: data.user.id, email: data.user.email! });
         const { data: profile } = await supabase
           .from("profiles")
           .select("is_subscribed")
-          .eq("id", user.id)
+          .eq("id", data.user.id)
           .single();
         setIsSubscribed(profile?.is_subscribed ?? false);
       }
       setLoading(false);
-    }
-    load();
-  }, []);
+    }).catch(() => setLoading(false));
+  }, [supabase]);
 
   async function startCheckout(plan: Plan) {
     if (!user) return;
@@ -93,7 +104,8 @@ function PremiumContent() {
     const res = await fetch("/api/stripe-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id, email: user.email, plan }),
+      // On envoie seulement le plan — le serveur vérifie l'identité via les cookies
+      body: JSON.stringify({ plan }),
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
@@ -106,10 +118,14 @@ function PremiumContent() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
+
       {/* Alerts */}
       {success && (
         <div className="bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl px-6 py-4 mb-10 text-center">
-          🎉 Abonnement activé ! Bienvenue dans ToolBox Premium !
+          🎉 Abonnement activé ! Bienvenue dans ToolBox Premium !{" "}
+          <Link href="/" className="underline font-semibold hover:text-green-300">
+            Explorer les outils →
+          </Link>
         </div>
       )}
       {canceled && (
@@ -129,7 +145,7 @@ function PremiumContent() {
         <p className="text-gray-400 text-lg max-w-xl mx-auto">
           {isSubscribed
             ? "Profite de tous les outils sans aucune restriction."
-            : "Supprime toutes les pubs, libère les générateurs IA et accède à tous les outils premium."}
+            : "Arrête de compter tes générations IA. Travaille sans interruption, sans pub, sans limite."}
         </p>
       </div>
 
@@ -138,7 +154,13 @@ function PremiumContent() {
         <div className="bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl p-6 text-center mb-10">
           <p className="text-2xl mb-2">🏆</p>
           <p className="font-bold text-lg mb-1">Abonnement actif</p>
-          <p className="text-green-500/80 text-sm">Profite de tous les outils sans restriction !</p>
+          <p className="text-green-500/80 text-sm mb-4">Profite de tous les outils sans restriction !</p>
+          <Link
+            href="/"
+            className="inline-block bg-green-500/20 hover:bg-green-500/30 border border-green-500/30 text-green-400 font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm"
+          >
+            Explorer les outils →
+          </Link>
         </div>
       )}
 
@@ -177,7 +199,7 @@ function PremiumContent() {
           </div>
 
           {/* Price card */}
-          <div className="bg-gray-900 border border-yellow-500/30 rounded-2xl p-8 mb-6 relative overflow-hidden">
+          <div className="bg-gray-900 border border-yellow-500/30 rounded-2xl p-8 mb-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
@@ -194,14 +216,21 @@ function PremiumContent() {
                 ) : (
                   <p className="text-gray-500 text-sm">Facturé 2,99€/mois · Sans engagement</p>
                 )}
+                <p className="text-gray-600 text-xs mt-1">☕ Soit moins qu&apos;un café par mois</p>
               </div>
-              <div className="flex flex-col gap-2 min-w-[200px]">
+              <div className="flex flex-col gap-2 min-w-[220px]">
                 {user ? (
                   <button
                     onClick={() => startCheckout(selectedPlan)}
                     disabled={checkoutLoading}
-                    className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-black font-bold py-4 px-8 rounded-xl transition-colors text-lg whitespace-nowrap"
+                    className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-black font-bold py-4 px-8 rounded-xl transition-colors text-lg whitespace-nowrap flex items-center justify-center gap-2"
                   >
+                    {checkoutLoading && (
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                      </svg>
+                    )}
                     {checkoutLoading
                       ? "Redirection..."
                       : selectedPlan === "annual"
@@ -211,22 +240,27 @@ function PremiumContent() {
                 ) : (
                   <div className="space-y-2">
                     <Link
-                      href="/inscription"
+                      href="/inscription?redirect=/premium"
                       className="block text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 px-8 rounded-xl transition-colors text-base"
                     >
                       Créer un compte gratuit
                     </Link>
                     <Link
-                      href="/connexion"
+                      href="/connexion?redirect=/premium"
                       className="block text-center border border-gray-700 hover:border-gray-500 text-gray-300 font-medium py-3 px-8 rounded-xl transition-colors text-sm"
                     >
                       J&apos;ai déjà un compte
                     </Link>
                   </div>
                 )}
-                <p className="text-xs text-gray-600 text-center">
-                  🔒 Paiement sécurisé · Annulable à tout moment
-                </p>
+                {/* Badges de confiance */}
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <span className="text-xs text-gray-600 flex items-center gap-1">🔒 SSL</span>
+                  <span className="text-gray-700">·</span>
+                  <span className="text-xs text-gray-600">Stripe</span>
+                  <span className="text-gray-700">·</span>
+                  <span className="text-xs text-gray-600">Visa / Mastercard</span>
+                </div>
               </div>
             </div>
           </div>
@@ -236,7 +270,7 @@ function PremiumContent() {
             <span className="text-xl">🛡️</span>
             <span>
               <strong className="text-white">Garantie 7 jours satisfait ou remboursé.</strong>{" "}
-              Si tu n&apos;es pas satisfait, on te rembourse sans question.
+              Si tu n&apos;es pas satisfait, on te rembourse sans question ni justification.
             </span>
           </div>
         </>
@@ -246,29 +280,19 @@ function PremiumContent() {
       <div className="mb-14">
         <h2 className="text-2xl font-bold text-center mb-6">Gratuit vs Premium</h2>
         <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-          {/* Header */}
           <div className="grid grid-cols-3 border-b border-gray-800">
             <div className="p-4 text-sm text-gray-500 font-medium">Fonctionnalité</div>
             <div className="p-4 text-sm text-center text-gray-400 font-semibold border-l border-gray-800">Gratuit</div>
-            <div className="p-4 text-sm text-center text-yellow-400 font-semibold border-l border-gray-800">
-              ⭐ Premium
-            </div>
+            <div className="p-4 text-sm text-center text-yellow-400 font-semibold border-l border-gray-800">⭐ Premium</div>
           </div>
-          {/* Rows */}
           {FEATURES_FREE.map((feat, i) => (
             <div
               key={i}
-              className={`grid grid-cols-3 border-b border-gray-800/50 last:border-0 ${
-                i % 2 === 0 ? "" : "bg-gray-900/50"
-              }`}
+              className={`grid grid-cols-3 border-b border-gray-800/50 last:border-0 ${i % 2 === 0 ? "" : "bg-gray-900/50"}`}
             >
               <div className="p-4 text-sm text-gray-300">{feat.label}</div>
               <div className="p-4 text-center border-l border-gray-800">
-                {feat.ok ? (
-                  <span className="text-green-400 text-lg">✓</span>
-                ) : (
-                  <span className="text-gray-700 text-lg">✕</span>
-                )}
+                {feat.ok ? <span className="text-green-400 text-lg">✓</span> : <span className="text-gray-700 text-lg">✕</span>}
               </div>
               <div className="p-4 text-center border-l border-gray-800">
                 <span className="text-green-400 text-lg">✓</span>
@@ -281,9 +305,9 @@ function PremiumContent() {
       {/* Social proof */}
       <div className="grid md:grid-cols-3 gap-4 mb-14">
         {[
-          { emoji: "🚀", stat: "10 000+", label: "utilisateurs" },
-          { emoji: "⭐", stat: "4,8/5", label: "satisfaction" },
-          { emoji: "🔧", stat: "25+", label: "outils disponibles" },
+          { emoji: "🔧", stat: `${TOTAL_TOOLS}`, label: "outils disponibles" },
+          { emoji: "🚀", stat: "100%", label: "en ligne, aucune install" },
+          { emoji: "🛡️", stat: "7j", label: "garantie remboursement" },
         ].map((s) => (
           <div key={s.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
             <p className="text-2xl mb-1">{s.emoji}</p>
@@ -318,8 +342,11 @@ function PremiumContent() {
 
       {/* Bottom CTA */}
       {!isSubscribed && (
-        <div className="text-center">
-          <p className="text-gray-500 text-sm mb-4">Prêt à débloquer tout ToolBox ?</p>
+        <div className="text-center bg-gray-900/50 border border-yellow-500/10 rounded-2xl p-8">
+          <p className="text-white font-bold text-xl mb-1">
+            Moins de 3€/mois. Résiliable en 1 clic.
+          </p>
+          <p className="text-gray-500 text-sm mb-6">Essaie 7 jours sans risque — remboursé si insatisfait.</p>
           {user ? (
             <button
               onClick={() => startCheckout(selectedPlan)}
@@ -330,10 +357,10 @@ function PremiumContent() {
             </button>
           ) : (
             <Link
-              href="/inscription"
+              href="/inscription?redirect=/premium"
               className="inline-block bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 px-10 rounded-2xl transition-colors text-lg"
             >
-              Créer un compte gratuit
+              Commencer gratuitement →
             </Link>
           )}
         </div>

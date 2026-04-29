@@ -10,6 +10,7 @@ import { ToolTracker } from "@/components/ToolTracker";
 import { PwaRegister } from "@/components/PwaRegister";
 import { NavPremiumBadge } from "@/components/NavPremiumBadge";
 import { PremiumProvider } from "@/components/PremiumProvider";
+import { ToolUpsellWrapper } from "@/components/ToolUpsellWrapper";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -76,7 +77,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <aside className="hidden xl:flex w-[180px] flex-shrink-0 sticky top-20 self-start h-[calc(100vh-80px)] justify-center overflow-hidden">
               <SidebarAd slot="left" />
             </aside>
-            <main className="flex-1 min-w-0 max-w-[900px] pb-16 xl:pb-16">{children}</main>
+            <main className="flex-1 min-w-0 max-w-[900px] pb-16 xl:pb-16">
+                <ToolUpsellWrapper>{children}</ToolUpsellWrapper>
+              </main>
             <aside className="hidden xl:flex w-[180px] flex-shrink-0 sticky top-20 self-start h-[calc(100vh-80px)] justify-center overflow-hidden">
               <SidebarAd slot="right" />
             </aside>
@@ -92,6 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <span className="text-gray-600">— Tous vos outils en un seul endroit</span>
                 </div>
                 <div className="flex flex-wrap justify-center gap-5 text-gray-600">
+                  <Link href="/contact" className="hover:text-gray-300 transition-colors">Contact</Link>
                   <Link href="/mentions-legales" className="hover:text-gray-300 transition-colors">Mentions légales</Link>
                   <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Confidentialité</Link>
                   <Link href="/conditions" className="hover:text-gray-300 transition-colors">CGU</Link>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
 import { SearchBar } from "@/components/SearchBar";
 import { RecentTools } from "@/components/RecentTools";
+import { HeroPremiumBadge } from "@/components/HeroPremiumBadge";
 
 type Tool = {
   href: string;
@@ -177,12 +178,7 @@ export default function Home() {
           >
             Essayer un outil →
           </Link>
-          <Link
-            href="/premium"
-            className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 font-semibold px-6 py-2.5 rounded-xl hover:bg-yellow-500/20 transition-colors text-sm"
-          >
-            ⭐ Passer Premium
-          </Link>
+          <HeroPremiumBadge />
         </div>
 
         {/* Stats */}

@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ToolTracker } from "@/components/ToolTracker";
 import { PwaRegister } from "@/components/PwaRegister";
 import { NavPremiumBadge } from "@/components/NavPremiumBadge";
+import { PremiumProvider } from "@/components/PremiumProvider";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${geist.className} bg-gray-950 text-white min-h-screen transition-colors duration-300 pb-16 xl:pb-0`}>
         <ThemeProvider>
+          <PremiumProvider>
           <PwaRegister />
           <ToolTracker />
           <nav className="border-b border-gray-800/60 bg-gray-950/80 backdrop-blur-xl sticky top-0 z-50">
@@ -80,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </aside>
           </div>
           <StickyBottomAd />
+          </PremiumProvider>
           <footer className="border-t border-gray-800/60 mt-24 py-12 text-sm">
             <div className="max-w-6xl mx-auto px-4">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">

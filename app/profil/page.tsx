@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -27,25 +27,42 @@ export default function ProfilPage() {
   const [deleteError, setDeleteError] = useState("");
 
   const router = useRouter();
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+  const supabase = useMemo(
+    () =>
+      createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      ),
+    []
   );
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data }) => {
-      setUser(data.user);
-      if (data.user) {
-        const { data: prof } = await supabase
-          .from("profiles")
-          .select("is_subscribed, subscription_end_date")
-          .eq("id", data.user.id)
-          .single();
-        setProfile(prof ?? { is_subscribed: false, subscription_end_date: null });
-      }
-      setLoading(false);
-    });
-  }, []);
+    let cancelled = false;
+
+    supabase.auth
+      .getUser()
+      .then(async ({ data }) => {
+        if (cancelled) return;
+        setUser(data.user ?? null);
+        if (data.user) {
+          const { data: prof } = await supabase
+            .from("profiles")
+            .select("is_subscribed, subscription_end_date")
+            .eq("id", data.user.id)
+            .single();
+          if (!cancelled) {
+            setProfile(prof ?? { is_subscribed: false, subscription_end_date: null });
+          }
+        }
+        if (!cancelled) setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [supabase]);
 
   async function changePassword(e: React.FormEvent) {
     e.preventDefault();

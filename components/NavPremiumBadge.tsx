@@ -1,48 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createBrowserClient } from "@supabase/ssr";
+import { usePremiumStatus } from "@/components/PremiumProvider";
 
 export function NavPremiumBadge() {
-  const [isPremium, setIsPremium] = useState<boolean | null>(null);
+  const { isPremium, loading } = usePremiumStatus();
 
-  useEffect(() => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+  if (loading) return null;
 
-    async function check() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        setIsPremium(false);
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("is_subscribed")
-        .eq("id", user.id)
-        .single();
-
-      setIsPremium(profile?.is_subscribed === true);
-    }
-
-    check();
-
-    // Mettre à jour si l'état auth change (connexion / déconnexion)
-    const { data: listener } = supabase.auth.onAuthStateChange(() => check());
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
-  // Pendant le chargement : ne rien afficher pour éviter le flash
-  if (isPremium === null) return null;
-
-  // ── Déjà Premium ─────────────────────────────────────────────────────
   if (isPremium) {
     return (
       <Link
@@ -58,7 +23,6 @@ export function NavPremiumBadge() {
     );
   }
 
-  // ── Pas Premium : lien d'upgrade ─────────────────────────────────────
   return (
     <Link
       href="/premium"

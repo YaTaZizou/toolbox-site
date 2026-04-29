@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { usePremiumStatus } from "@/components/PremiumProvider";
 
 declare global {
   interface Window { adsbygoogle: unknown[] }
@@ -13,9 +14,12 @@ function pushAd() {
   } catch {}
 }
 
-/* ── Bannière horizontale (homepage entre catégories, bas de page) ── */
+/* ── Bannière horizontale (homepage entre catégories) ── */
 export function AdBanner() {
-  useEffect(() => { pushAd(); }, []);
+  const { isPremium, loading } = usePremiumStatus();
+  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+
+  if (loading || isPremium) return null;
 
   return (
     <div className="w-full text-center my-6">
@@ -37,7 +41,10 @@ export function AdBanner() {
 
 /* ── Sidebar verticale gauche / droite ── */
 export function SidebarAd({ slot }: { slot: "left" | "right" }) {
-  useEffect(() => { pushAd(); }, []);
+  const { isPremium, loading } = usePremiumStatus();
+  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+
+  if (loading || isPremium) return null;
 
   return (
     <div className="flex flex-col items-center gap-2 pt-2">
@@ -57,9 +64,12 @@ export function SidebarAd({ slot }: { slot: "left" | "right" }) {
   );
 }
 
-/* ── Bannière sticky en bas de l'écran (très visible sur mobile) ── */
+/* ── Bannière sticky en bas (mobile) ── */
 export function StickyBottomAd() {
-  useEffect(() => { pushAd(); }, []);
+  const { isPremium, loading } = usePremiumStatus();
+  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+
+  if (loading || isPremium) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-gray-950/95 backdrop-blur border-t border-gray-800/60 py-1 px-2 flex items-center justify-center gap-3">
@@ -83,7 +93,17 @@ export function StickyBottomAd() {
 
 /* ── Pop-up pub avant téléchargement ── */
 export function AdBeforeDownload({ onContinue }: { onContinue: () => void }) {
-  useEffect(() => { pushAd(); }, []);
+  const { isPremium, loading } = usePremiumStatus();
+
+  // Tous les hooks AVANT tout return conditionnel
+  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+
+  // Premium : téléchargement direct sans pub
+  useEffect(() => {
+    if (!loading && isPremium) onContinue();
+  }, [isPremium, loading, onContinue]);
+
+  if (loading || isPremium) return null;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur z-50 flex items-center justify-center p-4">

@@ -18,6 +18,7 @@ export const ALL_TOOLS: ToolEntry[] = [
   { href: "/pdf", emoji: "🔗", title: "Outils PDF", category: "Outils PDF", available: true },
   { href: "/pdf-images", emoji: "📸", title: "PDF → Images", category: "Outils PDF", available: true },
   { href: "/modifier-pdf", emoji: "📝", title: "Modifier un PDF", category: "Outils PDF", available: true },
+  { href: "/compresser-pdf", emoji: "🗜️", title: "Compresser un PDF", category: "Outils PDF", available: true },
   // Images & Médias
   { href: "/image", emoji: "🔄", title: "Convertisseur d'Images", category: "Images & Médias", available: true },
   { href: "/modifier-image", emoji: "✏️", title: "Modifier une Image", category: "Images & Médias", available: true },

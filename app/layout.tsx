@@ -54,6 +54,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9277300744556228"
           crossOrigin="anonymous"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "ToolBox",
+              "url": "https://alltoolbox.fr",
+              "description": "Boîte à outils en ligne gratuite : PDF, IA, images, vidéo, texte. Sans installation, sans inscription forcée.",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://alltoolbox.fr/?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
+          }}
+        />
       </head>
       <body className={`${geist.className} bg-gray-950 text-white min-h-screen transition-colors duration-300 pb-16 xl:pb-0`}>
         <ThemeProvider>
@@ -62,10 +79,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToolTracker />
           <nav className="border-b border-gray-800/60 bg-gray-950/80 backdrop-blur-xl sticky top-0 z-50">
             <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-              <Link href="/" className="flex items-center gap-2 group">
-                <span className="text-xl group-hover:scale-110 transition-transform inline-block">⚡</span>
-                <span className="text-lg font-black text-white group-hover:text-purple-400 transition-colors">ToolBox</span>
-              </Link>
+              <div className="flex items-center gap-6">
+                <Link href="/" className="flex items-center gap-2 group">
+                  <span className="text-xl group-hover:scale-110 transition-transform inline-block">⚡</span>
+                  <span className="text-lg font-black text-white group-hover:text-purple-400 transition-colors">ToolBox</span>
+                </Link>
+                <Link href="/contact" className="hidden sm:inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors">
+                  <span>✉️</span>
+                  <span>Contact</span>
+                </Link>
+                <Link href="/premium" className="hidden sm:inline-flex items-center gap-1.5 text-sm text-yellow-400 hover:text-yellow-300 transition-colors font-semibold">
+                  <span>⭐</span>
+                  <span>Premium</span>
+                </Link>
+              </div>
               <div className="flex items-center gap-1 text-sm text-gray-400">
                 <ThemeToggle />
                 <NavPremiumBadge />

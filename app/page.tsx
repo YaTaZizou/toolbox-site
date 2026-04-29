@@ -59,6 +59,7 @@ const categories: Category[] = [
       { href: "/pdf?tab=proteger", emoji: "🔒", title: "Protéger un PDF", description: "Ajoute un mot de passe à ton PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/pdf-images", emoji: "📸", title: "PDF → Images", description: "Convertis chaque page d'un PDF en image.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/modifier-pdf", emoji: "📝", title: "Modifier un PDF", description: "Pivote, supprime ou réorganise les pages.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/compresser-pdf", emoji: "🗜️", title: "Compresser un PDF", description: "Réduis la taille de tes PDFs jusqu'à 80%.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {
@@ -161,13 +162,6 @@ export default function Home() {
           Tous vos outils<br className="hidden md:block" /> en un seul endroit.
         </h1>
         <p
-          className="text-base text-gray-500 font-semibold tracking-wide animate-fade-in-up mb-3"
-          style={{ animationDelay: "120ms" }}
-        >
-          ToolBox
-        </p>
-
-        <p
           className="text-lg text-gray-400 max-w-xl mx-auto mb-8 animate-fade-in-up"
           style={{ animationDelay: "160ms" }}
         >
@@ -181,7 +175,7 @@ export default function Home() {
         >
           <Link
             href="/pdf"
-            className="bg-white text-black font-semibold px-6 py-2.5 rounded-xl hover:bg-gray-100 transition-colors text-sm"
+            className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm"
           >
             Essayer un outil →
           </Link>
@@ -216,8 +210,6 @@ export default function Home() {
       <div className="space-y-14">
         {categories.map((cat, catIdx) => (
           <div key={cat.id}>
-          {/* Pub entre catégories (après la 2e et la 4e) */}
-          {(catIdx === 2 || catIdx === 4) && <AdBanner />}
           <div
             className="animate-fade-in-up"
             style={{ animationDelay: `${catIdx * 80 + 300}ms` }}
@@ -272,6 +264,8 @@ export default function Home() {
               </div>
             </div>
           </div>
+          {/* Pub APRÈS la catégorie (après la 2e et la 4e) */}
+          {(catIdx === 1 || catIdx === 3) && <AdBanner />}
           </div>
         ))}
       </div>

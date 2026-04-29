@@ -78,10 +78,11 @@ export default function NavAuth() {
         </Link>
         <button
           onClick={logout}
-          className="text-xs text-gray-600 hover:text-red-400 transition-colors"
+          className="text-xs text-gray-500 hover:text-red-400 transition-colors px-2 py-1 rounded hover:bg-red-500/10"
           title="Se déconnecter"
+          aria-label="Se déconnecter"
         >
-          ↪
+          Quitter
         </button>
       </div>
     );

@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const categoryLabel = categoryLabels[category] ?? category;
 
     const { error } = await resend.emails.send({
-      from: "ToolBox Contact <onboarding@resend.dev>",
+      from: "ToolBox Contact <contact@alltoolbox.fr>",
       to: TO_EMAIL,
       replyTo: email.trim(),
       subject: `[ToolBox] ${categoryLabel} — ${subject}`,

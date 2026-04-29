@@ -78,6 +78,7 @@ const categories: Category[] = [
       { href: "/audio", emoji: "🎵", title: "Convertisseur Audio", description: "Convertis en MP3, WAV, OGG, FLAC, OPUS...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
       { href: "/amelioration-image", emoji: "✨", title: "Amélioration d'Image", description: "Augmente la résolution jusqu'à 4× avec l'IA.", badge: "⭐ Premium", badgeColor: "bg-yellow-500/20 text-yellow-400", available: true },
       { href: "/filigrane", emoji: "🖊️", title: "Ajout de Filigrane", description: "Protège tes images avec un filigrane personnalisé.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/convertisseur-lien", emoji: "⬇️", title: "Téléchargeur de Vidéos", description: "YouTube, TikTok, Instagram, X — télécharge en MP4 ou MP3.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
     ],
   },
   {

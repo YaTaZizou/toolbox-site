@@ -27,6 +27,7 @@ export const ALL_TOOLS: ToolEntry[] = [
   { href: "/audio", emoji: "🎵", title: "Convertisseur Audio", category: "Images & Médias", available: true },
   { href: "/amelioration-image", emoji: "✨", title: "Amélioration d'Image", category: "Images & Médias", available: true },
   { href: "/filigrane", emoji: "🖊️", title: "Ajout de Filigrane", category: "Images & Médias", available: true },
+  { href: "/convertisseur-lien", emoji: "⬇️", title: "Téléchargeur de Vidéos", category: "Images & Médias", available: true },
   // Texte & Langue
   { href: "/traducteur", emoji: "🌍", title: "Traducteur", category: "Texte & Langue", available: true },
   { href: "/correcteur", emoji: "✅", title: "Correcteur de Texte", category: "Texte & Langue", available: true },

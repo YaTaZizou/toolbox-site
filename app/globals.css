@@ -1,7 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* ── New design tokens (ToolBox HTML reference) ── */
+:root {
+  --bg: #09090b;
+  --bg-2: #0c0c10;
+  --panel: #111114;
+  --panel-2: #16161b;
+  --tb-border: #1f1f25;
+  --border-strong: #2a2a31;
+  --text: #ededf0;
+  --text-2: #a1a1aa;
+  --text-3: #71717a;
+  --tb-primary: #7c3aed;
+  --primary-2: #a78bfa;
+  --primary-soft: rgba(124, 58, 237, 0.18);
+  --amber: #facc15;
+  --amber-soft: rgba(250, 204, 21, 0.12);
+  --green: #22c55e;
+  --green-soft: rgba(34, 197, 94, 0.12);
+  --rose: #f43f5e;
+  --orange: #fb923c;
+  --blue: #3b82f6;
+}
 
 :root {
   --background: oklch(0.11 0.01 285);
@@ -67,6 +91,32 @@ body {
   color: var(--foreground);
   /* font-family géré par Next.js via la variable Geist — ne pas écraser ici */
 }
+
+/* ── New nav / footer link styles ── */
+.nav-link-new {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 8px;
+  color: var(--text-2); font-size: 14px; font-weight: 500;
+  transition: color .15s, background .15s;
+  text-decoration: none;
+}
+.nav-link-new:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+
+.nav-link-premium {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 14px; border-radius: 8px;
+  color: var(--amber); font-size: 14px; font-weight: 500;
+  transition: color .15s, background .15s;
+  text-decoration: none;
+}
+.nav-link-premium:hover { background: var(--amber-soft); }
+
+.footer-link-new {
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color .15s;
+}
+.footer-link-new:hover { color: var(--text); }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; }

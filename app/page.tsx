@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { AdBanner } from "@/components/AdBanner";
 import { SearchBar } from "@/components/SearchBar";
 import { RecentTools } from "@/components/RecentTools";
-import { HeroPremiumBadge } from "@/components/HeroPremiumBadge";
+import FilterBar from "@/components/FilterBar";
 
 type Tool = {
   href: string;
@@ -22,6 +25,11 @@ type Category = {
   titleColor: string;
   borderColor: string;
   bgColor: string;
+  // new design tokens
+  iconBg: string;
+  iconColor: string;
+  catIconBg: string;
+  catIconColor: string;
   tools: Tool[];
 };
 
@@ -34,14 +42,18 @@ const categories: Category[] = [
     titleColor: "text-purple-400",
     borderColor: "border-purple-500/20",
     bgColor: "bg-purple-500/5",
+    iconBg: "rgba(124, 58, 237, 0.14)",
+    iconColor: "#a78bfa",
+    catIconBg: "rgba(124, 58, 237, 0.14)",
+    catIconColor: "#a78bfa",
     tools: [
-      { href: "/pseudo", emoji: "🎭", title: "Générateur de Pseudo", description: "Pseudos uniques pour gaming, réseaux sociaux, streaming...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
-      { href: "/bio", emoji: "✍️", title: "Générateur de Bio", description: "Bio percutante pour Instagram, TikTok, LinkedIn...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
-      { href: "/texte", emoji: "📝", title: "Générateur de Texte", description: "Posts, emails, descriptions, accroches...", badge: "IA", badgeColor: "bg-purple-500/20 text-purple-400", available: true },
-      { href: "/logo", emoji: "🎨", title: "Générateur de Logo", description: "Crée un logo unique avec l'IA en quelques secondes.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
-      { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/hash", emoji: "🔐", title: "Générateur de Hash", description: "MD5, SHA-256, SHA-512 en temps réel.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pseudo", emoji: "🎭", title: "Générateur de Pseudo", description: "Pseudos uniques pour gaming, réseaux sociaux, streaming...", badge: "IA", badgeColor: "ai", available: true },
+      { href: "/bio", emoji: "✍️", title: "Générateur de Bio", description: "Bio percutante pour Instagram, TikTok, LinkedIn...", badge: "IA", badgeColor: "ai", available: true },
+      { href: "/texte", emoji: "📝", title: "Générateur de Texte", description: "Posts, emails, descriptions, accroches...", badge: "IA", badgeColor: "ai", available: true },
+      { href: "/logo", emoji: "🎨", title: "Générateur de Logo", description: "Crée un logo unique avec l'IA en quelques secondes.", badge: "Bientôt", badgeColor: "soon", available: false },
+      { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/hash", emoji: "🔐", title: "Générateur de Hash", description: "MD5, SHA-256, SHA-512 en temps réel.", badge: "Gratuit", badgeColor: "free", available: true },
     ],
   },
   {
@@ -52,14 +64,18 @@ const categories: Category[] = [
     titleColor: "text-red-400",
     borderColor: "border-red-500/20",
     bgColor: "bg-red-500/5",
+    iconBg: "rgba(244, 63, 94, 0.12)",
+    iconColor: "#f43f5e",
+    catIconBg: "rgba(244, 63, 94, 0.12)",
+    catIconColor: "#f43f5e",
     tools: [
-      { href: "/pdf?tab=fusionner", emoji: "🔗", title: "Fusionner des PDFs", description: "Combine plusieurs PDFs en un seul fichier.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf?tab=image-vers-pdf", emoji: "🖼️", title: "Images → PDF", description: "Convertis tes JPG/PNG en fichier PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf?tab=decouper", emoji: "✂️", title: "Découper un PDF", description: "Extrait des pages spécifiques d'un PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf?tab=proteger", emoji: "🔒", title: "Protéger un PDF", description: "Ajoute un mot de passe à ton PDF.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/pdf-images", emoji: "📸", title: "PDF → Images", description: "Convertis chaque page d'un PDF en image.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/modifier-pdf", emoji: "📝", title: "Modifier un PDF", description: "Pivote, supprime ou réorganise les pages.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/compresser-pdf", emoji: "🗜️", title: "Compresser un PDF", description: "Réduis la taille de tes PDFs jusqu'à 80%.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/pdf?tab=fusionner", emoji: "🔗", title: "Fusionner des PDFs", description: "Combine plusieurs PDFs en un seul fichier.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/pdf?tab=image-vers-pdf", emoji: "🖼️", title: "Images → PDF", description: "Convertis tes JPG/PNG en fichier PDF.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/pdf?tab=decouper", emoji: "✂️", title: "Découper un PDF", description: "Extrait des pages spécifiques d'un PDF.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/pdf?tab=proteger", emoji: "🔒", title: "Protéger un PDF", description: "Ajoute un mot de passe à ton PDF.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/pdf-images", emoji: "📸", title: "PDF → Images", description: "Convertis chaque page d'un PDF en image.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/modifier-pdf", emoji: "📝", title: "Modifier un PDF", description: "Pivote, supprime ou réorganise les pages.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/compresser-pdf", emoji: "🗜️", title: "Compresser un PDF", description: "Réduis la taille de tes PDFs jusqu'à 80%.", badge: "Gratuit", badgeColor: "free", available: true },
     ],
   },
   {
@@ -70,16 +86,20 @@ const categories: Category[] = [
     titleColor: "text-orange-400",
     borderColor: "border-orange-500/20",
     bgColor: "bg-orange-500/5",
+    iconBg: "rgba(245, 158, 11, 0.12)",
+    iconColor: "#f59e0b",
+    catIconBg: "rgba(245, 158, 11, 0.12)",
+    catIconColor: "#f59e0b",
     tools: [
-      { href: "/image", emoji: "🔄", title: "Convertisseur d'Images", description: "JPG, PNG, WebP, AVIF + compression.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/modifier-image", emoji: "✏️", title: "Modifier une Image", description: "Redimensionne, pivote ou retourne.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/gif", emoji: "🎞️", title: "Créateur de GIF", description: "Crée des GIFs animés depuis tes images.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/video", emoji: "🎬", title: "Convertisseur Vidéo", description: "Convertis et compresse tes vidéos MP4, WebM, MOV...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/supprimer-fond", emoji: "✂️", title: "Suppression de Fond", description: "Supprime le fond de tes images avec l'IA.", badge: "IA", badgeColor: "bg-orange-500/20 text-orange-400", available: true },
-      { href: "/audio", emoji: "🎵", title: "Convertisseur Audio", description: "Convertis en MP3, WAV, OGG, FLAC, OPUS...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/amelioration-image", emoji: "✨", title: "Amélioration d'Image", description: "Augmente la résolution jusqu'à 4× avec l'IA.", badge: "⭐ Premium", badgeColor: "bg-yellow-500/20 text-yellow-400", available: true },
-      { href: "/filigrane", emoji: "🖊️", title: "Ajout de Filigrane", description: "Protège tes images avec un filigrane personnalisé.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/convertisseur-lien", emoji: "⬇️", title: "Téléchargeur de Vidéos", description: "YouTube, TikTok, Instagram, X — télécharge en MP4 ou MP3.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
+      { href: "/image", emoji: "🔄", title: "Convertisseur d'Images", description: "JPG, PNG, WebP, AVIF + compression.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/modifier-image", emoji: "✏️", title: "Modifier une Image", description: "Redimensionne, pivote ou retourne.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/gif", emoji: "🎞️", title: "Créateur de GIF", description: "Crée des GIFs animés depuis tes images.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/video", emoji: "🎬", title: "Convertisseur Vidéo", description: "Convertis et compresse tes vidéos MP4, WebM, MOV...", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/supprimer-fond", emoji: "✂️", title: "Suppression de Fond", description: "Supprime le fond de tes images avec l'IA.", badge: "IA", badgeColor: "ai", available: true },
+      { href: "/audio", emoji: "🎵", title: "Convertisseur Audio", description: "Convertis en MP3, WAV, OGG, FLAC, OPUS...", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/amelioration-image", emoji: "✨", title: "Amélioration d'Image", description: "Augmente la résolution jusqu'à 4× avec l'IA.", badge: "⭐ Premium", badgeColor: "premium", available: true },
+      { href: "/filigrane", emoji: "🖊️", title: "Ajout de Filigrane", description: "Protège tes images avec un filigrane personnalisé.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/convertisseur-lien", emoji: "⬇️", title: "Téléchargeur de Vidéos", description: "YouTube, TikTok, Instagram, X — télécharge en MP4 ou MP3.", badge: "Gratuit", badgeColor: "free", available: true },
     ],
   },
   {
@@ -90,13 +110,17 @@ const categories: Category[] = [
     titleColor: "text-blue-400",
     borderColor: "border-blue-500/20",
     bgColor: "bg-blue-500/5",
+    iconBg: "rgba(59, 130, 246, 0.12)",
+    iconColor: "#60a5fa",
+    catIconBg: "rgba(59, 130, 246, 0.12)",
+    catIconColor: "#60a5fa",
     tools: [
-      { href: "/traducteur", emoji: "🌍", title: "Traducteur", description: "Traduis dans plus de 12 langues grâce à l'IA.", badge: "IA", badgeColor: "bg-blue-500/20 text-blue-400", available: true },
-      { href: "/correcteur", emoji: "✅", title: "Correcteur de Texte", description: "Corrige orthographe, grammaire et style.", badge: "IA", badgeColor: "bg-blue-500/20 text-blue-400", available: true },
-      { href: "/dictionnaire", emoji: "📖", title: "Dictionnaire", description: "Définitions, synonymes et antonymes.", badge: "IA", badgeColor: "bg-blue-500/20 text-blue-400", available: true },
-      { href: "/convertir-texte", emoji: "🔡", title: "Convertisseur de Texte", description: "Majuscules, slug, camelCase et plus.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/compteur", emoji: "📊", title: "Compteur de Mots", description: "Mots, caractères, temps de lecture.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/ocr", emoji: "🔍", title: "OCR — Image en Texte", description: "Extrait le texte de n'importe quelle image.", badge: "IA", badgeColor: "bg-blue-500/20 text-blue-400", available: true },
+      { href: "/traducteur", emoji: "🌍", title: "Traducteur", description: "Traduis dans plus de 12 langues grâce à l'IA.", badge: "IA", badgeColor: "ai", available: true },
+      { href: "/correcteur", emoji: "✅", title: "Correcteur de Texte", description: "Corrige orthographe, grammaire et style.", badge: "IA", badgeColor: "ai", available: true },
+      { href: "/dictionnaire", emoji: "📖", title: "Dictionnaire", description: "Définitions, synonymes et antonymes.", badge: "IA", badgeColor: "ai", available: true },
+      { href: "/convertir-texte", emoji: "🔡", title: "Convertisseur de Texte", description: "Majuscules, slug, camelCase et plus.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/compteur", emoji: "📊", title: "Compteur de Mots", description: "Mots, caractères, temps de lecture.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/ocr", emoji: "🔍", title: "OCR — Image en Texte", description: "Extrait le texte de n'importe quelle image.", badge: "IA", badgeColor: "ai", available: true },
     ],
   },
   {
@@ -107,16 +131,51 @@ const categories: Category[] = [
     titleColor: "text-orange-400",
     borderColor: "border-orange-500/20",
     bgColor: "bg-orange-500/5",
+    iconBg: "rgba(251, 146, 60, 0.12)",
+    iconColor: "#fb923c",
+    catIconBg: "rgba(251, 146, 60, 0.12)",
+    catIconColor: "#fb923c",
     tools: [
-      { href: "/unites", emoji: "📏", title: "Convertisseur d'Unités", description: "Distance, poids, température, vitesse...", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/couleurs", emoji: "🎨", title: "Palette de Couleurs", description: "Génère des palettes harmonieuses.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/formateur-json", emoji: "{ }", title: "Formateur JSON", description: "Formate, minifie et valide tes données JSON.", badge: "Gratuit", badgeColor: "bg-green-500/20 text-green-400", available: true },
-      { href: "/lien", emoji: "🔗", title: "Raccourcisseur de Lien", description: "Raccourcis tes URLs en un clic.", badge: "Bientôt", badgeColor: "bg-gray-700 text-gray-500", available: false },
+      { href: "/unites", emoji: "📏", title: "Convertisseur d'Unités", description: "Distance, poids, température, vitesse...", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/couleurs", emoji: "🎨", title: "Palette de Couleurs", description: "Génère des palettes harmonieuses.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/formateur-json", emoji: "{ }", title: "Formateur JSON", description: "Formate, minifie et valide tes données JSON.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/lien", emoji: "🔗", title: "Raccourcisseur de Lien", description: "Raccourcis tes URLs en un clic.", badge: "Bientôt", badgeColor: "soon", available: false },
     ],
   },
 ];
 
-// Tri alphabétique par titre dans chaque catégorie (outils disponibles d'abord, "Bientôt" à la fin)
+// Badge style helper
+function getBadgeStyle(badgeColor: string): React.CSSProperties {
+  switch (badgeColor) {
+    case "free":
+      return {
+        background: "var(--green-soft)",
+        color: "#4ade80",
+        border: "1px solid rgba(34,197,94,0.25)",
+      };
+    case "ai":
+      return {
+        background: "var(--primary-soft)",
+        color: "var(--primary-2)",
+        border: "1px solid rgba(124,58,237,0.3)",
+      };
+    case "premium":
+      return {
+        background: "var(--amber-soft)",
+        color: "var(--amber)",
+        border: "1px solid rgba(250,204,21,0.3)",
+      };
+    case "soon":
+    default:
+      return {
+        background: "rgba(30,30,35,0.8)",
+        color: "#71717a",
+        border: "1px solid #2a2a31",
+      };
+  }
+}
+
+// Sort: available first, then alphabetical
 function sortTools(tools: Tool[]): Tool[] {
   return [...tools].sort((a, b) => {
     if (a.available && !b.available) return -1;
@@ -129,7 +188,6 @@ categories.forEach((cat) => {
   cat.tools = sortTools(cat.tools);
 });
 
-// Aplatir tous les outils pour la recherche
 const allTools = categories.flatMap((cat) =>
   cat.tools.map((tool) => ({
     ...tool,
@@ -143,38 +201,116 @@ const totalAvailable = categories.reduce(
   0
 );
 
+const categoryCounts: Record<string, number> = {};
+categories.forEach((cat) => {
+  categoryCounts[cat.id] = cat.tools.filter((t) => t.available).length;
+});
+
 export default function Home() {
+  const [activeFilter, setActiveFilter] = useState("all");
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16">
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 28px" }}>
 
       {/* ── Hero ── */}
-      <div className="relative text-center mb-14 overflow-hidden py-8">
-        {/* Glow background */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden -z-10">
-          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-purple-600/20 blur-[120px]" />
+      <section style={{
+        position: "relative",
+        padding: "96px 0 56px",
+        textAlign: "center",
+      }}>
+        {/* Halo effects */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+          <div style={{
+            position: "absolute",
+            top: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 720,
+            height: 480,
+            background: "radial-gradient(closest-side, rgba(124,58,237,0.32), rgba(124,58,237,0) 70%)",
+            filter: "blur(20px)",
+          }} />
+          <div style={{
+            position: "absolute",
+            top: 240,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 1100,
+            height: 1,
+            background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.5), transparent)",
+            opacity: 0.5,
+          }} />
         </div>
 
-        {/* Badge */}
-        <div className="animate-fade-in mb-6" style={{ animationDelay: "0ms" }}>
-          <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-sm text-purple-400">
-            <span className="h-2 w-2 rounded-full bg-purple-400 inline-block" />
-            {totalAvailable} outils disponibles gratuitement
-          </div>
+        {/* Pill badge */}
+        <div className="animate-fade-in" style={{ marginBottom: 22, position: "relative" }}>
+          <span style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "6px 14px 6px 8px",
+            border: "1px solid rgba(124, 58, 237, 0.3)",
+            background: "linear-gradient(180deg, rgba(124,58,237,0.12), rgba(124,58,237,0.04))",
+            borderRadius: 999,
+            fontSize: 12.5,
+            color: "var(--primary-2)",
+            fontWeight: 500,
+            letterSpacing: "0.01em",
+          }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: "50%",
+              background: "#c4b5fd",
+              boxShadow: "0 0 10px #a78bfa",
+              display: "inline-block",
+            }} />
+            {totalAvailable} outils disponibles — sans inscription
+            <span style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: 11,
+              background: "rgba(124,58,237,0.25)",
+              color: "#ddd6fe",
+              padding: "2px 7px",
+              borderRadius: 999,
+              marginLeft: 4,
+            }}>v2.4</span>
+          </span>
         </div>
 
         {/* Headline */}
         <h1
-          className="text-5xl md:text-6xl font-black mb-5 animate-fade-in-up tracking-tight"
-          style={{ animationDelay: "80ms" }}
+          className="animate-fade-in-up"
+          style={{
+            fontFamily: '"Space Grotesk", system-ui, sans-serif',
+            fontWeight: 600,
+            fontSize: "clamp(44px, 6.4vw, 80px)",
+            lineHeight: 1.02,
+            letterSpacing: "-0.035em",
+            margin: "0 auto 18px",
+            maxWidth: "14ch",
+            position: "relative",
+          }}
         >
-          <span className="gradient-text">Tous vos outils</span>
-          <br />
-          <span className="text-white">en un seul endroit.</span>
+          Tous vos outils en{" "}
+          <span style={{
+            background: "linear-gradient(180deg, #c4b5fd 0%, #7c3aed 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>
+            un seul endroit
+          </span>
         </h1>
 
         <p
-          className="text-lg text-gray-400 max-w-2xl mx-auto mb-10 animate-fade-in-up leading-relaxed"
-          style={{ animationDelay: "160ms" }}
+          className="animate-fade-in-up"
+          style={{
+            color: "var(--text-2)",
+            fontSize: 17,
+            lineHeight: 1.55,
+            maxWidth: "56ch",
+            margin: "0 auto",
+            position: "relative",
+          }}
         >
           PDF, IA, images, vidéo, texte — sans installation,
           sans inscription forcée, sans filigrane.
@@ -182,109 +318,331 @@ export default function Home() {
 
         {/* CTAs */}
         <div
-          className="flex flex-wrap justify-center gap-3 animate-fade-in-up"
-          style={{ animationDelay: "240ms" }}
+          className="animate-fade-in-up"
+          style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 32, flexWrap: "wrap", position: "relative" }}
         >
           <Link
             href="/pdf"
-            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-7 py-3 rounded-xl transition-all duration-200 text-sm shadow-lg shadow-purple-600/25 hover:shadow-purple-600/40 hover:-translate-y-0.5"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "13px 22px",
+              borderRadius: 10,
+              fontSize: 14.5,
+              fontWeight: 600,
+              background: "var(--tb-primary)",
+              color: "#fff",
+              textDecoration: "none",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset, 0 0 0 1px rgba(124,58,237,0.6), 0 10px 30px -10px rgba(124,58,237,0.7)",
+              transition: "transform .12s, box-shadow .15s, background .15s",
+            }}
           >
-            Essayer un outil →
+            Essayer un outil
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>
+            </svg>
           </Link>
-          <HeroPremiumBadge />
+          <button
+            onClick={() => {
+              const el = document.querySelector<HTMLInputElement>('input[type="search"], input[placeholder*="recherch" i], input[placeholder*="outil" i]');
+              if (el) el.focus();
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "13px 22px",
+              borderRadius: 10,
+              fontSize: 14.5,
+              fontWeight: 600,
+              background: "var(--panel)",
+              color: "var(--text)",
+              border: "1px solid var(--border-strong)",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              transition: "transform .12s, background .15s",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+            </svg>
+            Rechercher
+            <span style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: 11,
+              color: "var(--text-3)",
+              padding: "2px 6px",
+              border: "1px solid var(--border-strong)",
+              borderRadius: 5,
+            }}>⌘K</span>
+          </button>
         </div>
 
         {/* Stats */}
         <div
-          className="flex flex-wrap justify-center gap-10 mt-14 animate-fade-in"
-          style={{ animationDelay: "320ms" }}
+          className="animate-fade-in"
+          style={{ display: "flex", justifyContent: "center", gap: 56, marginTop: 48, flexWrap: "wrap", position: "relative" }}
         >
           {[
-            { value: `${totalAvailable}+`, label: "outils disponibles" },
-            { value: "100%", label: "en ligne, aucune install" },
-            { value: "Gratuit", label: "sans inscription forcée" },
+            { value: `${totalAvailable}`, suffix: "+", label: "Outils gratuits" },
+            { value: "100%", suffix: "", label: "en ligne, aucune install" },
+            { value: "Gratuit", suffix: "", label: "sans inscription forcée" },
           ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-3xl font-black text-white">{stat.value}</p>
-              <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+            <div key={stat.label} style={{ textAlign: "center" }}>
+              <p style={{
+                fontFamily: '"Space Grotesk", sans-serif',
+                fontSize: 28,
+                fontWeight: 600,
+                letterSpacing: "-0.02em",
+                color: "var(--text)",
+                margin: 0,
+              }}>
+                {stat.value}
+                {stat.suffix && <span style={{ color: "var(--text-3)", fontSize: 20, marginLeft: 2 }}>{stat.suffix}</span>}
+              </p>
+              <p style={{
+                fontSize: 11.5,
+                color: "var(--text-3)",
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                marginTop: 4,
+              }}>{stat.label}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* ── Barre de recherche ── */}
+      {/* ── Search bar ── */}
       <SearchBar tools={allTools} />
 
-      {/* ── Outils récents ── */}
+      {/* ── Recent tools ── */}
       <RecentTools />
 
-      {/* ── Catégories ── */}
-      <div className="space-y-14">
-        {categories.map((cat, catIdx) => (
-          <div key={cat.id}>
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: `${catIdx * 80 + 300}ms` }}
-          >
-            {/* Titre catégorie */}
-            <div className="flex items-center gap-3 mb-5">
-              <span className="text-2xl">{cat.emoji}</span>
-              <h2 className={`text-xl font-bold ${cat.titleColor}`}>{cat.title}</h2>
-              <span className="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded-full">
-                {cat.tools.filter((t) => t.available).length} outils
-              </span>
-            </div>
+      {/* ── Filter bar ── */}
+      <div style={{ paddingTop: 40 }}>
+        <FilterBar
+          categoryCounts={categoryCounts}
+          onFilter={setActiveFilter}
+        />
+      </div>
 
-            {/* Grille d'outils */}
-            <div className={`border rounded-2xl p-5 ${cat.borderColor} ${cat.bgColor}`}>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                {cat.tools.map((tool, toolIdx) =>
-                  tool.available ? (
-                    <Link key={tool.href + tool.title} href={tool.href}>
+      {/* ── Categories ── */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 56 }}>
+        {categories.map((cat, catIdx) => {
+          const isVisible = activeFilter === "all" || activeFilter === cat.id;
+          return (
+            <div
+              key={cat.id}
+              id={`cat-${cat.id}`}
+              style={{
+                scrollMarginTop: 80,
+                display: isVisible ? undefined : "none",
+              }}
+            >
+              <div
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${catIdx * 80 + 300}ms` }}
+              >
+                {/* Cat head */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: 9,
+                    display: "grid", placeItems: "center",
+                    flexShrink: 0,
+                    background: cat.catIconBg,
+                    color: cat.catIconColor,
+                    fontSize: 16,
+                  }}>
+                    {cat.emoji}
+                  </div>
+                  <h2 style={{
+                    fontFamily: '"Space Grotesk", system-ui, sans-serif',
+                    fontSize: 19,
+                    fontWeight: 600,
+                    letterSpacing: "-0.01em",
+                    margin: 0,
+                    color: "var(--text)",
+                  }}>{cat.title}</h2>
+                  <span style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: 11,
+                    color: "var(--text-3)",
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    border: "1px solid var(--tb-border)",
+                  }}>
+                    {cat.tools.filter((t) => t.available).length} outils
+                  </span>
+                  <div style={{
+                    flex: 1,
+                    height: 1,
+                    background: "linear-gradient(90deg, var(--tb-border), transparent)",
+                    marginLeft: 4,
+                  }} />
+                </div>
+
+                {/* Grid */}
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 1fr)",
+                  gap: 12,
+                }}
+                className="tool-grid"
+                >
+                  {cat.tools.map((tool, toolIdx) =>
+                    tool.available ? (
+                      <Link key={tool.href + tool.title} href={tool.href} style={{ textDecoration: "none" }}>
+                        <div
+                          className="tool-card animate-fade-in-up"
+                          style={{
+                            position: "relative",
+                            background: "var(--panel)",
+                            border: "1px solid var(--tb-border)",
+                            borderRadius: 12,
+                            padding: 18,
+                            cursor: "pointer",
+                            display: "flex",
+                            flexDirection: "column",
+                            minHeight: 144,
+                            transition: "transform .15s ease, border-color .15s, background .15s",
+                            animationDelay: `${catIdx * 80 + toolIdx * 40 + 350}ms`,
+                          }}
+                          onMouseEnter={(e) => {
+                            const el = e.currentTarget as HTMLDivElement;
+                            el.style.borderColor = "var(--border-strong)";
+                            el.style.transform = "translateY(-2px)";
+                            el.style.background = "var(--panel-2)";
+                          }}
+                          onMouseLeave={(e) => {
+                            const el = e.currentTarget as HTMLDivElement;
+                            el.style.borderColor = "var(--tb-border)";
+                            el.style.transform = "translateY(0)";
+                            el.style.background = "var(--panel)";
+                          }}
+                        >
+                          {/* Card top */}
+                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
+                            <div style={{
+                              width: 36, height: 36, borderRadius: 9,
+                              display: "grid", placeItems: "center",
+                              flexShrink: 0,
+                              background: cat.iconBg,
+                              color: cat.iconColor,
+                              fontSize: 18,
+                            }}>
+                              {tool.emoji}
+                            </div>
+                            <span style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: 10.5,
+                              fontWeight: 500,
+                              padding: "3px 8px",
+                              borderRadius: 999,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              whiteSpace: "nowrap",
+                              ...getBadgeStyle(tool.badgeColor),
+                            }}>
+                              {tool.badge}
+                            </span>
+                          </div>
+                          <h3 style={{
+                            fontFamily: '"Space Grotesk", system-ui, sans-serif',
+                            fontSize: 15,
+                            fontWeight: 600,
+                            letterSpacing: "-0.005em",
+                            color: "var(--text)",
+                            margin: "0 0 6px",
+                            lineHeight: 1.25,
+                          }}>
+                            {tool.title}
+                          </h3>
+                          <p style={{
+                            fontSize: 12.5,
+                            color: "var(--text-3)",
+                            lineHeight: 1.5,
+                            margin: 0,
+                          }}>
+                            {tool.description}
+                          </p>
+                        </div>
+                      </Link>
+                    ) : (
                       <div
-                        className={`group bg-gray-900/50 border border-gray-800/60 rounded-xl p-5 h-full cursor-pointer transition-all duration-300 hover:border-purple-500/40 hover:bg-gray-900 hover:-translate-y-1 hover:shadow-xl hover:shadow-purple-900/20 animate-fade-in-up`}
-                        style={{ animationDelay: `${catIdx * 80 + toolIdx * 40 + 350}ms` }}
+                        key={tool.href + tool.title}
+                        style={{
+                          position: "relative",
+                          background: "var(--panel)",
+                          border: "1px solid var(--tb-border)",
+                          borderRadius: 12,
+                          padding: 18,
+                          display: "flex",
+                          flexDirection: "column",
+                          minHeight: 144,
+                          opacity: 0.35,
+                          cursor: "not-allowed",
+                        }}
                       >
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/10 text-2xl transition-colors group-hover:bg-purple-500/20">
+                        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
+                          <div style={{
+                            width: 36, height: 36, borderRadius: 9,
+                            display: "grid", placeItems: "center",
+                            flexShrink: 0,
+                            background: cat.iconBg,
+                            color: cat.iconColor,
+                            fontSize: 18,
+                          }}>
                             {tool.emoji}
                           </div>
-                          <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${tool.badgeColor}`}>
+                          <span style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: 10.5,
+                            fontWeight: 500,
+                            padding: "3px 8px",
+                            borderRadius: 999,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            whiteSpace: "nowrap",
+                            ...getBadgeStyle(tool.badgeColor),
+                          }}>
                             {tool.badge}
                           </span>
                         </div>
-                        <h3 className="font-semibold text-white text-sm mb-1.5 group-hover:text-purple-300 transition-colors">
+                        <h3 style={{
+                          fontFamily: '"Space Grotesk", system-ui, sans-serif',
+                          fontSize: 15,
+                          fontWeight: 600,
+                          letterSpacing: "-0.005em",
+                          color: "var(--text-3)",
+                          margin: "0 0 6px",
+                          lineHeight: 1.25,
+                        }}>
                           {tool.title}
                         </h3>
-                        <p className="text-gray-500 text-xs leading-relaxed">{tool.description}</p>
+                        <p style={{ fontSize: 12.5, color: "var(--text-3)", lineHeight: 1.5, margin: 0 }}>
+                          {tool.description}
+                        </p>
                       </div>
-                    </Link>
-                  ) : (
-                    <div
-                      key={tool.href + tool.title}
-                      className="bg-gray-900/20 border border-gray-800/30 rounded-xl p-5 h-full opacity-35 cursor-not-allowed"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-800/50 text-2xl">
-                          {tool.emoji}
-                        </div>
-                        <span className={`text-xs px-2.5 py-1 rounded-full ${tool.badgeColor}`}>
-                          {tool.badge}
-                        </span>
-                      </div>
-                      <h3 className="font-semibold text-gray-400 text-sm mb-1.5">{tool.title}</h3>
-                      <p className="text-gray-600 text-xs leading-relaxed">{tool.description}</p>
-                    </div>
-                  )
-                )}
+                    )
+                  )}
+                </div>
               </div>
+
+              {/* Ad after category 2 and 4 (index 1 and 3) */}
+              {(catIdx === 1 || catIdx === 3) && <AdBanner />}
             </div>
-          </div>
-          {/* Pub APRÈS la catégorie (après la 2e et la 4e) */}
-          {(catIdx === 1 || catIdx === 3) && <AdBanner />}
-          </div>
-        ))}
+          );
+        })}
       </div>
+
+      <style>{`
+        @media (max-width: 1000px) { .tool-grid { grid-template-columns: repeat(3, 1fr) !important; } }
+        @media (max-width: 720px)  { .tool-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 480px)  { .tool-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </div>
   );
 }

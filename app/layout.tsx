@@ -77,23 +77,46 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PremiumProvider>
           <PwaRegister />
           <ToolTracker />
-          <nav className="border-b border-gray-800/60 bg-gray-950/80 backdrop-blur-xl sticky top-0 z-50">
-            <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <Link href="/" className="flex items-center gap-2 group">
-                  <span className="text-xl group-hover:scale-110 transition-transform inline-block">⚡</span>
-                  <span className="text-lg font-black text-white group-hover:text-purple-400 transition-colors">ToolBox</span>
+          <nav style={{
+            position: 'sticky', top: 0, zIndex: 50,
+            background: 'rgba(9, 9, 11, 0.78)',
+            backdropFilter: 'saturate(140%) blur(14px)',
+            WebkitBackdropFilter: 'saturate(140%) blur(14px)',
+            borderBottom: '1px solid rgba(31, 31, 37, 0.6)',
+          }}>
+            <div style={{
+              maxWidth: 1200, margin: '0 auto',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '14px 28px',
+            }}>
+              {/* Brand + center links */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: '"Space Grotesk", system-ui, sans-serif', fontWeight: 700, fontSize: 17, letterSpacing: '-0.01em', color: 'var(--text)', textDecoration: 'none', marginRight: 8 }}>
+                  <div style={{
+                    width: 28, height: 28, borderRadius: 8,
+                    background: 'linear-gradient(140deg, #8b5cf6 0%, #7c3aed 60%, #5b21b6 100%)',
+                    display: 'grid', placeItems: 'center',
+                    boxShadow: '0 6px 20px -6px rgba(124,58,237,0.65), inset 0 1px 0 rgba(255,255,255,0.18)',
+                    flexShrink: 0,
+                  }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M13 3 4 14h7l-1 7 9-11h-7l1-7z"/>
+                    </svg>
+                  </div>
+                  ToolBox
                 </Link>
-                <Link href="/contact" className="hidden sm:inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors">
-                  <span>✉️</span>
-                  <span>Contact</span>
-                </Link>
-                <Link href="/premium" className="hidden sm:inline-flex items-center gap-1.5 text-sm text-yellow-400 hover:text-yellow-300 transition-colors font-semibold">
-                  <span>⭐</span>
-                  <span>Premium</span>
-                </Link>
+                <div className="hidden sm:flex" style={{ alignItems: 'center', gap: 4 }}>
+                  <Link href="/contact" className="nav-link-new">
+                    Contact
+                  </Link>
+                  <Link href="/premium" className="nav-link-premium">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.6 5.6 6.1.7-4.5 4.2 1.2 6.1L12 16.8 6.6 19.6l1.2-6.1L3.3 9.3l6.1-.7L12 3z"/></svg>
+                    Premium
+                  </Link>
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-sm text-gray-400">
+              {/* Right side */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <ThemeToggle />
                 <NavPremiumBadge />
                 <NavAuth />
@@ -113,21 +136,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
           <StickyBottomAd />
           </PremiumProvider>
-          <footer className="border-t border-gray-800/60 mt-24 py-12 text-sm">
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-2 text-gray-400">
-                  <span>⚡</span>
-                  <span className="font-bold text-white">ToolBox</span>
-                  <span className="text-gray-600">— Tous vos outils en un seul endroit</span>
+          <footer style={{
+            marginTop: 80,
+            borderTop: '1px solid var(--tb-border)',
+            background: 'var(--bg-2)',
+          }}>
+            <div style={{
+              maxWidth: 1200, margin: '0 auto',
+              padding: '32px 28px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              flexWrap: 'wrap', gap: 16,
+            }}>
+              {/* Left: brand + copyright */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, color: 'var(--text-3)', fontSize: 13 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: '"Space Grotesk", system-ui, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>
+                  <div style={{
+                    width: 22, height: 22, borderRadius: 6,
+                    background: 'linear-gradient(140deg, #8b5cf6 0%, #7c3aed 60%, #5b21b6 100%)',
+                    display: 'grid', placeItems: 'center',
+                    boxShadow: '0 6px 20px -6px rgba(124,58,237,0.65), inset 0 1px 0 rgba(255,255,255,0.18)',
+                    flexShrink: 0,
+                  }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M13 3 4 14h7l-1 7 9-11h-7l1-7z"/>
+                    </svg>
+                  </div>
+                  ToolBox
                 </div>
-                <div className="flex flex-wrap justify-center gap-5 text-gray-600">
-                  <Link href="/contact" className="hover:text-gray-300 transition-colors">Contact</Link>
-                  <Link href="/mentions-legales" className="hover:text-gray-300 transition-colors">Mentions légales</Link>
-                  <Link href="/confidentialite" className="hover:text-gray-300 transition-colors">Confidentialité</Link>
-                  <Link href="/conditions" className="hover:text-gray-300 transition-colors">CGU</Link>
-                </div>
-                <p className="text-gray-700">© 2026 ToolBox</p>
+                <div style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-3)', opacity: 0.6 }} />
+                <span>© 2026 — Fait avec attention</span>
+              </div>
+              {/* Right: links */}
+              <div style={{ display: 'flex', gap: 18, fontSize: 13 }}>
+                <Link href="/confidentialite" className="footer-link-new">Confidentialité</Link>
+                <Link href="/conditions" className="footer-link-new">CGU</Link>
+                <Link href="/mentions-legales" className="footer-link-new">Mentions légales</Link>
+                <Link href="/contact" className="footer-link-new">Contact</Link>
               </div>
             </div>
           </footer>

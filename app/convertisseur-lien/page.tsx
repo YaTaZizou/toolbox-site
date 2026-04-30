@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePremiumStatus } from "@/components/PremiumProvider";
 
 // ── Logos SVG des plateformes ──────────────────────────────────────────────
 function YouTubeLogo() {
@@ -97,8 +98,9 @@ type Result =
   | null;
 
 export default function ConvertisseurLienPage() {
+  const { isPremium } = usePremiumStatus();
   const [url, setUrl]               = useState("");
-  const [quality, setQuality]       = useState("1080");
+  const [quality, setQuality]       = useState("720");
   const [audioOnly, setAudioOnly]   = useState(false);
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState("");
@@ -200,17 +202,35 @@ export default function ConvertisseurLienPage() {
           {!audioOnly && (
             <div className="flex-1 min-w-[140px]">
               <label className="block text-xs text-gray-500 mb-1.5">Qualité vidéo</label>
-              <select
-                value={quality}
-                onChange={(e) => setQuality(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
-              >
-                <option value="1080">1080p (Full HD)</option>
-                <option value="720">720p (HD)</option>
-                <option value="480">480p</option>
-                <option value="360">360p</option>
-                <option value="144">144p (léger)</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={quality}
+                  onChange={(e) => {
+                    if (e.target.value === "1080" && !isPremium) return;
+                    setQuality(e.target.value);
+                  }}
+                  className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
+                >
+                  <option value="1080" disabled={!isPremium}>
+                    {isPremium ? "1080p (Full HD)" : "🔒 1080p (Full HD) — Premium"}
+                  </option>
+                  <option value="720">720p (HD)</option>
+                  <option value="480">480p</option>
+                  <option value="360">360p</option>
+                  <option value="144">144p (léger)</option>
+                </select>
+              </div>
+              {!isPremium && (
+                <Link
+                  href="/premium"
+                  className="mt-1.5 flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="m12 2 2.6 5.6 6.1.7-4.5 4.2 1.2 6.1L12 16.8 6.6 19.6l1.2-6.1L3.3 9.3l6.1-.7L12 3z"/>
+                  </svg>
+                  Passer Premium pour débloquer le Full HD
+                </Link>
+              )}
             </div>
           )}
 

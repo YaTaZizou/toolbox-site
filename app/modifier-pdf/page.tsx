@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 
-const RENDER_SCALE = 2.5;
 const FONT_SIZES = [10, 12, 14, 16, 18, 24, 32, 48];
 const COLORS = [
   { hex: "#000000", label: "Noir" },
@@ -20,12 +19,15 @@ type TextBox = { id: string; pageIndex: number; x: number; y: number; text: stri
 type ImageBox = { id: string; pageIndex: number; x: number; y: number; width: number; height: number; dataUrl: string; };
 type ExtractedText = {
   id: string; pageIndex: number;
+  // coords in canvas pixels (already at the right display scale)
   x: number; y: number; width: number; height: number;
+  // raw PDF user-space values (for pdf-lib)
   pdfX: number; pdfY: number; pdfWidth: number; pdfFontSize: number;
   originalText: string; editedText: string;
   isEdited: boolean; isDeleted: boolean;
 };
-type PageData = { dataUrl: string; width: number; height: number; pdfWidth: number; pdfHeight: number; };
+// scale = render scale used for this page (canvas px / pdf pt)
+type PageData = { dataUrl: string; width: number; height: number; pdfWidth: number; pdfHeight: number; scale: number; };
 type Tab = "editor" | "pages";
 type PageAction = "pivoter" | "supprimer" | "reorganiser";
 type DragState = { id: string; kind: "text" | "image"; startX: number; startY: number; origX: number; origY: number; };
@@ -40,6 +42,7 @@ export default function ModifierPdfPage() {
   const [extractedTexts, setExtractedTexts] = useState<ExtractedText[]>([]);
   const [editingExtId, setEditingExtId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showOverlays, setShowOverlays] = useState(true);
   const [fontSize, setFontSize] = useState(16);
   const [color, setColor] = useState("#000000");
   const [rendering, setRendering] = useState(false);
@@ -58,7 +61,7 @@ export default function ModifierPdfPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const imgFileRef = useRef<HTMLInputElement>(null);
 
-  // ── Load PDF + extract text positions ─────────────────────────────────
+  // ── Load PDF ───────────────────────────────────────────────────────────
   async function loadPdf(f: File) {
     setFile(f);
     setRenderedPages([]); setTextBoxes([]); setImageBoxes([]); setExtractedTexts([]);
@@ -72,42 +75,63 @@ export default function ModifierPdfPage() {
       const resultPages: PageData[] = [];
       const allTexts: ExtractedText[] = [];
 
+      // Target display width: fit the container (max-w-4xl - px-4 padding, capped at 850)
+      const containerW = typeof window !== "undefined"
+        ? Math.min(window.innerWidth - 48, 850)
+        : 800;
+
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const vp = page.getViewport({ scale: RENDER_SCALE });
+
+        // 1x viewport to get the native PDF dimensions
+        const baseVp = page.getViewport({ scale: 1 });
+
+        // Scale so canvas width = container width (max 2× for quality)
+        const scale = Math.min(2, containerW / baseVp.width);
+        const vp = page.getViewport({ scale });
+
+        // Render at calculated scale → canvas fits container exactly, no CSS scaling needed
         const canvas = document.createElement("canvas");
         canvas.width = vp.width; canvas.height = vp.height;
-        const ctx = canvas.getContext("2d")!;
-        await page.render({ canvasContext: ctx, viewport: vp, canvas }).promise;
+        await page.render({ canvasContext: canvas.getContext("2d")!, viewport: vp, canvas }).promise;
+
         const pageData: PageData = {
-          dataUrl: canvas.toDataURL("image/png"),
-          width: vp.width, height: vp.height,
-          pdfWidth: vp.width / RENDER_SCALE,
-          pdfHeight: vp.height / RENDER_SCALE,
+          dataUrl: canvas.toDataURL("image/png"), // lossless
+          width: vp.width,
+          height: vp.height,
+          pdfWidth: baseVp.width,   // PDF user units (pts)
+          pdfHeight: baseVp.height, // PDF user units (pts)
+          scale,
         };
         resultPages.push(pageData);
 
-        // Extract text with positions
+        // Extract text with accurate canvas positions
         const tc = await page.getTextContent();
         const pageIndex = i - 1;
         (tc.items as any[]).forEach((item, idx) => {
           if (!item.str?.trim()) return;
-          const pdfX = item.transform[4];
-          const pdfY = item.transform[5];
+
+          // PDF user-space origin = bottom-left
+          const pdfX      = item.transform[4];
+          const pdfY      = item.transform[5];
           const pdfFontSize = item.height > 0 ? item.height : Math.abs(item.transform[3]) || 12;
-          const pdfWidth = item.width > 0 ? item.width : pdfFontSize * item.str.length * 0.55;
-          const canvasX = pdfX * RENDER_SCALE;
-          const canvasBaselineY = (pageData.pdfHeight - pdfY) * RENDER_SCALE;
-          const canvasFontSize = pdfFontSize * RENDER_SCALE;
+          const pdfWidth  = item.width > 0 ? item.width : pdfFontSize * item.str.length * 0.55;
+
+          // Convert to canvas pixels (top-left origin)
+          const canvasX          = pdfX * scale;
+          const canvasBaseline   = (pageData.pdfHeight - pdfY) * scale;
+          const canvasFontSize   = pdfFontSize * scale;
+
           allTexts.push({
             id: `et_${pageIndex}_${idx}`,
             pageIndex,
             x: canvasX,
-            y: canvasBaselineY - canvasFontSize * 1.15,
-            width: Math.max(pdfWidth * RENDER_SCALE, 20),
+            y: canvasBaseline - canvasFontSize * 1.1,
+            width: Math.max(pdfWidth * scale, 20),
             height: canvasFontSize * 1.4,
             pdfX, pdfY, pdfWidth, pdfFontSize,
-            originalText: item.str, editedText: item.str,
+            originalText: item.str,
+            editedText: item.str,
             isEdited: false, isDeleted: false,
           });
         });
@@ -118,16 +142,12 @@ export default function ModifierPdfPage() {
     finally { setRendering(false); }
   }
 
-  // ── Extracted text editing ─────────────────────────────────────────────
-  function startEditExt(id: string) {
-    setEditingId(null);
-    setEditingExtId(id);
-  }
+  // ── Extracted text actions ─────────────────────────────────────────────
+  function startEditExt(id: string) { setEditingId(null); setEditingExtId(id); }
   function confirmEditExt(id: string) {
-    setExtractedTexts(prev => prev.map(t => {
-      if (t.id !== id) return t;
-      return { ...t, isEdited: t.editedText !== t.originalText && !t.isDeleted };
-    }));
+    setExtractedTexts(prev => prev.map(t =>
+      t.id !== id ? t : { ...t, isEdited: t.editedText !== t.originalText && !t.isDeleted }
+    ));
     setEditingExtId(null);
   }
   function cancelEditExt(id: string) {
@@ -142,8 +162,9 @@ export default function ModifierPdfPage() {
     setEditingExtId(null);
   }
   function restoreExtText(id: string) {
-    setExtractedTexts(prev => prev.map(t => t.id === id
-      ? { ...t, editedText: t.originalText, isEdited: false, isDeleted: false } : t));
+    setExtractedTexts(prev => prev.map(t =>
+      t.id === id ? { ...t, editedText: t.originalText, isEdited: false, isDeleted: false } : t
+    ));
   }
 
   // ── New text boxes ─────────────────────────────────────────────────────
@@ -221,7 +242,8 @@ export default function ModifierPdfPage() {
     const onMove = (ev: MouseEvent) => {
       if (!resizeRef.current) return;
       const dx = ev.clientX - resizeRef.current.startX, dy = ev.clientY - resizeRef.current.startY;
-      setImageBoxes(prev => prev.map(b => b.id === resizeRef.current!.id ? { ...b, width: Math.max(40, resizeRef.current!.origW + dx), height: Math.max(40, resizeRef.current!.origH + dy) } : b));
+      setImageBoxes(prev => prev.map(b => b.id === resizeRef.current!.id
+        ? { ...b, width: Math.max(40, resizeRef.current!.origW + dx), height: Math.max(40, resizeRef.current!.origH + dy) } : b));
     };
     const onUp = () => { resizeRef.current = null; window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
     window.addEventListener("mousemove", onMove); window.addEventListener("mouseup", onUp);
@@ -238,10 +260,11 @@ export default function ModifierPdfPage() {
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const pdfPages = pdfDoc.getPages();
 
-      // 1) Apply existing-text edits/deletions
+      // 1) Existing-text edits/deletions
       for (const et of extractedTexts) {
         if (!et.isEdited && !et.isDeleted) continue;
         const pg = pdfPages[et.pageIndex];
+        // White-out original
         pg.drawRectangle({
           x: et.pdfX - 1,
           y: et.pdfY - et.pdfFontSize * 0.3,
@@ -259,20 +282,19 @@ export default function ModifierPdfPage() {
         }
       }
 
-      // 2) Insert images
+      // 2) Images
       for (const imgBox of imageBoxes) {
         const pg = pdfPages[imgBox.pageIndex];
         const pd = renderedPages[imgBox.pageIndex];
         const resp = await fetch(imgBox.dataUrl);
         const bytes = await resp.arrayBuffer();
         const embeddedImg = imgBox.dataUrl.startsWith("data:image/png")
-          ? await pdfDoc.embedPng(bytes)
-          : await pdfDoc.embedJpg(bytes);
+          ? await pdfDoc.embedPng(bytes) : await pdfDoc.embedJpg(bytes);
         pg.drawImage(embeddedImg, {
-          x: Math.max(0, imgBox.x / RENDER_SCALE),
-          y: Math.max(0, pd.pdfHeight - (imgBox.y / RENDER_SCALE) - (imgBox.height / RENDER_SCALE)),
-          width: imgBox.width / RENDER_SCALE,
-          height: imgBox.height / RENDER_SCALE,
+          x: Math.max(0, imgBox.x / pd.scale),
+          y: Math.max(0, pd.pdfHeight - (imgBox.y / pd.scale) - (imgBox.height / pd.scale)),
+          width: imgBox.width / pd.scale,
+          height: imgBox.height / pd.scale,
         });
       }
 
@@ -281,13 +303,13 @@ export default function ModifierPdfPage() {
         if (!box.text.trim()) continue;
         const pg = pdfPages[box.pageIndex];
         const pd = renderedPages[box.pageIndex];
-        const pdfFontSize = box.fontSize / RENDER_SCALE;
+        const pdfFontSize = box.fontSize / pd.scale;
         const r = parseInt(box.color.slice(1, 3), 16) / 255;
         const g = parseInt(box.color.slice(3, 5), 16) / 255;
         const b = parseInt(box.color.slice(5, 7), 16) / 255;
         pg.drawText(box.text, {
-          x: Math.max(0, box.x / RENDER_SCALE),
-          y: Math.max(0, pd.pdfHeight - (box.y / RENDER_SCALE) - pdfFontSize),
+          x: Math.max(0, box.x / pd.scale),
+          y: Math.max(0, pd.pdfHeight - (box.y / pd.scale) - pdfFontSize),
           size: Math.max(6, pdfFontSize), font, color: rgb(r, g, b),
         });
       }
@@ -339,7 +361,7 @@ export default function ModifierPdfPage() {
           <span className="text-4xl">📝</span>
           <h1 className="text-3xl font-bold">Modifier un PDF</h1>
         </div>
-        <p className="text-gray-400">Modifie le texte existant, ajoute du texte, des images, ou gère les pages.</p>
+        <p className="text-gray-400">Clique sur le texte existant pour le modifier · Clique sur une zone vide pour ajouter du texte.</p>
       </div>
 
       {/* Tabs */}
@@ -352,7 +374,6 @@ export default function ModifierPdfPage() {
         ))}
       </div>
 
-      {/* Upload */}
       {!file || renderedPages.length === 0 ? (
         <div onClick={() => fileRef.current?.click()}
           onDragOver={e => e.preventDefault()}
@@ -380,6 +401,24 @@ export default function ModifierPdfPage() {
 
           {/* Toolbar */}
           <div className="sticky top-16 z-30 bg-gray-950/95 backdrop-blur border border-gray-800 rounded-2xl p-3 mb-4 flex flex-wrap items-center gap-3">
+            {/* Toggle text overlay visibility */}
+            <button
+              onClick={() => setShowOverlays(v => !v)}
+              title={showOverlays ? "Masquer les zones de texte" : "Afficher les zones de texte"}
+              className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors ${
+                showOverlays
+                  ? "bg-blue-600/20 border-blue-500/50 text-blue-300"
+                  : "bg-gray-800 border-gray-700 text-gray-400"
+              }`}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              {showOverlays ? "Texte visible" : "Texte caché"}
+            </button>
+
+            <div className="w-px h-5 bg-gray-700" />
+
             <div className="flex items-center gap-1.5">
               <span className="text-xs text-gray-500">Taille</span>
               <select value={fontSize} onChange={e => setFontSize(Number(e.target.value))}
@@ -415,7 +454,7 @@ export default function ModifierPdfPage() {
             <div className="ml-auto flex items-center gap-2">
               {extChanges > 0 && (
                 <span className="text-xs text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-1 rounded-lg">
-                  {extChanges} modif. texte
+                  {extChanges} modif.
                 </span>
               )}
               <button onClick={() => { setFile(null); setRenderedPages([]); setTextBoxes([]); setImageBoxes([]); setExtractedTexts([]); }}
@@ -429,39 +468,35 @@ export default function ModifierPdfPage() {
             </div>
           </div>
 
-          {/* Legend */}
-          <div className="flex flex-wrap gap-3 mb-4 text-xs">
-            <span className="text-gray-500 flex items-center gap-1.5">
-              <span className="inline-block w-3 h-3 rounded border border-blue-400/50 bg-blue-500/5" />
-              Survole le texte du PDF pour le sélectionner
-            </span>
-            <span className="text-gray-500 flex items-center gap-1.5">
-              <span className="inline-block w-3 h-3 rounded bg-amber-200/80 border border-amber-400/40" />
-              Texte modifié
-            </span>
-            <span className="text-gray-500 flex items-center gap-1.5">
-              <span className="inline-block w-3 h-3 rounded bg-red-500/20 border border-red-500/40 border-dashed" />
-              Texte supprimé
-            </span>
-            <span className="text-gray-500">· Clique sur zone vide → nouveau texte</span>
-          </div>
+          {showOverlays && (
+            <div className="mb-4 p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl text-xs text-blue-300 flex items-start gap-2">
+              <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span>
+                Les <strong>zones bleues</strong> sont les textes du PDF — clique dessus pour les modifier ou supprimer.
+                Clique sur une <strong>zone vide</strong> pour ajouter du nouveau texte.
+              </span>
+            </div>
+          )}
 
-          {/* Pages */}
+          {/* Pages — canvas is sized to fit container, no CSS scaling */}
           <div className="space-y-6">
             {renderedPages.map((pd, pageIndex) => (
               <div key={pageIndex} className="flex flex-col items-center">
                 <p className="text-xs text-gray-600 mb-2">Page {pageIndex + 1}</p>
+                {/* No maxWidth needed — canvas already fits */}
                 <div
                   className="relative shadow-2xl rounded overflow-hidden select-none"
-                  style={{ width: pd.width, maxWidth: "100%", cursor: "crosshair" }}
+                  style={{ width: pd.width, cursor: "crosshair" }}
                   onClick={e => handlePageClick(e, pageIndex)}
                 >
-                  {/* PDF background */}
+                  {/* PDF image — exact canvas size, no CSS scaling */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={pd.dataUrl} alt={`Page ${pageIndex + 1}`} className="w-full block" draggable={false} />
+                  <img src={pd.dataUrl} alt={`Page ${pageIndex + 1}`} style={{ width: pd.width, height: pd.height, display: "block" }} draggable={false} />
 
                   {/* ── Extracted text overlays ── */}
-                  {extractedTexts.filter(et => et.pageIndex === pageIndex).map(et => {
+                  {showOverlays && extractedTexts.filter(et => et.pageIndex === pageIndex).map(et => {
                     const isEditing = editingExtId === et.id;
                     return (
                       <div
@@ -470,25 +505,39 @@ export default function ModifierPdfPage() {
                         style={{ left: et.x, top: et.y, width: et.width, height: et.height, zIndex: isEditing ? 25 : 5 }}
                         onClick={e => { e.stopPropagation(); if (!et.isDeleted) startEditExt(et.id); }}
                       >
-                        {/* Normal: transparent, hover shows outline */}
+                        {/* Default: light blue tint so zones are visible */}
                         {!isEditing && !et.isEdited && !et.isDeleted && (
-                          <div className="w-full h-full rounded cursor-text transition-all hover:ring-1 hover:ring-blue-400/60 hover:bg-blue-500/5" />
+                          <div
+                            className="w-full h-full rounded cursor-text transition-all"
+                            style={{
+                              background: "rgba(59,130,246,0.08)",
+                              border: "1px solid rgba(59,130,246,0.25)",
+                            }}
+                            onMouseEnter={e => {
+                              (e.currentTarget as HTMLElement).style.background = "rgba(59,130,246,0.18)";
+                              (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.6)";
+                            }}
+                            onMouseLeave={e => {
+                              (e.currentTarget as HTMLElement).style.background = "rgba(59,130,246,0.08)";
+                              (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.25)";
+                            }}
+                          />
                         )}
 
                         {/* Deleted */}
                         {et.isDeleted && (
                           <div className="w-full h-full flex items-center justify-center cursor-pointer"
-                            style={{ background: "rgba(239,68,68,0.15)", border: "1px dashed rgba(239,68,68,0.6)", borderRadius: 2 }}
+                            style={{ background: "rgba(239,68,68,0.2)", border: "1px dashed rgba(239,68,68,0.7)", borderRadius: 2 }}
                             onClick={e => { e.stopPropagation(); restoreExtText(et.id); }}
                             title="Cliquer pour restaurer">
-                            <span style={{ fontSize: 9, color: "rgba(239,68,68,0.9)", fontWeight: 600 }}>↩</span>
+                            <span style={{ fontSize: 10, color: "#ef4444", fontWeight: 700 }}>SUPPRIMÉ — ↩</span>
                           </div>
                         )}
 
-                        {/* Edited (confirmed) — covers original text */}
+                        {/* Edited (covers original, shows new text) */}
                         {et.isEdited && !et.isDeleted && !isEditing && (
                           <div className="w-full h-full cursor-text overflow-hidden"
-                            style={{ background: "rgb(255,253,200)", border: "1px solid rgba(234,179,8,0.5)", borderRadius: 2, display: "flex", alignItems: "center" }}>
+                            style={{ background: "rgb(255,253,200)", border: "1px solid rgba(234,179,8,0.6)", borderRadius: 2, display: "flex", alignItems: "center" }}>
                             <span style={{ fontSize: et.height * 0.6, fontFamily: "Helvetica, Arial, sans-serif", color: "#000", paddingLeft: 2, whiteSpace: "nowrap" }}>
                               {et.editedText}
                             </span>
@@ -509,34 +558,35 @@ export default function ModifierPdfPage() {
                               onClick={e => e.stopPropagation()}
                               style={{
                                 width: "100%", height: "100%", boxSizing: "border-box",
-                                fontSize: et.height * 0.6,
+                                fontSize: et.height * 0.62,
                                 fontFamily: "Helvetica, Arial, sans-serif",
                                 color: "#000", background: "white",
                                 border: "2px solid #3b82f6", borderRadius: 2,
-                                padding: "1px 3px", outline: "none",
+                                padding: "1px 4px", outline: "none",
                               }}
                             />
                             {/* Mini toolbar */}
                             <div
                               style={{
-                                position: "absolute", top: -28, left: 0,
+                                position: "absolute", top: -30, left: 0,
                                 display: "flex", gap: 3, alignItems: "center",
                                 background: "#1e293b", border: "1px solid #334155",
-                                borderRadius: 6, padding: "3px 6px", whiteSpace: "nowrap", zIndex: 30,
+                                borderRadius: 6, padding: "4px 8px", whiteSpace: "nowrap", zIndex: 30,
+                                boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
                               }}
                               onClick={e => e.stopPropagation()}
                             >
                               <button onClick={() => confirmEditExt(et.id)}
-                                style={{ background: "#22c55e", color: "white", border: "none", borderRadius: 4, padding: "2px 7px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
+                                style={{ background: "#22c55e", color: "white", border: "none", borderRadius: 4, padding: "3px 8px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
                                 ✓ OK
                               </button>
                               <button onClick={() => cancelEditExt(et.id)}
-                                style={{ background: "#475569", color: "white", border: "none", borderRadius: 4, padding: "2px 7px", fontSize: 11, cursor: "pointer" }}>
-                                ↩
+                                style={{ background: "#475569", color: "white", border: "none", borderRadius: 4, padding: "3px 8px", fontSize: 11, cursor: "pointer" }}>
+                                ↩ Annuler
                               </button>
                               <button onClick={() => deleteExtText(et.id)}
-                                style={{ background: "#ef4444", color: "white", border: "none", borderRadius: 4, padding: "2px 7px", fontSize: 11, cursor: "pointer" }}>
-                                🗑
+                                style={{ background: "#ef4444", color: "white", border: "none", borderRadius: 4, padding: "3px 8px", fontSize: 11, cursor: "pointer" }}>
+                                🗑 Supprimer
                               </button>
                             </div>
                           </>
@@ -552,14 +602,14 @@ export default function ModifierPdfPage() {
                       onClick={e => e.stopPropagation()}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={imgBox.dataUrl} alt="insérée" className="w-full h-full object-fill block" draggable={false} />
-                      <div className="absolute -top-5 left-0 cursor-grab bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
+                      <div className="absolute -top-5 left-0 cursor-grab bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                         onMouseDown={e => onDragStart(e, imgBox.id, "image")}>⠿</div>
                       <button onClick={e => deleteImageBox(e, imgBox.id)}
                         className="absolute -top-5 -right-1 bg-red-600 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">×</button>
                       <div className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity"
                         style={{ background: "rgba(139,92,246,0.8)", borderRadius: "3px 0 4px 0" }}
                         onMouseDown={e => onResizeStart(e, imgBox.id)} />
-                      <div className="absolute inset-0 border-2 border-transparent group-hover:border-purple-400/60 rounded pointer-events-none transition-colors" />
+                      <div className="absolute inset-0 border-2 border-transparent group-hover:border-purple-400/60 rounded pointer-events-none" />
                     </div>
                   ))}
 

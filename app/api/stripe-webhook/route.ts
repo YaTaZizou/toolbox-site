@@ -19,7 +19,7 @@ async function setPremium(supabaseId: string, active: boolean, periodEnd?: numbe
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
-  await supabase
+  const { error } = await supabase
     .from("profiles")
     .update({
       is_subscribed: active,
@@ -28,6 +28,9 @@ async function setPremium(supabaseId: string, active: boolean, periodEnd?: numbe
         : null,
     })
     .eq("id", supabaseId);
+
+  // Si Supabase plante, on throw pour forcer le retry Stripe
+  if (error) throw new Error(`Supabase update failed: ${error.message}`);
 }
 
 export async function POST(req: NextRequest) {
@@ -102,16 +105,19 @@ export async function POST(req: NextRequest) {
       if (supabaseId) await setPremium(supabaseId, false);
     }
 
+    // ── Échec de paiement : on NE révoque PAS immédiatement ─────────────────
+    // Stripe réessaie automatiquement (dunning). L'accès sera coupé seulement
+    // si customer.subscription.updated passe en "canceled" ou "unpaid".
+    // invoice.payment_failed est loggué uniquement pour debug.
     if (event.type === "invoice.payment_failed") {
       const invoice = event.data.object as Stripe.Invoice;
       const customerId = (invoice as unknown as { customer: string }).customer;
-      const supabaseId = await getSupabaseId(customerId);
-      if (supabaseId) await setPremium(supabaseId, false);
+      console.warn(`Paiement échoué pour customer ${customerId} — Stripe va réessayer automatiquement.`);
     }
   } catch (err) {
     console.error("Erreur traitement webhook:", err);
-    // On retourne quand même 200 pour que Stripe ne reessaie pas
-    return NextResponse.json({ received: true, error: "Traitement partiel" });
+    // On retourne 500 pour que Stripe réessaie l'événement (ex: si Supabase plante)
+    return NextResponse.json({ error: "Erreur interne, retry requis" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

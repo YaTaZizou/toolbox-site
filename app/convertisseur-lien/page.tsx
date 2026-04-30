@@ -3,16 +3,76 @@
 import { useState } from "react";
 import Link from "next/link";
 
+// ── Logos SVG des plateformes ──────────────────────────────────────────────
+function YouTubeLogo() {
+  return (
+    <svg width="28" height="20" viewBox="0 0 28 20" fill="none">
+      <rect width="28" height="20" rx="4" fill="#FF0000"/>
+      <polygon points="11,5 11,15 20,10" fill="white"/>
+    </svg>
+  );
+}
+function TikTokLogo() {
+  return (
+    <svg width="22" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.19 8.19 0 0 0 4.79 1.52V6.76a4.85 4.85 0 0 1-1.02-.07z" fill="white"/>
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.19 8.19 0 0 0 4.79 1.52V6.76a4.85 4.85 0 0 1-1.02-.07z" fill="#69C9D0" fillOpacity="0.5"/>
+    </svg>
+  );
+}
+function InstagramLogo() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <defs>
+        <radialGradient id="ig1" cx="30%" cy="107%" r="150%">
+          <stop offset="0%" stopColor="#fdf497"/>
+          <stop offset="5%" stopColor="#fdf497"/>
+          <stop offset="45%" stopColor="#fd5949"/>
+          <stop offset="60%" stopColor="#d6249f"/>
+          <stop offset="90%" stopColor="#285AEB"/>
+        </radialGradient>
+      </defs>
+      <rect width="24" height="24" rx="6" fill="url(#ig1)"/>
+      <circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="1.8" fill="none"/>
+      <circle cx="17.5" cy="6.5" r="1.2" fill="white"/>
+    </svg>
+  );
+}
+function XLogo() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" rx="6" fill="#000"/>
+      <path d="M18 4h-2.6l-3.4 4.7L8.6 4H4l5.8 8L4 20h2.6l3.7-5.1L14.2 20H19l-6-8.3L18 4z" fill="white"/>
+    </svg>
+  );
+}
+function SoundCloudLogo() {
+  return (
+    <svg width="28" height="18" viewBox="0 0 50 32" fill="none">
+      <rect width="50" height="32" rx="5" fill="#FF5500"/>
+      <path d="M6 20c0-1.1.5-2 1.3-2.6C7.1 17 7 16.5 7 16c0-2.2 1.8-4 4-4 .3 0 .6 0 .9.1C12.5 10.3 14.6 9 17 9c3.3 0 6 2.7 6 6v.1c1.1.5 2 1.6 2 2.9 0 1.7-1.3 3-3 3H8c-1.1 0-2-.9-2-2z" fill="white"/>
+    </svg>
+  );
+}
+function GlobeLogo() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
+  );
+}
+
 // ── Détection de plateforme ────────────────────────────────────────────────
 type Platform = "youtube" | "tiktok" | "instagram" | "twitter" | "soundcloud" | "other";
 
-const PLATFORMS: Record<Platform, { label: string; emoji: string; color: string; examples: string }> = {
-  youtube:    { label: "YouTube",    emoji: "▶️",  color: "text-red-400",    examples: "youtube.com/watch, youtu.be" },
-  tiktok:     { label: "TikTok",     emoji: "🎵",  color: "text-pink-400",   examples: "tiktok.com, vm.tiktok.com" },
-  instagram:  { label: "Instagram",  emoji: "📸",  color: "text-purple-400", examples: "instagram.com/p, /reel" },
-  twitter:    { label: "X (Twitter)",emoji: "🐦",  color: "text-sky-400",    examples: "x.com, twitter.com" },
-  soundcloud: { label: "SoundCloud", emoji: "🎧",  color: "text-orange-400", examples: "soundcloud.com" },
-  other:      { label: "Autre",      emoji: "🌐",  color: "text-gray-400",   examples: "Reddit, Twitch, Vimeo..." },
+const PLATFORMS: Record<Platform, { label: string; icon: React.ReactNode; color: string; examples: string }> = {
+  youtube:    { label: "YouTube",    icon: <YouTubeLogo />,    color: "text-red-400",    examples: "youtube.com/watch, youtu.be" },
+  tiktok:     { label: "TikTok",     icon: <TikTokLogo />,    color: "text-pink-300",   examples: "tiktok.com, vm.tiktok.com" },
+  instagram:  { label: "Instagram",  icon: <InstagramLogo />, color: "text-fuchsia-400", examples: "instagram.com/p, /reel" },
+  twitter:    { label: "X (Twitter)",icon: <XLogo />,         color: "text-gray-200",   examples: "x.com, twitter.com" },
+  soundcloud: { label: "SoundCloud", icon: <SoundCloudLogo />,color: "text-orange-400", examples: "soundcloud.com" },
+  other:      { label: "Autre",      icon: <GlobeLogo />,     color: "text-gray-400",   examples: "Reddit, Twitch, Vimeo..." },
 };
 
 function detectPlatform(url: string): Platform {
@@ -101,10 +161,10 @@ export default function ConvertisseurLienPage() {
         {(Object.entries(PLATFORMS) as [Platform, typeof PLATFORMS[Platform]][]).map(([key, val]) => (
           <div
             key={key}
-            className="bg-gray-900 border border-gray-800 rounded-xl p-3 text-center"
+            className="bg-gray-900 border border-gray-800 rounded-xl p-3 text-center flex flex-col items-center gap-1.5"
             title={val.examples}
           >
-            <p className="text-xl mb-1">{val.emoji}</p>
+            <div className="flex items-center justify-center h-7">{val.icon}</div>
             <p className={`text-xs font-medium ${val.color}`}>{val.label}</p>
           </div>
         ))}
@@ -127,7 +187,7 @@ export default function ConvertisseurLienPage() {
             {/* Badge plateforme détectée */}
             {p && (
               <div className={`absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs font-semibold ${p.color}`}>
-                <span>{p.emoji}</span>
+                <span className="flex items-center">{p.icon}</span>
                 <span className="hidden sm:inline">{p.label}</span>
               </div>
             )}

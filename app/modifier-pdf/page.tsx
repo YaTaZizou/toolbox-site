@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 
-const RENDER_SCALE = 1.5;
+const RENDER_SCALE = 2.5;
 const FONT_SIZES = [10, 12, 14, 16, 18, 24, 32, 48];
 const COLORS = [
   { hex: "#000000", label: "Noir" },
@@ -80,7 +80,7 @@ export default function ModifierPdfPage() {
         const ctx = canvas.getContext("2d")!;
         await page.render({ canvasContext: ctx, viewport: vp, canvas }).promise;
         const pageData: PageData = {
-          dataUrl: canvas.toDataURL("image/jpeg", 0.92),
+          dataUrl: canvas.toDataURL("image/png"),
           width: vp.width, height: vp.height,
           pdfWidth: vp.width / RENDER_SCALE,
           pdfHeight: vp.height / RENDER_SCALE,

@@ -126,9 +126,9 @@ export default function ModifierPdfPage() {
             id: `et_${pageIndex}_${idx}`,
             pageIndex,
             x: canvasX,
-            y: canvasBaseline - canvasFontSize * 1.1,
+            y: canvasBaseline - canvasFontSize * 1.3,  // more room above baseline
             width: Math.max(pdfWidth * scale, 20),
-            height: canvasFontSize * 1.4,
+            height: canvasFontSize * 1.7,              // taller to cover ascenders+descenders
             pdfX, pdfY, pdfWidth, pdfFontSize,
             originalText: item.str,
             editedText: item.str,
@@ -264,15 +264,26 @@ export default function ModifierPdfPage() {
       for (const et of extractedTexts) {
         if (!et.isEdited && !et.isDeleted) continue;
         const pg = pdfPages[et.pageIndex];
-        // White-out original
+        const pd = renderedPages[et.pageIndex];
+
+        // Derive white-out bounds from the overlay the user saw on screen.
+        // Convert canvas pixels → PDF user units (y=0 at bottom in PDF).
+        // canvas_y → pdf_y = pdfHeight - canvas_y / scale
+        const PAD = et.pdfFontSize * 0.4; // generous padding in PDF units
+        const rectLeft   = (et.x / pd.scale) - PAD;
+        const rectBottom = pd.pdfHeight - ((et.y + et.height) / pd.scale) - PAD;
+        const rectWidth  = (et.width  / pd.scale) + PAD * 2;
+        const rectHeight = (et.height / pd.scale) + PAD * 2;
+
         pg.drawRectangle({
-          x: et.pdfX - 1,
-          y: et.pdfY - et.pdfFontSize * 0.3,
-          width: et.pdfWidth + 2,
-          height: et.pdfFontSize * 1.5,
+          x: rectLeft,
+          y: rectBottom,
+          width: rectWidth,
+          height: rectHeight,
           color: rgb(1, 1, 1),
           borderWidth: 0,
         });
+
         if (!et.isDeleted && et.editedText.trim()) {
           pg.drawText(et.editedText, {
             x: et.pdfX, y: et.pdfY,
@@ -469,14 +480,25 @@ export default function ModifierPdfPage() {
           </div>
 
           {showOverlays && (
-            <div className="mb-4 p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl text-xs text-blue-300 flex items-start gap-2">
-              <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              <span>
-                Les <strong>zones bleues</strong> sont les textes du PDF — clique dessus pour les modifier ou supprimer.
-                Clique sur une <strong>zone vide</strong> pour ajouter du nouveau texte.
-              </span>
+            <div className="mb-4 space-y-2">
+              <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl text-xs text-blue-300 flex items-start gap-2">
+                <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>
+                  Les <strong>zones bleues</strong> sont les textes du PDF — clique pour modifier ou supprimer.
+                  Clique sur une <strong>zone vide</strong> pour ajouter du texte.
+                </span>
+              </div>
+              <div className="p-3 bg-amber-500/5 border border-amber-500/20 rounded-xl text-xs text-amber-300 flex items-start gap-2">
+                <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <span>
+                  La <strong>police d&apos;écriture changera</strong> pour le texte modifié (Helvetica remplace la police originale).
+                  La <strong>suppression</strong> fonctionne parfaitement.
+                </span>
+              </div>
             </div>
           )}
 

@@ -266,20 +266,17 @@ export default function ModifierPdfPage() {
         const pg = pdfPages[et.pageIndex];
         const pd = renderedPages[et.pageIndex];
 
-        // Derive white-out bounds from the overlay the user saw on screen.
-        // Convert canvas pixels → PDF user units (y=0 at bottom in PDF).
-        // canvas_y → pdf_y = pdfHeight - canvas_y / scale
-        const PAD = et.pdfFontSize * 0.4; // generous padding in PDF units
-        const rectLeft   = (et.x / pd.scale) - PAD;
-        const rectBottom = pd.pdfHeight - ((et.y + et.height) / pd.scale) - PAD;
-        const rectWidth  = (et.width  / pd.scale) + PAD * 2;
-        const rectHeight = (et.height / pd.scale) + PAD * 2;
+        // White-out: use the PDF text's own coordinates (pdfX/pdfY/pdfWidth/pdfFontSize)
+        // for a tight, accurate cover. pdfY is the text baseline (PDF bottom-left origin).
+        const DESCEND = et.pdfFontSize * 0.22; // below baseline (descenders: g, p, y…)
+        const ASCEND  = et.pdfFontSize * 0.92; // above baseline (capitals + accents)
+        const H_PAD   = Math.min(2, et.pdfFontSize * 0.08); // tiny horizontal pad
 
         pg.drawRectangle({
-          x: rectLeft,
-          y: rectBottom,
-          width: rectWidth,
-          height: rectHeight,
+          x: et.pdfX - H_PAD,
+          y: et.pdfY - DESCEND,
+          width: et.pdfWidth + H_PAD * 2,
+          height: DESCEND + ASCEND,
           color: rgb(1, 1, 1),
           borderWidth: 0,
         });
@@ -527,21 +524,21 @@ export default function ModifierPdfPage() {
                         style={{ left: et.x, top: et.y, width: et.width, height: et.height, zIndex: isEditing ? 25 : 5 }}
                         onClick={e => { e.stopPropagation(); if (!et.isDeleted) startEditExt(et.id); }}
                       >
-                        {/* Default: light blue tint so zones are visible */}
+                        {/* Default: transparent — only shows border on hover */}
                         {!isEditing && !et.isEdited && !et.isDeleted && (
                           <div
                             className="w-full h-full rounded cursor-text transition-all"
                             style={{
-                              background: "rgba(59,130,246,0.08)",
-                              border: "1px solid rgba(59,130,246,0.25)",
+                              background: "transparent",
+                              border: "1px solid transparent",
                             }}
                             onMouseEnter={e => {
-                              (e.currentTarget as HTMLElement).style.background = "rgba(59,130,246,0.18)";
-                              (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.6)";
+                              (e.currentTarget as HTMLElement).style.background = "rgba(59,130,246,0.1)";
+                              (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.5)";
                             }}
                             onMouseLeave={e => {
-                              (e.currentTarget as HTMLElement).style.background = "rgba(59,130,246,0.08)";
-                              (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.25)";
+                              (e.currentTarget as HTMLElement).style.background = "transparent";
+                              (e.currentTarget as HTMLElement).style.borderColor = "transparent";
                             }}
                           />
                         )}

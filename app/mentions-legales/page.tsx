@@ -10,7 +10,7 @@ export default function MentionsLegales() {
           <ul className="mt-3 space-y-1 text-gray-400">
             <li><span className="text-gray-300">Nom :</span> Elias Benabdelkader</li>
             <li><span className="text-gray-300">Ville :</span> Arpajon, 91290</li>
-            <li><span className="text-gray-300">Email :</span> yatazcontact@gmail.com</li>
+            <li><span className="text-gray-300">Email :</span> contact@alltoolbox.fr</li>
           </ul>
         </section>
 

@@ -63,7 +63,7 @@ export default function Conditions() {
 
         <section>
           <h2 className="text-xl font-semibold text-white mb-3">9. Contact</h2>
-          <p>Pour toute question relative aux présentes conditions, contactez-nous à : <span className="text-purple-400">yatazcontact@gmail.com</span></p>
+          <p>Pour toute question relative aux présentes conditions, contactez-nous à : <span className="text-purple-400">contact@alltoolbox.fr</span></p>
         </section>
 
         <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : avril 2026</p>

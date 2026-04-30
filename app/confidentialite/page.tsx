@@ -61,7 +61,7 @@ export default function Confidentialite() {
             <li>Droit à la portabilité</li>
             <li>Droit d'opposition au traitement</li>
           </ul>
-          <p className="mt-3">Pour exercer ces droits, contactez-nous à : <span className="text-purple-400">yatazcontact@gmail.com</span></p>
+          <p className="mt-3">Pour exercer ces droits, contactez-nous à : <span className="text-purple-400">contact@alltoolbox.fr</span></p>
         </section>
 
         <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : avril 2026</p>

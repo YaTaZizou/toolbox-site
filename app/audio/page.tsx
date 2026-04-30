@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
@@ -246,6 +247,8 @@ export default function AudioPage() {
         <p className="font-medium text-gray-400 mb-1">ℹ️ Traitement 100% local</p>
         <p>Ton audio ne quitte jamais ton appareil. La conversion se fait dans ton navigateur via FFmpeg WebAssembly.</p>
       </div>
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

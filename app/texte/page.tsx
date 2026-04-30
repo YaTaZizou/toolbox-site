@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
+import { AdBanner } from "@/components/AdBanner";
 
 const types = [
   { label: "Post réseaux sociaux", value: "post" },
@@ -128,6 +129,8 @@ export default function TextePage() {
           </button>
         </div>
       )}
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

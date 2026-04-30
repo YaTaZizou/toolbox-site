@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
+import { AdBanner } from "@/components/AdBanner";
 
 export default function PseudoPage() {
   const [input, setInput] = useState("");
@@ -91,6 +92,8 @@ export default function PseudoPage() {
           </button>
         </div>
       )}
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

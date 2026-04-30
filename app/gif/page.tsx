@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 export default function GifPage() {
   const [files, setFiles] = useState<File[]>([]);
@@ -221,6 +222,8 @@ export default function GifPage() {
           </button>
         </div>
       )}
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

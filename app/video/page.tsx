@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
@@ -266,6 +267,8 @@ export default function VideoPage() {
         <p className="font-medium text-gray-400 mb-1">ℹ️ Traitement 100% local</p>
         <p>Ta vidéo ne quitte jamais ton appareil. La conversion se fait entièrement dans ton navigateur grâce à FFmpeg WebAssembly. Le premier chargement peut prendre quelques secondes.</p>
       </div>
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

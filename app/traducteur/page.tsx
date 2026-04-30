@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
+import { AdBanner } from "@/components/AdBanner";
 
 const LANGUAGES = [
   "Français", "English", "Español", "Deutsch", "Italiano",
@@ -136,6 +137,8 @@ export default function TraducteurPage() {
       </div>
 
       {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl px-4 py-3 mt-4 text-sm">{error}</div>}
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

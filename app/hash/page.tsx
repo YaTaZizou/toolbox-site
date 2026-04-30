@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 // Compact MD5 implementation (pure JS, no dependencies)
 function md5(input: string): string {
@@ -227,6 +228,8 @@ export default function HashPage() {
           Utilisez SHA-256 ou SHA-512 pour les usages sensibles. Le hachage est unidirectionnel — impossible de retrouver le texte original.
         </p>
       </div>
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

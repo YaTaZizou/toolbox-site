@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 const MAX_SIZE_MB = 50;
 
@@ -356,6 +357,8 @@ export default function CompresserPdfPage() {
           Ton PDF ne quitte jamais ton appareil. Toute la compression se fait directement dans ton navigateur.
         </p>
       </div>
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 function hslToHex(h: number, s: number, l: number): string {
   s /= 100; l /= 100;
@@ -145,6 +146,8 @@ export default function CouleursPage() {
           </div>
         ))}
       </div>
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

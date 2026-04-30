@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
+import { AdBanner } from "@/components/AdBanner";
 
 interface DictResult {
   word: string;
@@ -154,6 +155,8 @@ export default function DictionnairePage() {
           </div>
         </div>
       )}
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

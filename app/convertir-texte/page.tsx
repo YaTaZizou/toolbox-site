@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 const CONVERSIONS = [
   { label: "MAJUSCULES", fn: (t: string) => t.toUpperCase() },
@@ -80,6 +81,8 @@ export default function ConvertirTextePage() {
           <p className="text-white text-sm break-all whitespace-pre-wrap">{output}</p>
         </div>
       )}
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

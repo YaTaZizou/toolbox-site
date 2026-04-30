@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 type Category = { label: string; emoji: string; units: { label: string; factor: number }[] };
 
@@ -142,6 +143,8 @@ export default function UnitesPage() {
           )
         ))}
       </div>
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

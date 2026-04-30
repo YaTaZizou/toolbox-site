@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 
 type Position = "top-left" | "top-center" | "top-right" | "center" | "bottom-left" | "bottom-center" | "bottom-right" | "tile";
 
@@ -217,6 +218,8 @@ export default function FiligranePage() {
 
       {/* Hidden canvas */}
       <canvas ref={canvasRef} className="hidden" />
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

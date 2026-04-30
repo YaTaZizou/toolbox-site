@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/AdBanner";
 import QRCode from "qrcode";
 
 const colors = ["#ffffff", "#a855f7", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
@@ -102,6 +103,8 @@ export default function QRCodePage() {
       )}
 
       <canvas ref={canvasRef} className="hidden" />
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

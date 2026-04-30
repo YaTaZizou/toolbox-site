@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
+import { AdBanner } from "@/components/AdBanner";
 
 const platforms = ["Instagram", "TikTok", "Twitter/X", "LinkedIn", "YouTube", "Twitch"];
 
@@ -125,6 +126,8 @@ export default function BioPage() {
           </button>
         </div>
       )}
+      <div className="mt-8" />
+      <AdBanner />
     </div>
   );
 }

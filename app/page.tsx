@@ -492,7 +492,7 @@ export default function Home() {
                 >
                   {cat.tools.map((tool, toolIdx) =>
                     tool.available ? (
-                      <Link key={tool.href + tool.title} href={tool.href} style={{ textDecoration: "none" }}>
+                      <Link key={tool.href + tool.title} href={tool.href} style={{ textDecoration: "none", display: "flex", height: "100%" }}>
                         <div
                           className="tool-card animate-fade-in-up"
                           style={{
@@ -505,6 +505,7 @@ export default function Home() {
                             display: "flex",
                             flexDirection: "column",
                             minHeight: 144,
+                            flex: 1,
                             transition: "transform .15s ease, border-color .15s, background .15s",
                             animationDelay: `${catIdx * 80 + toolIdx * 40 + 350}ms`,
                           }}

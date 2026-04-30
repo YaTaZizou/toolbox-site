@@ -31,32 +31,53 @@ export function AiLimitBanner({ remaining, isPremium, limit }: Props) {
 
   if (isPremium) return null;
 
-  // ── Limite atteinte ────────────────────────────────────────────────────
+  // ── Limite atteinte → modale plein écran ──────────────────────────────
   if (remaining === 0) {
     return (
-      <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-2xl p-5 mb-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl">⭐</span>
-              <p className="text-white font-bold">Limite journalière atteinte</p>
-            </div>
-            <p className="text-gray-400 text-sm mb-1">
-              Tu as utilisé tes {limit} générations gratuites d&apos;aujourd&apos;hui.
-            </p>
-            <p className="text-gray-600 text-xs flex items-center gap-1">
-              <span>🕐</span>
-              Réinitialisation dans{" "}
-              <span className="text-gray-400 font-semibold">{timeLeft}</span>
-              {" "}— ou passe Premium pour un accès illimité dès maintenant.
-            </p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
+      >
+        <div className="w-full max-w-md rounded-2xl p-8 text-center"
+          style={{ background: "var(--panel)", border: "1px solid rgba(250,204,21,0.25)" }}
+        >
+          {/* Icon */}
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center text-3xl"
+            style={{ background: "rgba(250,204,21,0.1)", border: "1px solid rgba(250,204,21,0.2)" }}
+          >
+            ⭐
           </div>
+
+          <h2 className="text-xl font-bold text-white mb-2">Limite journalière atteinte</h2>
+          <p className="text-sm mb-1" style={{ color: "var(--text-2)" }}>
+            Tu as utilisé tes <strong className="text-white">{limit} générations</strong> gratuites d&apos;aujourd&apos;hui.
+          </p>
+          <p className="text-xs mb-6 flex items-center justify-center gap-1" style={{ color: "var(--text-3)" }}>
+            🕐 Réinitialisation dans <span className="font-semibold" style={{ color: "var(--text-2)" }}>{timeLeft}</span>
+          </p>
+
+          {/* CTA Principal */}
           <Link
             href="/premium"
-            className="shrink-0 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-5 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap"
+            className="block w-full font-bold py-3.5 rounded-xl text-sm mb-3 transition-colors"
+            style={{ background: "#facc15", color: "#000" }}
           >
             ⭐ Passer Premium — 2,99€/mois
           </Link>
+
+          {/* Avantages */}
+          <ul className="text-xs text-left space-y-1.5 mb-5" style={{ color: "var(--text-3)" }}>
+            {["Générations IA illimitées", "Zéro publicité", "Accès prioritaire aux nouveaux outils", "Garanti 7 jours — remboursé si insatisfait"].map(item => (
+              <li key={item} className="flex items-center gap-2">
+                <span style={{ color: "#4ade80" }}>✓</span> {item}
+              </li>
+            ))}
+          </ul>
+
+          {/* Option secondaire */}
+          <p className="text-xs" style={{ color: "var(--text-3)" }}>
+            Ou attends la réinitialisation dans{" "}
+            <span className="font-semibold" style={{ color: "var(--text-2)" }}>{timeLeft}</span>
+          </p>
         </div>
       </div>
     );

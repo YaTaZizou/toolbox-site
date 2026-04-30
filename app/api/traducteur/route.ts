@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Traduis ce texte depuis ${source} vers ${to}. Réponds UNIQUEMENT avec la traduction, sans explication ni commentaire :\n\n${text}`,
+          content: `Traduis ce texte depuis ${source} vers ${safeTo}. Réponds UNIQUEMENT avec la traduction, sans explication ni commentaire :\n\n${text}`,
         },
       ],
     });

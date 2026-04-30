@@ -266,7 +266,6 @@ export default function ModifierPdfPage() {
       for (const et of extractedTexts) {
         if (!et.isEdited && !et.isDeleted) continue;
         const pg = pdfPages[et.pageIndex];
-        const pd = renderedPages[et.pageIndex];
 
         // White-out: use the PDF text's own coordinates (pdfX/pdfY/pdfWidth/pdfFontSize)
         // for a tight, accurate cover. pdfY is the text baseline (PDF bottom-left origin).
@@ -296,9 +295,15 @@ export default function ModifierPdfPage() {
       for (const imgBox of imageBoxes) {
         const pg = pdfPages[imgBox.pageIndex];
         const pd = renderedPages[imgBox.pageIndex];
+        // Only PNG and JPEG are supported by pdf-lib — WebP/GIF must be rejected
+        const isPng = imgBox.dataUrl.startsWith("data:image/png");
+        const isJpeg = imgBox.dataUrl.startsWith("data:image/jpeg") || imgBox.dataUrl.startsWith("data:image/jpg");
+        if (!isPng && !isJpeg) {
+          throw new Error("Format d'image non supporté : utilise uniquement JPEG ou PNG (pas WebP ni GIF).");
+        }
         const resp = await fetch(imgBox.dataUrl);
         const bytes = await resp.arrayBuffer();
-        const embeddedImg = imgBox.dataUrl.startsWith("data:image/png")
+        const embeddedImg = isPng
           ? await pdfDoc.embedPng(bytes) : await pdfDoc.embedJpg(bytes);
         pg.drawImage(embeddedImg, {
           x: Math.max(0, imgBox.x / pd.scale),
@@ -410,7 +415,7 @@ export default function ModifierPdfPage() {
 
         /* ══════════════ ÉDITEUR ══════════════ */
         <div>
-          <input ref={imgFileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleImageFile} />
+          <input ref={imgFileRef} type="file" accept="image/jpeg,image/png" className="hidden" onChange={handleImageFile} />
 
           {/* Toolbar */}
           <div className="sticky top-16 z-30 bg-gray-950/95 backdrop-blur border border-gray-800 rounded-2xl p-3 mb-4 flex flex-wrap items-center gap-3">

@@ -64,7 +64,6 @@ export async function POST(req: NextRequest) {
         let periodEnd: number | undefined;
         if (typeof session.subscription === "string") {
           const sub = await stripe.subscriptions.retrieve(session.subscription);
-          // cast explicite pour accéder à current_period_end
           periodEnd = (sub as unknown as { current_period_end: number }).current_period_end;
         }
         await setPremium(supabaseId, true, periodEnd);
@@ -111,7 +110,7 @@ export async function POST(req: NextRequest) {
     // invoice.payment_failed est loggué uniquement pour debug.
     if (event.type === "invoice.payment_failed") {
       const invoice = event.data.object as Stripe.Invoice;
-      const customerId = (invoice as unknown as { customer: string }).customer;
+      const customerId = typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id ?? "";
       console.warn(`Paiement échoué pour customer ${customerId} — Stripe va réessayer automatiquement.`);
     }
   } catch (err) {

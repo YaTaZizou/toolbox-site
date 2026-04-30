@@ -9,20 +9,25 @@ function stripMarkdown(text: string): string {
   return text.replace(/```(?:json)?\n?/g, "").replace(/```/g, "").trim();
 }
 
+// Sanitize user input: strip double-quotes to prevent prompt injection via quote-breaking
+function sanitizeInput(input: string): string {
+  return input.replace(/"/g, "'").replace(/`/g, "'").slice(0, 2000);
+}
+
 const prompts: Record<string, (input: string) => string> = {
   pseudo: (input) =>
-    `Génère 8 pseudos originaux et créatifs basés sur ce thème ou ces mots-clés : "${input}".
+    `Génère 8 pseudos originaux et créatifs basés sur ce thème ou ces mots-clés : "${sanitizeInput(input)}".
 Retourne UNIQUEMENT un tableau JSON valide, sans markdown, sans explication :
 ["pseudo1","pseudo2","pseudo3","pseudo4","pseudo5","pseudo6","pseudo7","pseudo8"]`,
 
   bio: (input) =>
     `Génère 3 bios différentes et percutantes pour un profil sur les réseaux sociaux.
-Informations fournies : "${input}"
+Informations fournies : "${sanitizeInput(input)}"
 Retourne UNIQUEMENT un tableau JSON valide, sans markdown, sans explication :
 ["bio1","bio2","bio3"]`,
 
   texte: (input) =>
-    `Tu es un assistant de rédaction expert. Génère un texte de qualité professionnelle basé sur cette demande : "${input}".
+    `Tu es un assistant de rédaction expert. Génère un texte de qualité professionnelle basé sur cette demande : "${sanitizeInput(input)}".
 Retourne UNIQUEMENT le texte final, sans introduction ni explication.`,
 };
 

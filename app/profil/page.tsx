@@ -88,7 +88,8 @@ export default function ProfilPage() {
     if (deleteConfirm !== "SUPPRIMER") return;
     setDeleteLoading(true);
     setDeleteError("");
-    await supabase.auth.signOut();
+    // Delete first — if signOut happens before the API call and the call fails,
+    // the user would be logged out but their account would still exist.
     const res = await fetch("/api/delete-account", { method: "DELETE" });
     if (!res.ok) {
       const data = await res.json();
@@ -96,6 +97,7 @@ export default function ProfilPage() {
       setDeleteLoading(false);
       return;
     }
+    await supabase.auth.signOut();
     router.push("/connexion");
   }
 

@@ -148,34 +148,46 @@ export default function Home() {
     <div className="max-w-6xl mx-auto px-4 py-16">
 
       {/* ── Hero ── */}
-      <div className="hero-glow text-center mb-10 relative">
-        <div className="animate-fade-in" style={{ animationDelay: "0ms" }}>
-          <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-purple-400 text-sm mb-6">
-            ⚡ {totalAvailable} outils disponibles gratuitement
+      <div className="relative text-center mb-14 overflow-hidden py-8">
+        {/* Glow background */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden -z-10">
+          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-purple-600/20 blur-[120px]" />
+        </div>
+
+        {/* Badge */}
+        <div className="animate-fade-in mb-6" style={{ animationDelay: "0ms" }}>
+          <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-sm text-purple-400">
+            <span className="h-2 w-2 rounded-full bg-purple-400 inline-block" />
+            {totalAvailable} outils disponibles gratuitement
           </div>
         </div>
 
+        {/* Headline */}
         <h1
-          className="text-5xl md:text-6xl font-black mb-3 gradient-text animate-fade-in-up"
+          className="text-5xl md:text-6xl font-black mb-5 animate-fade-in-up tracking-tight"
           style={{ animationDelay: "80ms" }}
         >
-          Tous vos outils<br className="hidden md:block" /> en un seul endroit.
+          <span className="gradient-text">Tous vos outils</span>
+          <br />
+          <span className="text-white">en un seul endroit.</span>
         </h1>
+
         <p
-          className="text-lg text-gray-400 max-w-xl mx-auto mb-8 animate-fade-in-up"
+          className="text-lg text-gray-400 max-w-2xl mx-auto mb-10 animate-fade-in-up leading-relaxed"
           style={{ animationDelay: "160ms" }}
         >
           PDF, IA, images, vidéo, texte — sans installation,
-          <br />sans inscription forcée, sans filigrane.
+          sans inscription forcée, sans filigrane.
         </p>
 
+        {/* CTAs */}
         <div
           className="flex flex-wrap justify-center gap-3 animate-fade-in-up"
           style={{ animationDelay: "240ms" }}
         >
           <Link
             href="/pdf"
-            className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm"
+            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-7 py-3 rounded-xl transition-all duration-200 text-sm shadow-lg shadow-purple-600/25 hover:shadow-purple-600/40 hover:-translate-y-0.5"
           >
             Essayer un outil →
           </Link>
@@ -184,17 +196,17 @@ export default function Home() {
 
         {/* Stats */}
         <div
-          className="flex flex-wrap justify-center gap-8 mt-12 animate-fade-in"
+          className="flex flex-wrap justify-center gap-10 mt-14 animate-fade-in"
           style={{ animationDelay: "320ms" }}
         >
           {[
-            { value: `${totalAvailable}`, label: "outils disponibles" },
+            { value: `${totalAvailable}+`, label: "outils disponibles" },
             { value: "100%", label: "en ligne, aucune install" },
             { value: "Gratuit", label: "sans inscription forcée" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
-              <p className="text-2xl font-black text-white">{stat.value}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
+              <p className="text-3xl font-black text-white">{stat.value}</p>
+              <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -230,16 +242,18 @@ export default function Home() {
                   tool.available ? (
                     <Link key={tool.href + tool.title} href={tool.href}>
                       <div
-                        className={`group bg-gray-900 border border-gray-800 rounded-xl p-4 h-full cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:-translate-y-0.5 ${cat.cardClass} animate-fade-in-up`}
+                        className={`group bg-gray-900/50 border border-gray-800/60 rounded-xl p-5 h-full cursor-pointer transition-all duration-300 hover:border-purple-500/40 hover:bg-gray-900 hover:-translate-y-1 hover:shadow-xl hover:shadow-purple-900/20 animate-fade-in-up`}
                         style={{ animationDelay: `${catIdx * 80 + toolIdx * 40 + 350}ms` }}
                       >
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-2xl">{tool.emoji}</span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${tool.badgeColor}`}>
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/10 text-2xl transition-colors group-hover:bg-purple-500/20">
+                            {tool.emoji}
+                          </div>
+                          <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${tool.badgeColor}`}>
                             {tool.badge}
                           </span>
                         </div>
-                        <h3 className="font-semibold text-white text-sm mb-1 group-hover:text-white transition-colors">
+                        <h3 className="font-semibold text-white text-sm mb-1.5 group-hover:text-purple-300 transition-colors">
                           {tool.title}
                         </h3>
                         <p className="text-gray-500 text-xs leading-relaxed">{tool.description}</p>
@@ -248,15 +262,17 @@ export default function Home() {
                   ) : (
                     <div
                       key={tool.href + tool.title}
-                      className="bg-gray-900/40 border border-gray-800/50 rounded-xl p-4 h-full opacity-40 cursor-not-allowed"
+                      className="bg-gray-900/20 border border-gray-800/30 rounded-xl p-5 h-full opacity-35 cursor-not-allowed"
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-2xl">{tool.emoji}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${tool.badgeColor}`}>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-800/50 text-2xl">
+                          {tool.emoji}
+                        </div>
+                        <span className={`text-xs px-2.5 py-1 rounded-full ${tool.badgeColor}`}>
                           {tool.badge}
                         </span>
                       </div>
-                      <h3 className="font-semibold text-gray-400 text-sm mb-1">{tool.title}</h3>
+                      <h3 className="font-semibold text-gray-400 text-sm mb-1.5">{tool.title}</h3>
                       <p className="text-gray-600 text-xs leading-relaxed">{tool.description}</p>
                     </div>
                   )

@@ -21,10 +21,11 @@ export default function DictionnairePage() {
   const [result, setResult] = useState<DictResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { canUse, increment, remaining, isPremium, status: aiStatus, ready, limit } = useAiLimit();
 
   async function search(e: React.FormEvent) {
     e.preventDefault();
-    if (!word.trim()) return;
+    if (!word.trim() || !canUse) return;
     setLoading(true);
     setError("");
     setResult(null);
@@ -37,6 +38,7 @@ export default function DictionnairePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+      increment();
       setResult(data);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Erreur lors de la recherche");
@@ -55,6 +57,8 @@ export default function DictionnairePage() {
         </div>
         <p className="text-gray-400">Définitions, exemples, synonymes et antonymes en un clic.</p>
       </div>
+
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={aiStatus} />}
 
       <div className="flex gap-2 mb-4">
         {["français", "anglais", "espagnol"].map((l) => (
@@ -80,7 +84,7 @@ export default function DictionnairePage() {
         />
         <button
           type="submit"
-          disabled={loading || !word.trim()}
+          disabled={loading || !word.trim() || !canUse}
           className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-semibold px-6 py-3 rounded-xl transition-colors flex-shrink-0"
         >
           {loading ? "..." : "🔍"}

@@ -43,7 +43,7 @@ export function PremiumGate({ children }: { children: React.ReactNode }) {
             href="/premium"
             className="block w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-xl transition-colors"
           >
-            ⭐ Passer Premium — 2,99€/mois
+            ⭐ Passer Premium — 3,99€/mois
           </Link>
           {isLoggedIn ? (
             // Connecté mais pas premium → aller directement payer

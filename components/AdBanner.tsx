@@ -33,7 +33,7 @@ export function AdBanner() {
         data-full-width-responsive="true"
       />
       <Link href="/premium" className="text-xs text-gray-600 hover:text-yellow-400 transition-colors mt-1 inline-block">
-        ⭐ Supprimer les pubs — 2,99€/mois
+        ⭐ Supprimer les pubs — 3,99€/mois
       </Link>
     </div>
   );
@@ -58,7 +58,7 @@ export function SidebarAd({ slot }: { slot: "left" | "right" }) {
         data-full-width-responsive="false"
       />
       <Link href="/premium" className="text-xs text-gray-700 hover:text-yellow-400 transition-colors text-center leading-tight">
-        ⭐ Sans pub<br />2,99€/mois
+        ⭐ Sans pub<br />3,99€/mois
       </Link>
     </div>
   );
@@ -124,7 +124,7 @@ export function AdBeforeDownload({ onContinue }: { onContinue: () => void }) {
           ⬇️ Télécharger maintenant
         </button>
         <Link href="/premium" className="text-xs text-gray-500 hover:text-yellow-400 transition-colors">
-          ⭐ Supprimer les pubs — 2,99€/mois
+          ⭐ Supprimer les pubs — 3,99€/mois
         </Link>
       </div>
     </div>

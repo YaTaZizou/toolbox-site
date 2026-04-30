@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState, Suspense, useMemo } from "react";
+import { createBrowserClient } from "@supabase/ssr";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -14,6 +14,15 @@ function InscriptionForm() {
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+
+  const supabase = useMemo(
+    () =>
+      createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      ),
+    []
+  );
 
   async function handleGoogleSignup() {
     await supabase.auth.signInWithOAuth({
@@ -38,7 +47,7 @@ function InscriptionForm() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth-callback` },
+      options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback` },
     });
 
     if (error) {

@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
 import { usePremiumStatus } from "@/components/PremiumProvider";
+import { useAiLimit } from "@/hooks/useAiLimit";
+import { AiLimitBanner } from "@/components/AiLimitBanner";
 
 const FREE_CHAR_LIMIT = 500;
 const PREMIUM_CHAR_LIMIT = 5000;
@@ -18,11 +20,12 @@ export default function CorrecteurPage() {
   const [copied, setCopied] = useState(false);
 
   const { isPremium } = usePremiumStatus();
+  const { canUse, increment, remaining, isPremium: isPremiumLimit, status: aiStatus, ready, limit } = useAiLimit();
   const charLimit = isPremium ? PREMIUM_CHAR_LIMIT : FREE_CHAR_LIMIT;
   const overLimit = !isPremium && text.length > FREE_CHAR_LIMIT;
 
   async function correct() {
-    if (!text.trim() || overLimit) return;
+    if (!text.trim() || overLimit || !canUse) return;
     setLoading(true);
     setError("");
     setCorrected("");
@@ -36,6 +39,7 @@ export default function CorrecteurPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+      increment();
       setCorrected(data.corrected);
       setChanges(data.changes || []);
     } catch (e: unknown) {
@@ -61,6 +65,8 @@ export default function CorrecteurPage() {
         </div>
         <p className="text-gray-400">Corrige l&apos;orthographe, la grammaire et le style de tes textes.</p>
       </div>
+
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremiumLimit} limit={limit} status={aiStatus} />}
 
       <div className="flex gap-3 mb-4">
         {["français", "anglais", "espagnol"].map((l) => (
@@ -112,10 +118,10 @@ export default function CorrecteurPage() {
 
       <button
         onClick={correct}
-        disabled={loading || !text.trim() || overLimit}
+        disabled={loading || !text.trim() || overLimit || !canUse}
         className="w-full bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors mb-6"
       >
-        {loading ? "Correction en cours..." : "✅ Corriger le texte"}
+        {loading ? "Correction en cours..." : aiStatus === "login_required" ? "🔓 Connecte-toi pour continuer" : aiStatus === "limit_reached" ? "⭐ Limite atteinte — Passer Premium" : "✅ Corriger le texte"}
       </button>
 
       {loading && (

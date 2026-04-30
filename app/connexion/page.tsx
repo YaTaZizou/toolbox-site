@@ -53,7 +53,8 @@ function ConnexionForm() {
       if (error) {
         setError("Email ou mot de passe incorrect.");
       } else {
-        window.location.href = redirect;
+        const safeRedirect = redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "/";
+        window.location.href = safeRedirect;
       }
 
     } else if (mode === "signup") {
@@ -61,7 +62,7 @@ function ConnexionForm() {
         email,
         password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth-callback`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
         },
       });
       if (error) {

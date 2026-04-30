@@ -35,16 +35,38 @@ export async function POST(req: NextRequest) {
     if (text.length > 3000)
       return NextResponse.json({ error: "Texte trop long (max 3000 caractères)" }, { status: 400 });
 
+    // Mapping UI labels → noms français pour le prompt IA
+    const LANG_MAP: Record<string, string> = {
+      "français": "français", "Français": "français",
+      "english": "anglais", "English": "anglais",
+      "español": "espagnol", "Español": "espagnol",
+      "deutsch": "allemand", "Deutsch": "allemand",
+      "italiano": "italien", "Italiano": "italien",
+      "português": "portugais", "Português": "portugais",
+      "nederlands": "néerlandais", "Nederlands": "néerlandais",
+      "polski": "polonais", "Polski": "polonais",
+      "русский": "russe", "Русский": "russe",
+      "中文": "chinois",
+      "日本語": "japonais",
+      "العربية": "arabe",
+      "한국어": "coréen",
+      "türkçe": "turc", "Türkçe": "turc",
+      "svenska": "suédois", "Svenska": "suédois",
+    };
+
     const PREMIUM_LANGUAGES = ["arabe", "japonais", "coréen", "chinois"];
     const ALLOWED_LANGUAGES = ["français", "anglais", "espagnol", "allemand", "italien", "portugais", "néerlandais", "arabe", "japonais", "chinois", "russe", "coréen", "polonais", "turc", "suédois", "auto"];
-    const safeTo = ALLOWED_LANGUAGES.includes(to) ? to : "anglais";
+
+    const normalizedTo = LANG_MAP[to] ?? to.toLowerCase();
+    const safeTo = ALLOWED_LANGUAGES.includes(normalizedTo) ? normalizedTo : "anglais";
 
     if (!premium && PREMIUM_LANGUAGES.includes(safeTo))
       return NextResponse.json(
         { error: "Cette langue est réservée aux membres Premium." },
         { status: 403 }
       );
-    const safeFrom = from === "auto" || ALLOWED_LANGUAGES.includes(from) ? from : "auto";
+    const normalizedFrom = from === "auto" ? "auto" : (LANG_MAP[from] ?? from.toLowerCase());
+    const safeFrom = normalizedFrom === "auto" || ALLOWED_LANGUAGES.includes(normalizedFrom) ? normalizedFrom : "auto";
 
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const source = safeFrom === "auto" ? "la langue détectée automatiquement" : safeFrom;

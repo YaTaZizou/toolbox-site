@@ -21,20 +21,23 @@ export async function POST(req: NextRequest) {
     }
     // ────────────────────────────────────────────────────────────────────
 
-    const { image, mediaType, fileSize } = await req.json();
+    const { image, mediaType } = await req.json();
 
     if (!image || !mediaType) {
       return NextResponse.json({ error: "Image manquante" }, { status: 400 });
     }
 
+    // Calcul de taille côté serveur (base64 → octets réels)
+    const estimatedBytes = Math.ceil((image.length * 3) / 4);
+
     // Vérification de taille selon le plan
-    if (!premium && typeof fileSize === "number" && fileSize > 2 * 1024 * 1024) {
+    if (!premium && estimatedBytes > 2 * 1024 * 1024) {
       return NextResponse.json(
         { error: "Limite gratuite : 2 Mo max. Passe Premium pour des fichiers plus volumineux (20 Mo)." },
         { status: 403 }
       );
     }
-    if (premium && typeof fileSize === "number" && fileSize > 20 * 1024 * 1024) {
+    if (premium && estimatedBytes > 20 * 1024 * 1024) {
       return NextResponse.json(
         { error: "Fichier trop volumineux (max 20 Mo)" },
         { status: 413 }

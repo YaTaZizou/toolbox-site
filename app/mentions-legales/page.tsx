@@ -6,10 +6,8 @@ export default function MentionsLegales() {
       <div className="space-y-8 text-gray-300 leading-relaxed">
         <section>
           <h2 className="text-xl font-semibold text-white mb-3">1. Éditeur du site</h2>
-          <p>Le site ToolBox (accessible à l'adresse https://toolbox-site-blue.vercel.app) est édité par :</p>
+          <p>Le site ToolBox (accessible à l'adresse https://alltoolbox.fr) est édité par :</p>
           <ul className="mt-3 space-y-1 text-gray-400">
-            <li><span className="text-gray-300">Nom :</span> Elias Benabdelkader</li>
-            <li><span className="text-gray-300">Ville :</span> Arpajon, 91290</li>
             <li><span className="text-gray-300">Email :</span> contact@alltoolbox.fr</li>
           </ul>
         </section>
@@ -26,7 +24,7 @@ export default function MentionsLegales() {
 
         <section>
           <h2 className="text-xl font-semibold text-white mb-3">3. Propriété intellectuelle</h2>
-          <p>L'ensemble du contenu de ce site (textes, graphiques, logos, icônes) est la propriété exclusive de Elias Benabdelkader. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.</p>
+          <p>L'ensemble du contenu de ce site (textes, graphiques, logos, icônes) est la propriété exclusive de ToolBox. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.</p>
         </section>
 
         <section>

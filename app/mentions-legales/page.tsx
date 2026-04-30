@@ -8,6 +8,7 @@ export default function MentionsLegales() {
           <h2 className="text-xl font-semibold text-white mb-3">1. Éditeur du site</h2>
           <p>Le site ToolBox (accessible à l'adresse https://alltoolbox.fr) est édité par :</p>
           <ul className="mt-3 space-y-1 text-gray-400">
+            <li><span className="text-gray-300">Éditeur :</span> Elias B.</li>
             <li><span className="text-gray-300">Email :</span> contact@alltoolbox.fr</li>
           </ul>
         </section>

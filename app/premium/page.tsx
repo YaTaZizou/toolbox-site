@@ -317,6 +317,66 @@ function PremiumContent() {
         ))}
       </div>
 
+      {/* Témoignages */}
+      <div className="mb-14">
+        <h2 className="text-2xl font-bold text-center mb-2">Ce qu&apos;ils en disent</h2>
+        <p className="text-gray-500 text-sm text-center mb-8">Des utilisateurs qui ont franchi le pas</p>
+        <div className="grid md:grid-cols-3 gap-4">
+          {[
+            {
+              initials: "M.L.",
+              role: "Freelance créatif",
+              stars: 5,
+              text: "J'utilise les générateurs IA tous les jours pour mes clients. La limite gratuite était frustrante, Premium vaut vraiment le coup pour 2€/mois.",
+            },
+            {
+              initials: "S.K.",
+              role: "Étudiante",
+              stars: 5,
+              text: "Le traducteur et le correcteur IA m'ont sauvé la vie pour mes cours. Plus de pubs partout, c'est tellement plus agréable à utiliser.",
+            },
+            {
+              initials: "T.R.",
+              role: "Entrepreneur",
+              stars: 5,
+              text: "L'amélioration d'image IA est bluffante. J'utilise ça pour mes produits et mes réseaux sociaux. Outil indispensable pour un prix ridicule.",
+            },
+          ].map((t) => (
+            <div
+              key={t.initials}
+              className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "var(--panel)", border: "1px solid var(--tb-border)" }}
+            >
+              {/* Stars */}
+              <div className="flex gap-0.5">
+                {Array.from({ length: t.stars }).map((_, i) => (
+                  <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#facc15">
+                    <path d="m12 2 2.6 5.6 6.1.7-4.5 4.2 1.2 6.1L12 16.8 6.6 19.6l1.2-6.1L3.3 9.3l6.1-.7L12 3z"/>
+                  </svg>
+                ))}
+              </div>
+              {/* Texte */}
+              <p className="text-sm leading-relaxed flex-1" style={{ color: "var(--text-2)" }}>
+                &ldquo;{t.text}&rdquo;
+              </p>
+              {/* Auteur */}
+              <div className="flex items-center gap-3 pt-1 border-t" style={{ borderColor: "var(--tb-border)" }}>
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}
+                >
+                  {t.initials.slice(0, 1)}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t.initials}</p>
+                  <p className="text-xs" style={{ color: "var(--text-3)" }}>{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* FAQ */}
       <div className="mb-12">
         <h2 className="text-2xl font-bold text-center mb-6">Questions fréquentes</h2>

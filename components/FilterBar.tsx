@@ -63,6 +63,7 @@ export default function FilterBar({ categoryCounts, onFilter }: FilterBarProps) 
           <button
             key={f.value}
             onClick={() => handleClick(f.value)}
+            aria-pressed={active === f.value}
             style={{
               display: "inline-flex",
               alignItems: "center",

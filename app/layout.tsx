@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Space_Grotesk, JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import NavAuth from "@/components/NavAuth";
+import { MobileMenu } from "@/components/MobileMenu";
 import { SidebarAd, StickyBottomAd } from "@/components/AdBanner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -13,6 +14,9 @@ import { PremiumProvider } from "@/components/PremiumProvider";
 import { ToolUpsellWrapper } from "@/components/ToolUpsellWrapper";
 
 const geist = Geist({ subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: { default: "ToolBox — Outils gratuits en ligne", template: "%s | ToolBox" },
@@ -47,7 +51,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${inter.variable}`}>
       <head>
         <script
           async
@@ -62,12 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@type": "WebSite",
               "name": "ToolBox",
               "url": "https://alltoolbox.fr",
-              "description": "Boîte à outils en ligne gratuite : PDF, IA, images, vidéo, texte. Sans installation, sans inscription forcée.",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://alltoolbox.fr/?q={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
+              "description": "Boîte à outils en ligne gratuite : PDF, IA, images, vidéo, texte. Sans installation, sans inscription forcée."
             })
           }}
         />
@@ -77,7 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PremiumProvider>
           <PwaRegister />
           <ToolTracker />
-          <nav style={{
+          <nav aria-label="Navigation principale" style={{
             position: 'sticky', top: 0, zIndex: 50,
             background: 'rgba(9, 9, 11, 0.78)',
             backdropFilter: 'saturate(140%) blur(14px)',
@@ -120,6 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ThemeToggle />
                 <NavPremiumBadge />
                 <NavAuth />
+                <MobileMenu />
               </div>
             </div>
           </nav>

@@ -1,11 +1,27 @@
 import sharp from "sharp";
 import { NextRequest, NextResponse } from "next/server";
+import { isPremiumRequest } from "@/lib/apiAuth";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   try {
+    // ── Rate limiting ────────────────────────────────────────────────────
+    const premium = await isPremiumRequest(req);
+    if (!premium) {
+      const ip = getClientIp(req);
+      const { allowed } = checkRateLimit(`modifier-image:${ip}`, 20);
+      if (!allowed) {
+        return NextResponse.json(
+          { error: "Limite quotidienne atteinte. Passe Premium pour un accès illimité." },
+          { status: 429 }
+        );
+      }
+    }
+    // ────────────────────────────────────────────────────────────────────
+
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const action = formData.get("action") as string;

@@ -10,7 +10,7 @@ const store = new Map<string, Entry>();
 const DAILY_LIMIT = 5;
 const today = () => new Date().toISOString().slice(0, 10);
 
-export function checkRateLimit(key: string): { allowed: boolean } {
+export function checkRateLimit(key: string, limit = DAILY_LIMIT): { allowed: boolean } {
   const t = today();
   const entry = store.get(key);
 
@@ -19,7 +19,7 @@ export function checkRateLimit(key: string): { allowed: boolean } {
     return { allowed: true };
   }
 
-  if (entry.count >= DAILY_LIMIT) {
+  if (entry.count >= limit) {
     return { allowed: false };
   }
 

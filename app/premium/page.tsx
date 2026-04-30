@@ -385,13 +385,14 @@ function PremiumContent() {
             <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                aria-expanded={openFaq === i}
                 className="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-medium text-gray-200 hover:text-white transition-colors"
               >
                 {faq.q}
                 <span className={`text-gray-500 transition-transform ${openFaq === i ? "rotate-180" : ""}`}>▾</span>
               </button>
               {openFaq === i && (
-                <div className="px-5 pb-4 text-gray-400 text-sm leading-relaxed border-t border-gray-800/50 pt-3">
+                <div aria-hidden={openFaq !== i} className="px-5 pb-4 text-gray-400 text-sm leading-relaxed border-t border-gray-800/50 pt-3">
                   {faq.a}
                 </div>
               )}

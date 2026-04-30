@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -14,7 +13,7 @@
   --border-strong: #2a2a31;
   --text: #ededf0;
   --text-2: #a1a1aa;
-  --text-3: #71717a;
+  --text-3: #8e8e99;
   --tb-primary: #7c3aed;
   --primary-2: #a78bfa;
   --primary-soft: rgba(124, 58, 237, 0.18);

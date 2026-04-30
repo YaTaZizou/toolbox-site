@@ -29,6 +29,9 @@ export async function POST(req: NextRequest) {
     if (text.length > 5000)
       return NextResponse.json({ error: "Texte trop long (max 5000 caractères)" }, { status: 400 });
 
+    const ALLOWED_LANGUAGES = ["français", "anglais", "espagnol", "allemand", "italien", "portugais", "néerlandais", "arabe", "japonais", "chinois"];
+    const safeLang = ALLOWED_LANGUAGES.includes(language) ? language : "français";
+
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const message = await anthropic.messages.create({
@@ -37,7 +40,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Tu es un correcteur professionnel. Corrige le texte suivant en ${language || "français"}.
+          content: `Tu es un correcteur professionnel. Corrige le texte suivant en ${safeLang}.
 Corrige : orthographe, grammaire, conjugaison, ponctuation, style.
 Réponds en JSON avec exactement ce format :
 {"corrected": "texte corrigé ici", "changes": ["correction 1", "correction 2", ...]}

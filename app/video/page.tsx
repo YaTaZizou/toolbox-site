@@ -3,7 +3,6 @@
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
 const FORMATS = ["mp4", "webm", "mov", "avi", "mkv", "gif"];
@@ -23,11 +22,13 @@ export default function VideoPage() {
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
   const [outputSize, setOutputSize] = useState<number>(0);
   const [log, setLog] = useState("");
-  const ffmpegRef = useRef<FFmpeg | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ffmpegRef = useRef<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const loadFFmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
+    const { FFmpeg } = await import("@ffmpeg/ffmpeg");
     const ffmpeg = new FFmpeg();
     ffmpeg.on("log", ({ message }) => setLog(message));
     ffmpeg.on("progress", ({ progress: p }) => setProgress(Math.round(p * 100)));

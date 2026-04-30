@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
   const file = formData.get("image") as File | null;
-  const scale = parseInt(formData.get("scale") as string) || 2;
+  const scale = Math.min(Math.max(parseInt(formData.get("scale") as string) || 2, 1), 4);
   const mode = (formData.get("mode") as string) || "standard";
 
   if (!file) return NextResponse.json({ error: "Aucun fichier" }, { status: 400 });

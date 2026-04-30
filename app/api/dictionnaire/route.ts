@@ -29,6 +29,13 @@ export async function POST(req: NextRequest) {
     if (word.length > 100)
       return NextResponse.json({ error: "Mot trop long (max 100 caractères)" }, { status: 400 });
 
+    // Sanitize: letters, hyphens, apostrophes only
+    if (!/^[\p{L}\p{M}'\-\s]+$/u.test(word))
+      return NextResponse.json({ error: "Mot invalide" }, { status: 400 });
+
+    const ALLOWED_LANGUAGES = ["français", "anglais", "espagnol", "allemand", "italien", "portugais", "néerlandais", "arabe", "japonais", "chinois"];
+    const safeLang = ALLOWED_LANGUAGES.includes(language) ? language : "français";
+
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const message = await anthropic.messages.create({
@@ -37,7 +44,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Donne la définition du mot "${word}" en ${language || "français"}.
+          content: `Donne la définition du mot "${word}" en ${safeLang}.
 Réponds en JSON avec exactement ce format :
 {"word": "${word}", "nature": "nom/verbe/adjectif/etc", "definition": "définition claire", "examples": ["exemple 1", "exemple 2"], "synonymes": ["syn1", "syn2", "syn3"], "antonymes": ["ant1", "ant2"]}
 Ne mets rien d'autre que le JSON.`,

@@ -1,12 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState, useMemo } from "react";
 import { usePremiumStatus } from "@/components/PremiumProvider";
+import { createBrowserClient } from "@supabase/ssr";
 
 export function PremiumGate({ children }: { children: React.ReactNode }) {
   const { isPremium, loading } = usePremiumStatus();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  if (loading) {
+  const supabase = useMemo(() => createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  ), []);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setIsLoggedIn(!!data.user);
+    });
+  }, [supabase]);
+
+  if (loading || isLoggedIn === null) {
     return (
       <div className="flex items-center justify-center py-24">
         <div className="w-6 h-6 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
@@ -31,12 +45,31 @@ export function PremiumGate({ children }: { children: React.ReactNode }) {
           >
             ⭐ Passer Premium — 2,99€/mois
           </Link>
-          <Link
-            href="/connexion?redirect=/premium"
-            className="block w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
-          >
-            Se connecter
-          </Link>
+          {isLoggedIn ? (
+            // Connecté mais pas premium → aller directement payer
+            <Link
+              href="/premium"
+              className="block w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+            >
+              Voir les offres Premium
+            </Link>
+          ) : (
+            // Non connecté → deux options : connexion ou inscription
+            <>
+              <Link
+                href="/connexion?redirect=/premium"
+                className="block w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+              >
+                Se connecter
+              </Link>
+              <Link
+                href="/inscription?redirect=/premium"
+                className="block w-full bg-gray-900 hover:bg-gray-800 text-gray-300 font-semibold py-3 rounded-xl transition-colors text-sm border border-gray-700"
+              >
+                Créer un compte gratuit
+              </Link>
+            </>
+          )}
         </div>
         <ul className="mt-6 text-left space-y-2 text-sm text-gray-400">
           {[

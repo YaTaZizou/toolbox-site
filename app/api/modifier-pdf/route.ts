@@ -1,16 +1,24 @@
 import { PDFDocument, degrees } from "pdf-lib";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const { allowed } = checkRateLimit(`modifier-pdf:${ip}`, 20);
+  if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
+
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const action = formData.get("action") as string;
 
     if (!file) return NextResponse.json({ error: "Fichier manquant" }, { status: 400 });
+    if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 50 Mo)" }, { status: 413 });
 
     const buffer = Buffer.from(await file.arrayBuffer());
 

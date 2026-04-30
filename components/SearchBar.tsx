@@ -60,7 +60,8 @@ export function SearchBar({ tools }: { tools: Tool[] }) {
         <span className="text-gray-500 text-lg">🔍</span>
         <input
           ref={inputRef}
-          type="text"
+          type="search"
+          aria-label="Rechercher un outil"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}

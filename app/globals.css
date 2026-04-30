@@ -178,6 +178,22 @@ body {
 ══════════════════════════════════════ */
 html.light {
   color-scheme: light;
+
+  /* Override all custom design tokens for light mode */
+  --bg: #f1f5f9;
+  --bg-2: #e8edf4;
+  --panel: #ffffff;
+  --panel-2: #f8fafc;
+  --tb-border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #0f172a;
+  --text-2: #334155;
+  --text-3: #64748b;
+  --tb-primary: #7c3aed;
+  --primary-2: #6d28d9;
+  --primary-soft: rgba(124, 58, 237, 0.12);
+  --amber-soft: rgba(217, 119, 6, 0.1);
+  --green-soft: rgba(22, 163, 74, 0.1);
 }
 
 html.light body {
@@ -209,9 +225,13 @@ html.light .text-gray-600 { color: #94a3b8 !important; }
 html.light .text-gray-700 { color: #94a3b8 !important; }
 
 /* Navbar */
-html.light nav {
-  background-color: rgba(241,245,249,0.9) !important;
-  border-color: #e2e8f0 !important;
+.tb-nav {
+  background: rgba(9, 9, 11, 0.78);
+  border-bottom: 1px solid rgba(31, 31, 37, 0.6);
+}
+html.light .tb-nav {
+  background: rgba(241, 245, 249, 0.88) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
 }
 
 /* Footer */

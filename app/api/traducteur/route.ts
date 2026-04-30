@@ -29,8 +29,12 @@ export async function POST(req: NextRequest) {
     if (text.length > 3000)
       return NextResponse.json({ error: "Texte trop long (max 3000 caractères)" }, { status: 400 });
 
+    const ALLOWED_LANGUAGES = ["français", "anglais", "espagnol", "allemand", "italien", "portugais", "néerlandais", "arabe", "japonais", "chinois", "russe", "coréen", "polonais", "turc", "suédois", "auto"];
+    const safeTo = ALLOWED_LANGUAGES.includes(to) ? to : "anglais";
+    const safeFrom = from === "auto" || ALLOWED_LANGUAGES.includes(from) ? from : "auto";
+
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const source = from === "auto" ? "la langue détectée automatiquement" : from;
+    const source = safeFrom === "auto" ? "la langue détectée automatiquement" : safeFrom;
 
     const message = await anthropic.messages.create({
       model: "claude-3-5-haiku-20241022",

@@ -1,13 +1,19 @@
 import sharp from "sharp";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
 const FORMATS = ["jpeg", "png", "webp", "avif"] as const;
 type Format = (typeof FORMATS)[number];
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const { allowed } = checkRateLimit(`convertir-image:${ip}`, 30);
+  if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
+
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
@@ -16,6 +22,7 @@ export async function POST(req: NextRequest) {
     const quality = qualityRaw ? parseInt(qualityRaw as string) : 80;
 
     if (!file) return NextResponse.json({ error: "Aucun fichier reçu" }, { status: 400 });
+    if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 20 Mo)" }, { status: 413 });
     if (!format || !FORMATS.includes(format)) return NextResponse.json({ error: "Format invalide" }, { status: 400 });
 
     const buffer = Buffer.from(await file.arrayBuffer());

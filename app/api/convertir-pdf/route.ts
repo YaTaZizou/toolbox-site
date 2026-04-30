@@ -1,10 +1,17 @@
 import { PDFDocument } from "pdf-lib";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const { allowed } = checkRateLimit(`convertir-pdf:${ip}`, 20);
+  if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
+
   try {
     const formData = await req.formData();
     const action = formData.get("action") as string;

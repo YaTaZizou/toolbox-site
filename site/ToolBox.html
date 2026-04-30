@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ToolBox — Tous vos outils en un seul endroit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #09090b;
+    --bg-2: #0c0c10;
+    --panel: #111114;
+    --panel-2: #16161b;
+    --border: #1f1f25;
+    --border-strong: #2a2a31;
+    --text: #ededf0;
+    --text-2: #a1a1aa;
+    --text-3: #71717a;
+    --primary: #7c3aed;
+    --primary-2: #a78bfa;
+    --primary-soft: rgba(124, 58, 237, 0.18);
+    --amber: #facc15;
+    --amber-soft: rgba(250, 204, 21, 0.12);
+    --green: #22c55e;
+    --green-soft: rgba(34, 197, 94, 0.12);
+    --rose: #f43f5e;
+    --orange: #fb923c;
+    --blue: #3b82f6;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  /* ============ NAV ============ */
+  .nav-wrap {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(9, 9, 11, 0.78);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid rgba(31, 31, 37, 0.6);
+  }
+  .nav {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: "Space Grotesk"; font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+  .brand-mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(140deg, #8b5cf6 0%, #7c3aed 60%, #5b21b6 100%);
+    display: grid; place-items: center;
+    box-shadow: 0 6px 20px -6px rgba(124, 58, 237, 0.65), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .nav-center { display: flex; align-items: center; gap: 4px; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 8px;
+    color: var(--text-2); font-size: 14px; font-weight: 500;
+    transition: color .15s, background .15s;
+  }
+  .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .nav-link.premium {
+    color: var(--amber);
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .nav-link.premium:hover { background: var(--amber-soft); color: var(--amber); }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .login-btn {
+    padding: 8px 16px; border-radius: 8px;
+    background: #fff; color: #09090b;
+    font-size: 14px; font-weight: 600;
+    transition: transform .12s, background .15s;
+  }
+  .login-btn:hover { background: #ededf0; }
+  .login-btn:active { transform: translateY(1px); }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    max-width: 1200px; margin: 0 auto;
+    padding: 96px 28px 56px;
+    text-align: center;
+  }
+  .hero-halo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .hero-halo::before {
+    content: ""; position: absolute;
+    top: 20px; left: 50%; transform: translateX(-50%);
+    width: 720px; height: 480px;
+    background: radial-gradient(closest-side, rgba(124,58,237,0.32), rgba(124,58,237,0) 70%);
+    filter: blur(20px);
+  }
+  .hero-halo::after {
+    content: ""; position: absolute;
+    top: 240px; left: 50%; transform: translateX(-50%);
+    width: 1100px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124,58,237,0.5), transparent);
+    opacity: 0.5;
+  }
+  .pill {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px 6px 8px;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: linear-gradient(180deg, rgba(124,58,237,0.12), rgba(124,58,237,0.04));
+    border-radius: 999px;
+    font-size: 12.5px; color: var(--primary-2); font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #c4b5fd; box-shadow: 0 0 10px #a78bfa;
+  }
+  .pill .pill-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    background: rgba(124,58,237,0.25);
+    color: #ddd6fe;
+    padding: 2px 7px; border-radius: 999px;
+    margin-left: 4px;
+  }
+  h1.headline {
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: clamp(44px, 6.4vw, 80px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin: 22px auto 18px;
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  .headline .accent {
+    background: linear-gradient(180deg, #c4b5fd 0%, #7c3aed 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subhead {
+    color: var(--text-2);
+    font-size: 17px; line-height: 1.55;
+    max-width: 56ch; margin: 0 auto;
+    text-wrap: pretty;
+  }
+  .cta-row {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 32px; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 22px;
+    border-radius: 10px;
+    font-size: 14.5px; font-weight: 600;
+    transition: transform .12s, box-shadow .15s, background .15s;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      0 0 0 1px rgba(124,58,237,0.6),
+      0 10px 30px -10px rgba(124,58,237,0.7);
+  }
+  .btn-primary:hover { background: #8b5cf6; box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset, 0 0 0 1px rgba(139,92,246,0.7), 0 14px 36px -10px rgba(124,58,237,0.85); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-primary svg { transition: transform .15s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+  .btn-ghost {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-ghost:hover { background: var(--panel-2); border-color: #36363f; }
+  .btn-ghost .kbd {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: var(--text-3);
+    padding: 2px 6px; border: 1px solid var(--border-strong); border-radius: 5px;
+  }
+
+  .stats {
+    display: flex; justify-content: center; gap: 56px;
+    margin-top: 48px; flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .stat-num .small { color: var(--text-3); font-size: 20px; margin-left: 2px; }
+  .stat-label {
+    font-size: 11.5px; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-top: 4px;
+  }
+
+  /* ============ TOOLS ============ */
+  main.tools {
+    max-width: 1200px; margin: 0 auto;
+    padding: 72px 28px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .filter-bar {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .filter {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px; color: var(--text-2);
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .filter:hover { color: var(--text); border-color: var(--border-strong); }
+  .filter.active {
+    background: rgba(124,58,237,0.15);
+    border-color: rgba(124,58,237,0.45);
+    color: #ddd6fe;
+  }
+  .filter-count {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: var(--text-3);
+    padding: 1px 6px; border-radius: 999px;
+    background: var(--bg-2); border: 1px solid var(--border);
+  }
+  .filter.active .filter-count {
+    background: rgba(124,58,237,0.2);
+    border-color: rgba(124,58,237,0.35);
+    color: #c4b5fd;
+  }
+
+  .category {
+    margin-bottom: 56px;
+    scroll-margin-top: 80px;
+  }
+  .cat-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px;
+  }
+  .cat-icon {
+    width: 32px; height: 32px; border-radius: 9px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .cat-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 19px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .cat-meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: var(--text-3);
+    padding: 2px 8px; border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  .cat-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin-left: 4px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } .nav-center { display: none; } }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    transition: transform .15s ease, border-color .15s, background .15s;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    display: flex; flex-direction: column;
+    min-height: 144px;
+  }
+  .card:hover { border-color: var(--border-strong); transform: translateY(-2px); background: var(--panel-2); }
+
+  .card-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .card-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .badge {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .badge-free { background: var(--green-soft); color: #4ade80; border-color: rgba(34,197,94,0.25); }
+  .badge-ai { background: var(--primary-soft); color: var(--primary-2); border-color: rgba(124,58,237,0.3); }
+  .badge-premium { background: var(--amber-soft); color: var(--amber); border-color: rgba(250,204,21,0.3); }
+
+  .card-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px; font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--text);
+    margin: 0 0 6px;
+    line-height: 1.25;
+  }
+  .card-desc {
+    font-size: 12.5px; color: var(--text-3);
+    line-height: 1.5;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-2);
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 32px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-meta { display: flex; align-items: center; gap: 14px; color: var(--text-3); font-size: 13px; }
+  .footer-meta .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-3); opacity: 0.6; }
+  .footer-links { display: flex; gap: 18px; font-size: 13px; color: var(--text-3); }
+  .footer-links a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<div class="nav-wrap">
+  <nav class="nav">
+    <a class="brand" href="#">
+      <span class="brand-mark">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 3 4 14h7l-1 7 9-11h-7l1-7z"/>
+        </svg>
+      </span>
+      ToolBox
+    </a>
+    <div class="nav-center">
+      <a class="nav-link" href="#tools">Outils</a>
+      <a class="nav-link" href="#contact">Contact</a>
+      <a class="nav-link premium" href="#premium">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.6 5.6 6.1.7-4.5 4.2 1.2 6.1L12 16.8 6.6 19.6l1.2-6.1L3.3 9.3l6.1-.7L12 3z"/></svg>
+        Premium
+      </a>
+    </div>
+    <div class="nav-right">
+      <a class="login-btn" href="#login">Connexion</a>
+    </div>
+  </nav>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-halo"></div>
+  <div class="pill">
+    <span class="dot"></span>
+    Plus de 40 outils — sans inscription
+    <span class="pill-tag">v2.4</span>
+  </div>
+  <h1 class="headline">Tous vos outils en <span class="accent">un seul endroit</span></h1>
+  <p class="subhead">PDF, images, vidéos, IA, texte — tout ce dont vous avez besoin pour travailler plus vite, dans un seul endroit, sans pub et sans inscription.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#tools">
+      Essayer un outil
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+    <a class="btn btn-ghost" href="#tools">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      Rechercher
+      <span class="kbd">⌘K</span>
+    </a>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">40<span class="small">+</span></div>
+      <div class="stat-label">Outils gratuits</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">2,4M</div>
+      <div class="stat-label">Fichiers traités</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0s</div>
+      <div class="stat-label">Temps d'attente</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOOLS ============ -->
+<main class="tools" id="tools">
+  <div class="filter-bar">
+    <button class="filter active" data-filter="all">Tout afficher <span class="filter-count">40</span></button>
+    <button class="filter" data-filter="pdf">PDF <span class="filter-count">7</span></button>
+    <button class="filter" data-filter="images">Images & Médias <span class="filter-count">9</span></button>
+    <button class="filter" data-filter="ai">Générateurs <span class="filter-count">7</span></button>
+    <button class="filter" data-filter="text">Texte & Langue <span class="filter-count">6</span></button>
+    <button class="filter" data-filter="quick">Outils rapides <span class="filter-count">4</span></button>
+  </div>
+
+  <!-- ====== PDF ====== -->
+  <section class="category" data-cat="pdf">
+    <div class="cat-head">
+      <div class="cat-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17h4"/></svg>
+      </div>
+      <div class="cat-title">Outils PDF</div>
+      <span class="cat-meta">7 outils</span>
+      <div class="cat-line"></div>
+    </div>
+    <div class="grid">
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/><path d="M9 12h6"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Compresser un PDF</h3>
+        <p class="card-desc">Réduis la taille de tes PDFs jusqu'à 80%.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Découper un PDF</h3>
+        <p class="card-desc">Extrait des pages spécifiques d'un PDF.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v4a4 4 0 0 0 4 4 4 4 0 0 1 4 4v6"/><path d="M8 21V3M16 21l-3-3M16 21l3-3"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Fusionner des PDFs</h3>
+        <p class="card-desc">Combine plusieurs PDFs en un seul fichier.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m3 14 4-4 7 7"/><path d="M17 13v6a2 2 0 0 0 2 2h2"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Images → PDF</h3>
+        <p class="card-desc">Convertis tes JPG, PNG, WebP en fichier PDF.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9"/><path d="m18 2 4 4-9 9h-4v-4l9-9Z"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Modifier un PDF</h3>
+        <p class="card-desc">Pivote, supprime ou réorganise les pages.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="10" cy="14" r="1.5"/><path d="m8 18 2-2 4 3"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">PDF → Images</h3>
+        <p class="card-desc">Convertis chaque page d'un PDF en image.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Protéger un PDF</h3>
+        <p class="card-desc">Ajoute un mot de passe à ton PDF.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ====== Images & Médias ====== -->
+  <section class="category" data-cat="images">
+    <div class="cat-head">
+      <div class="cat-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m3 17 5-5 4 4 3-3 6 6"/></svg>
+      </div>
+      <div class="cat-title">Images & Médias</div>
+      <span class="cat-meta">9 outils</span>
+      <div class="cat-line"></div>
+    </div>
+    <div class="grid">
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15h18M9 9h6M9 12h6"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Ajout de Filigrane</h3>
+        <p class="card-desc">Protège tes images avec un filigrane personnalisé.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>
+          </div>
+          <span class="badge badge-premium">Premium</span>
+        </div>
+        <h3 class="card-title">Amélioration d'Image</h3>
+        <p class="card-desc">Augmente la résolution jusqu'à 4× avec l'IA.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Convertisseur Audio</h3>
+        <p class="card-desc">Convertis en MP3, WAV, OGG, FLAC, OPUS…</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m3 17 5-5 4 4 3-3 6 6"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Convertisseur d'Images</h3>
+        <p class="card-desc">JPG, PNG, WebP, AVIF + compression.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="m17 10 4-2v8l-4-2"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Convertisseur Vidéo</h3>
+        <p class="card-desc">Convertis et compresse les vidéos MP4, WebM, MOV…</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 14v-4H7M11 10v4M14 10h3M14 14v-4M14 12h2"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Créateur de GIF</h3>
+        <p class="card-desc">Crée des GIFs animés depuis tes vidéos.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17V5a2 2 0 0 1 2-2h12"/><path d="M14 21h5a2 2 0 0 0 2-2v-7"/><path d="m18 2 4 4-9 9h-4v-4Z"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Modifier une Image</h3>
+        <p class="card-desc">Redimensionne, pivote et retouche.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h4M3 21h4M21 3h-4M21 21h-4M3 9v6M21 9v6"/><circle cx="12" cy="12" r="4"/></svg>
+          </div>
+          <span class="badge badge-ai">IA</span>
+        </div>
+        <h3 class="card-title">Suppression de Fond</h3>
+        <p class="card-desc">Supprime le fond de tes images avec l'IA.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Téléchargeur de Vidéos</h3>
+        <p class="card-desc">YouTube, TikTok, Instagram, X — MP4 ou MP3.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ====== Générateurs IA ====== -->
+  <section class="category" data-cat="ai">
+    <div class="cat-head">
+      <div class="cat-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v4M12 16v4M4 12h4M16 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg>
+      </div>
+      <div class="cat-title">Générateurs</div>
+      <span class="cat-meta">7 outils</span>
+      <div class="cat-line"></div>
+    </div>
+    <div class="grid">
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          </div>
+          <span class="badge badge-ai">IA</span>
+        </div>
+        <h3 class="card-title">Générateur de Bio</h3>
+        <p class="card-desc">Bios percutantes pour Instagram, TikTok, LinkedIn.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Générateur de Hash</h3>
+        <p class="card-desc">MD5, SHA-256, SHA-512 en temps réel.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="15" r="4"/><path d="m10 12 11-11M16 7l3 3M14 9l3 3"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Mot de Passe</h3>
+        <p class="card-desc">Génère des mots de passe sécurisés.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V6h4l4 12V6h4M18 14h2M18 10h2"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Générateur de Pseudo</h3>
+        <p class="card-desc">Pseudos uniques pour gaming, réseaux, streaming.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h7"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Générateur de QR Code</h3>
+        <p class="card-desc">Crée un QR code pour n'importe quel lien.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h12M4 18h8"/><path d="m18 14 1.2 2.5L22 18l-2.8 1.5L18 22l-1.2-2.5L14 18l2.8-1.5z" stroke-width="1.2"/></svg>
+          </div>
+          <span class="badge badge-ai">IA</span>
+        </div>
+        <h3 class="card-title">Générateur de Texte</h3>
+        <p class="card-desc">Posts, emails, descriptions, accroches.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(124, 58, 237, 0.14); color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.4 5.6L20 9l-4.5 4 1.5 6.5L12 16l-5 3.5L8.5 13 4 9l5.6-1.4z"/></svg>
+          </div>
+          <span class="badge badge-premium">Premium</span>
+        </div>
+        <h3 class="card-title">Générateur de Logo</h3>
+        <p class="card-desc">Crée un logo unique avec l'IA en quelques secondes.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ====== Texte & Langue ====== -->
+  <section class="category" data-cat="text">
+    <div class="cat-head">
+      <div class="cat-icon" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+      </div>
+      <div class="cat-title">Texte & Langue</div>
+      <span class="cat-meta">6 outils</span>
+      <div class="cat-line"></div>
+    </div>
+    <div class="grid">
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Compteur de Mots</h3>
+        <p class="card-desc">Mots, caractères, temps de lecture.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 9 6l5 12M5.5 14h7M14 14h7M17.5 10v8"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Convertisseur de Texte</h3>
+        <p class="card-desc">Majuscules, slug, camelCase et plus.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/></svg>
+          </div>
+          <span class="badge badge-ai">IA</span>
+        </div>
+        <h3 class="card-title">Correcteur de Texte</h3>
+        <p class="card-desc">Corrige orthographe, grammaire et style.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h13a3 3 0 0 1 3 3v13a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3z"/><path d="M4 17h16"/></svg>
+          </div>
+          <span class="badge badge-ai">IA</span>
+        </div>
+        <h3 class="card-title">Dictionnaire</h3>
+        <p class="card-desc">Définitions, synonymes et antonymes.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h4M7 12h10M7 16h7"/></svg>
+          </div>
+          <span class="badge badge-ai">IA</span>
+        </div>
+        <h3 class="card-title">OCR — Image en Texte</h3>
+        <p class="card-desc">Extrait le texte de n'importe quelle image.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          </div>
+          <span class="badge badge-ai">IA</span>
+        </div>
+        <h3 class="card-title">Traducteur</h3>
+        <p class="card-desc">Traduis dans plus de 12 langues grâce à l'IA.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ====== Outils Rapides ====== -->
+  <section class="category" data-cat="quick">
+    <div class="cat-head">
+      <div class="cat-icon" style="background: rgba(251, 146, 60, 0.12); color: #fb923c;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 4 14h7l-1 7 9-11h-7l1-7z"/></svg>
+      </div>
+      <div class="cat-title">Outils Rapides</div>
+      <span class="cat-meta">4 outils</span>
+      <div class="cat-line"></div>
+    </div>
+    <div class="grid">
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(251, 146, 60, 0.12); color: #fb923c;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M5 8v8M9 6v12M13 8v8M17 6v12M21 8v8"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Convertisseur d'Unités</h3>
+        <p class="card-desc">Distance, poids, température, vitesse.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(251, 146, 60, 0.12); color: #fb923c;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 4-5 8 5 8M15 4l5 8-5 8"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Formateur JSON</h3>
+        <p class="card-desc">Formate, minifie et valide tes données JSON.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(251, 146, 60, 0.12); color: #fb923c;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="9" r="1.5"/><circle cx="16" cy="9" r="1.5"/><circle cx="17" cy="14" r="1.5"/><circle cx="11" cy="17" r="1.5"/></svg>
+          </div>
+          <span class="badge badge-free">Gratuit</span>
+        </div>
+        <h3 class="card-title">Palette de Couleurs</h3>
+        <p class="card-desc">Génère des palettes harmonieuses.</p>
+      </button>
+      <button class="card">
+        <div class="card-top">
+          <div class="card-icon" style="background: rgba(251, 146, 60, 0.12); color: #fb923c;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+          </div>
+          <span class="badge badge-premium">Premium</span>
+        </div>
+        <h3 class="card-title">Raccourcisseur de Lien</h3>
+        <p class="card-desc">Raccourcis tes URLs en un clic.</p>
+      </button>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-meta">
+      <div class="brand" style="font-size: 14px;">
+        <span class="brand-mark" style="width: 22px; height: 22px; border-radius: 6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 3 4 14h7l-1 7 9-11h-7l1-7z"/>
+          </svg>
+        </span>
+        ToolBox
+      </div>
+      <div class="sep"></div>
+      <span>© 2026 — Fait avec attention</span>
+    </div>
+    <div class="footer-links">
+      <a href="#">Confidentialité</a>
+      <a href="#">CGU</a>
+      <a href="#">API</a>
+      <a href="#">Statut</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Filter logic
+  const filters = document.querySelectorAll('.filter');
+  const categories = document.querySelectorAll('.category');
+  filters.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filters.forEach(f => f.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.filter;
+      categories.forEach(cat => {
+        if (target === 'all' || cat.dataset.cat === target) {
+          cat.style.display = '';
+        } else {
+          cat.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

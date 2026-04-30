@@ -76,12 +76,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PremiumProvider>
           <PwaRegister />
           <ToolTracker />
-          <nav aria-label="Navigation principale" style={{
+          <nav aria-label="Navigation principale" className="tb-nav" style={{
             position: 'sticky', top: 0, zIndex: 50,
-            background: 'rgba(9, 9, 11, 0.78)',
             backdropFilter: 'saturate(140%) blur(14px)',
             WebkitBackdropFilter: 'saturate(140%) blur(14px)',
-            borderBottom: '1px solid rgba(31, 31, 37, 0.6)',
           }}>
             <div style={{
               maxWidth: 1200, margin: '0 auto',

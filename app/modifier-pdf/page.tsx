@@ -47,6 +47,7 @@ export default function ModifierPdfPage() {
   const [color, setColor] = useState("#000000");
   const [rendering, setRendering] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [imgTargetPage, setImgTargetPage] = useState(0);
   const [pageAction, setPageAction] = useState<PageAction>("pivoter");
   const [pages, setPages] = useState("");
@@ -253,6 +254,7 @@ export default function ModifierPdfPage() {
   async function saveWithText() {
     if (!file) return;
     setSaving(true);
+    setSaveError(null);
     try {
       const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
       const buf = await file.arrayBuffer();
@@ -328,7 +330,10 @@ export default function ModifierPdfPage() {
       const a = document.createElement("a");
       a.href = url; a.download = "toolbox-modifie.pdf"; a.click();
       URL.revokeObjectURL(url);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      setSaveError("Erreur lors de la sauvegarde. Vérifie que le PDF n'est pas protégé et que les images sont en JPEG ou PNG.");
+    }
     finally { setSaving(false); }
   }
 
@@ -383,11 +388,11 @@ export default function ModifierPdfPage() {
       </div>
 
       {!file || renderedPages.length === 0 ? (
-        <div onClick={() => fileRef.current?.click()}
+        <div onClick={() => { if (!rendering) fileRef.current?.click(); }}
           onDragOver={e => e.preventDefault()}
-          onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type === "application/pdf") loadPdf(f); }}
+          onDrop={e => { e.preventDefault(); if (rendering) return; const f = e.dataTransfer.files[0]; if (f?.type === "application/pdf") loadPdf(f); }}
           className="border-2 border-dashed border-gray-700 hover:border-blue-500/50 rounded-2xl p-12 text-center cursor-pointer transition-colors">
-          <input ref={fileRef} type="file" accept=".pdf" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) loadPdf(f); }} />
+          <input ref={fileRef} type="file" accept=".pdf" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f && !rendering) loadPdf(f); }} />
           {rendering ? (
             <div>
               <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
@@ -474,6 +479,11 @@ export default function ModifierPdfPage() {
                 {saving ? "Sauvegarde…" : "⬇ Télécharger PDF"}
               </button>
             </div>
+            {saveError && (
+              <div className="w-full mt-2 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-xs text-red-400">
+                ⚠️ {saveError}
+              </div>
+            )}
           </div>
 
           {showOverlays && (

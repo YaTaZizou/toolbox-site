@@ -28,7 +28,7 @@ export function AdBanner() {
         className="adsbygoogle"
         style={{ display: "block" }}
         data-ad-client="ca-pub-9277300744556228"
-        data-ad-slot="auto"
+        data-ad-slot="4223758608"
         data-ad-format="auto"
         data-full-width-responsive="true"
       />
@@ -53,7 +53,7 @@ export function SidebarAd({ slot }: { slot: "left" | "right" }) {
         className="adsbygoogle"
         style={{ display: "block", width: "160px", minHeight: "600px" }}
         data-ad-client="ca-pub-9277300744556228"
-        data-ad-slot="auto"
+        data-ad-slot="9201901898"
         data-ad-format="vertical"
         data-full-width-responsive="false"
       />
@@ -78,7 +78,7 @@ export function StickyBottomAd() {
         className="adsbygoogle"
         style={{ display: "inline-block", width: "320px", height: "50px" }}
         data-ad-client="ca-pub-9277300744556228"
-        data-ad-slot="auto"
+        data-ad-slot="7888820223"
         data-ad-format="auto"
       />
       <Link
@@ -113,7 +113,7 @@ export function AdBeforeDownload({ onContinue }: { onContinue: () => void }) {
           className="adsbygoogle"
           style={{ display: "block", minHeight: "120px" }}
           data-ad-client="ca-pub-9277300744556228"
-          data-ad-slot="auto"
+          data-ad-slot="3879554340"
           data-ad-format="auto"
           data-full-width-responsive="true"
         />

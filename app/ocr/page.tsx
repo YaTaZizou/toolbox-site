@@ -12,7 +12,7 @@ export default function OcrPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
-  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
+  const { canUse, increment, remaining, isPremium, status, ready, limit } = useAiLimit();
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleFile(file: File) {
@@ -90,7 +90,7 @@ export default function OcrPage() {
         <p className="text-gray-400">Extrayez le texte de n&apos;importe quelle image ou document scanné grâce à l&apos;IA.</p>
       </div>
 
-      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} />}
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
 
       {/* Upload zone */}
       {!imagePreview ? (
@@ -133,7 +133,7 @@ export default function OcrPage() {
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 Extraction en cours...
               </span>
-            ) : !canUse ? "⭐ Limite atteinte — Passer Premium" : "🔍 Extraire le texte"}
+            ) : status === "login_required" ? "🔓 Connecte-toi pour continuer" : status === "limit_reached" ? "⭐ Limite atteinte — Passer Premium" : "🔍 Extraire le texte"}
           </button>
         </div>
       )}

@@ -26,11 +26,24 @@ export async function POST(req: NextRequest) {
     if (!text?.trim() || !to)
       return NextResponse.json({ error: "Texte ou langue manquante" }, { status: 400 });
 
+    if (!premium && text.length > 500)
+      return NextResponse.json(
+        { error: "Limite gratuite : 500 caractères max. Passe Premium pour traduire des textes plus longs." },
+        { status: 403 }
+      );
+
     if (text.length > 3000)
       return NextResponse.json({ error: "Texte trop long (max 3000 caractères)" }, { status: 400 });
 
+    const PREMIUM_LANGUAGES = ["arabe", "japonais", "coréen", "chinois"];
     const ALLOWED_LANGUAGES = ["français", "anglais", "espagnol", "allemand", "italien", "portugais", "néerlandais", "arabe", "japonais", "chinois", "russe", "coréen", "polonais", "turc", "suédois", "auto"];
     const safeTo = ALLOWED_LANGUAGES.includes(to) ? to : "anglais";
+
+    if (!premium && PREMIUM_LANGUAGES.includes(safeTo))
+      return NextResponse.json(
+        { error: "Cette langue est réservée aux membres Premium." },
+        { status: 403 }
+      );
     const safeFrom = from === "auto" || ALLOWED_LANGUAGES.includes(from) ? from : "auto";
 
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });

@@ -21,7 +21,7 @@ export default function TextePage() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
+  const { canUse, increment, remaining, isPremium, status, ready, limit } = useAiLimit();
   const [copied, setCopied] = useState(false);
 
   async function generate() {
@@ -69,6 +69,8 @@ export default function TextePage() {
         <p className="text-gray-400">Dis ce que tu veux écrire, l'IA le rédige pour toi en quelques secondes.</p>
       </div>
 
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
+
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
         <label className="block text-sm text-gray-400 mb-3">Type de texte</label>
         <div className="flex flex-wrap gap-2 mb-5">
@@ -96,10 +98,10 @@ export default function TextePage() {
         />
         <button
           onClick={generate}
-          disabled={loading || !input.trim()}
+          disabled={loading || !input.trim() || !canUse}
           className="mt-4 w-full bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
         >
-          {loading ? "Rédaction en cours..." : "✨ Générer le texte"}
+          {loading ? "Rédaction en cours..." : status === "login_required" ? "🔓 Connecte-toi pour continuer" : status === "limit_reached" ? "⭐ Limite atteinte — Passer Premium" : "✨ Générer le texte"}
         </button>
       </div>
 

@@ -33,6 +33,10 @@ const FEATURES_PREMIUM = [
   { label: "Sans publicité", ok: true },
   { label: "Accès en avant-première aux nouveaux outils", ok: true },
   { label: "Support prioritaire", ok: true },
+  { label: "Correcteur illimité (plus de limite de 500 caractères)", ok: true },
+  { label: "Fusionner jusqu'à 50 PDFs en une fois", ok: true },
+  { label: "OCR jusqu'à 20 Mo par fichier", ok: true },
+  { label: "Toutes les langues du traducteur (arabe, japonais, coréen, chinois)", ok: true },
 ];
 
 const FAQ = [
@@ -54,7 +58,7 @@ const FAQ = [
   },
   {
     q: "La différence entre mensuel et annuel ?",
-    a: "Le plan annuel est facturé en une seule fois à 24,99€/an, soit l'équivalent de 2,08€/mois — une économie de 30% par rapport au mensuel.",
+    a: "Le plan annuel est facturé en une seule fois à 29,99€/an, soit l'équivalent de 2,50€/mois — une économie de 37% par rapport au mensuel.",
   },
   {
     q: "Mes données sont-elles en sécurité ?",
@@ -203,18 +207,24 @@ function PremiumContent() {
             <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-5xl font-black">
-                    {selectedPlan === "annual" ? "2,08€" : "2,99€"}
-                  </span>
-                  <span className="text-gray-400 text-lg">/mois</span>
-                </div>
                 {selectedPlan === "annual" ? (
-                  <p className="text-gray-500 text-sm">
-                    Facturé <span className="text-yellow-400 font-semibold">24,99€/an</span> · Économise 11€ vs mensuel
-                  </p>
+                  <>
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-5xl font-black">2,50€</span>
+                      <span className="text-gray-400 text-lg">/mois</span>
+                    </div>
+                    <p className="text-gray-500 text-sm">
+                      soit <span className="text-yellow-400 font-semibold">29,99€/an</span>
+                    </p>
+                  </>
                 ) : (
-                  <p className="text-gray-500 text-sm">Facturé 2,99€/mois · Sans engagement</p>
+                  <>
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-5xl font-black">3,99€</span>
+                      <span className="text-gray-400 text-lg">/mois</span>
+                    </div>
+                    <p className="text-gray-500 text-sm">Facturé 3,99€/mois · Sans engagement</p>
+                  </>
                 )}
                 <p className="text-gray-600 text-xs mt-1">☕ Soit moins qu&apos;un café par mois</p>
               </div>
@@ -234,8 +244,8 @@ function PremiumContent() {
                     {checkoutLoading
                       ? "Redirection..."
                       : selectedPlan === "annual"
-                      ? "⭐ S'abonner — 24,99€/an"
-                      : "⭐ S'abonner — 2,99€/mois"}
+                      ? "⭐ S'abonner — 29,99€/an"
+                      : "⭐ S'abonner — 3,99€/mois"}
                   </button>
                 ) : (
                   <div className="space-y-2">
@@ -405,7 +415,7 @@ function PremiumContent() {
       {!isSubscribed && (
         <div className="text-center bg-gray-900/50 border border-yellow-500/10 rounded-2xl p-8">
           <p className="text-white font-bold text-xl mb-1">
-            Moins de 3€/mois. Résiliable en 1 clic.
+            À partir de 2,50€/mois. Résiliable en 1 clic.
           </p>
           <p className="text-gray-500 text-sm mb-6">Essaie 7 jours sans risque — remboursé si insatisfait.</p>
           {user ? (

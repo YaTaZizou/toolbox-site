@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useAiLimit } from "@/hooks/useAiLimit";
-import { AiLimitBanner } from "@/components/AiLimitBanner";
 import { AdBanner } from "@/components/AdBanner";
+import { usePremiumStatus } from "@/components/PremiumProvider";
+
+const FREE_CHAR_LIMIT = 500;
+const PREMIUM_CHAR_LIMIT = 5000;
 
 export default function CorrecteurPage() {
   const [text, setText] = useState("");
@@ -15,8 +17,12 @@ export default function CorrecteurPage() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
+  const { isPremium } = usePremiumStatus();
+  const charLimit = isPremium ? PREMIUM_CHAR_LIMIT : FREE_CHAR_LIMIT;
+  const overLimit = !isPremium && text.length > FREE_CHAR_LIMIT;
+
   async function correct() {
-    if (!text.trim()) return;
+    if (!text.trim() || overLimit) return;
     setLoading(true);
     setError("");
     setCorrected("");
@@ -79,16 +85,34 @@ export default function CorrecteurPage() {
           className="w-full bg-transparent text-white placeholder-gray-600 resize-none focus:outline-none text-sm"
         />
         <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
-          <span className="text-xs text-gray-600">{text.split(/\s+/).filter(Boolean).length} mots — {text.length} caractères</span>
+          <span className="text-xs text-gray-600">{text.split(/\s+/).filter(Boolean).length} mots</span>
           <button onClick={() => { setText(""); setCorrected(""); setChanges([]); }} className="text-xs text-gray-600 hover:text-gray-400">Effacer</button>
         </div>
       </div>
+
+      {/* Compteur de caractères */}
+      <div className="mb-3">
+        <span className={`text-xs font-medium ${overLimit ? "text-red-400" : "text-gray-500"}`}>
+          {text.length} / {charLimit} caractères{isPremium ? "" : " (gratuit)"}
+        </span>
+      </div>
+
+      {/* Avertissement dépassement limite */}
+      {overLimit && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 mb-4 text-sm text-amber-300">
+          ⭐ Limite gratuite : {FREE_CHAR_LIMIT} caractères.{" "}
+          <Link href="/premium" className="underline font-semibold hover:text-amber-200 transition-colors">
+            Passe Premium →
+          </Link>{" "}
+          pour corriger des textes plus longs.
+        </div>
+      )}
 
       {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl px-4 py-3 mb-4 text-sm">{error}</div>}
 
       <button
         onClick={correct}
-        disabled={loading || !text.trim()}
+        disabled={loading || !text.trim() || overLimit}
         className="w-full bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors mb-6"
       >
         {loading ? "Correction en cours..." : "✅ Corriger le texte"}

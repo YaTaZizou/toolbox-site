@@ -11,6 +11,9 @@ const LANGUAGES = [
   "Português", "Nederlands", "Polski", "Русский", "中文", "日本語", "العربية",
 ];
 
+const PREMIUM_LANGUAGES = new Set(["العربية", "日本語", "한국어", "中文"]);
+const FREE_CHAR_LIMIT = 500;
+
 export default function TraducteurPage() {
   const [text, setText] = useState("");
   const [from, setFrom] = useState("auto");
@@ -19,11 +22,16 @@ export default function TraducteurPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
-  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
+  const { canUse, increment, remaining, isPremium, status, ready, limit } = useAiLimit();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const overCharLimit = !isPremium && text.length > FREE_CHAR_LIMIT;
+  const isPremiumLang = PREMIUM_LANGUAGES.has(to);
+  const premiumLangBlocked = !isPremium && isPremiumLang;
+  const translateBlocked = overCharLimit || premiumLangBlocked;
+
   async function translate(value: string, fromLang: string, toLang: string) {
-    if (!value.trim() || value.trim().length < 2 || !canUse) { setResult(""); return; }
+    if (!value.trim() || value.trim().length < 2 || !canUse || translateBlocked) { setResult(""); return; }
     increment();
     setLoading(true);
     setError("");
@@ -46,12 +54,13 @@ export default function TraducteurPage() {
   // Traduction automatique avec debounce 800ms
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (!text.trim()) { setResult(""); return; }
+    if (!text.trim() || translateBlocked) { setResult(""); return; }
     debounceRef.current = setTimeout(() => {
       translate(text, from, to);
     }, 800);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [text, from, to]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, from, to, translateBlocked]);
 
   function swap() {
     if (from === "auto") return;
@@ -78,7 +87,7 @@ export default function TraducteurPage() {
         <p className="text-gray-400">Traduction automatique en temps réel dans plus de 12 langues.</p>
       </div>
 
-      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} />}
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
 
       {/* Sélecteurs */}
       <div className="flex items-center gap-3 mb-4">
@@ -95,7 +104,11 @@ export default function TraducteurPage() {
 
         <select value={to} onChange={(e) => setTo(e.target.value)}
           className="flex-1 bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-          {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+          {LANGUAGES.map((l) => (
+            <option key={l} value={l}>
+              {PREMIUM_LANGUAGES.has(l) ? `⭐ ${l}` : l}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -110,7 +123,9 @@ export default function TraducteurPage() {
             className="w-full bg-transparent text-white placeholder-gray-600 resize-none focus:outline-none text-sm"
           />
           <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
-            <span className="text-xs text-gray-600">{text.length} caractères</span>
+            <span className={`text-xs font-medium ${overCharLimit ? "text-red-400" : "text-gray-600"}`}>
+              {text.length} / {isPremium ? "5000" : FREE_CHAR_LIMIT} caractères{isPremium ? "" : " (gratuit)"}
+            </span>
             <button onClick={() => { setText(""); setResult(""); }} className="text-xs text-gray-600 hover:text-gray-400">Effacer</button>
           </div>
         </div>
@@ -135,6 +150,28 @@ export default function TraducteurPage() {
           )}
         </div>
       </div>
+
+      {/* Avertissement dépassement limite caractères */}
+      {overCharLimit && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 mt-4 text-sm text-amber-300">
+          ⭐ Limite gratuite : {FREE_CHAR_LIMIT} caractères.{" "}
+          <Link href="/premium" className="underline font-semibold hover:text-amber-200 transition-colors">
+            Passe Premium →
+          </Link>{" "}
+          pour traduire des textes plus longs.
+        </div>
+      )}
+
+      {/* Avertissement langue premium */}
+      {premiumLangBlocked && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 mt-4 text-sm text-amber-300">
+          ⭐ Cette langue est réservée aux membres Premium.{" "}
+          <Link href="/premium" className="underline font-semibold hover:text-amber-200 transition-colors">
+            Passe Premium →
+          </Link>{" "}
+          pour débloquer l&apos;arabe, le japonais, le chinois et plus.
+        </div>
+      )}
 
       {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl px-4 py-3 mt-4 text-sm">{error}</div>}
       <div className="mt-8" />

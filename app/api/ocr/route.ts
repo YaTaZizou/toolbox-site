@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const premium = await isPremiumRequest(req);
     if (!premium) {
       const ip = getClientIp(req);
-      const { allowed } = checkRateLimit(`ocr:${ip}`);
+      const { allowed } = checkRateLimit(`ocr:${ip}`, 3);
       if (!allowed) {
         return NextResponse.json(
           { error: "Limite quotidienne atteinte. Passe Premium pour un accès illimité." },
@@ -21,10 +21,24 @@ export async function POST(req: NextRequest) {
     }
     // ────────────────────────────────────────────────────────────────────
 
-    const { image, mediaType } = await req.json();
+    const { image, mediaType, fileSize } = await req.json();
 
     if (!image || !mediaType) {
       return NextResponse.json({ error: "Image manquante" }, { status: 400 });
+    }
+
+    // Vérification de taille selon le plan
+    if (!premium && typeof fileSize === "number" && fileSize > 2 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "Limite gratuite : 2 Mo max. Passe Premium pour des fichiers plus volumineux (20 Mo)." },
+        { status: 403 }
+      );
+    }
+    if (premium && typeof fileSize === "number" && fileSize > 20 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "Fichier trop volumineux (max 20 Mo)" },
+        { status: 413 }
+      );
     }
 
     const supportedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
@@ -35,7 +49,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Limite de taille : 8 Mo en base64 ≈ 6 Mo image réelle
+    // Limite de taille base64 (filet de sécurité général)
     const MAX_BASE64_LENGTH = 8 * 1024 * 1024;
     if (typeof image !== "string" || image.length > MAX_BASE64_LENGTH) {
       return NextResponse.json(

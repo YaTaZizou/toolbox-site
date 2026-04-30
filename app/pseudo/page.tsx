@@ -12,7 +12,7 @@ export default function PseudoPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
-  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
+  const { canUse, increment, remaining, isPremium, status, ready, limit } = useAiLimit();
 
   async function generate() {
     if (!input.trim() || !canUse) return;
@@ -53,7 +53,7 @@ export default function PseudoPage() {
         <p className="text-gray-400">Décris ton univers (gaming, sport, musique...) et l'IA crée 8 pseudos originaux pour toi.</p>
       </div>
 
-      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} />}
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
         <label className="block text-sm text-gray-400 mb-3">Thème ou mots-clés</label>
@@ -69,7 +69,7 @@ export default function PseudoPage() {
           disabled={loading || !input.trim() || !canUse}
           className="mt-4 w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
         >
-          {loading ? "Génération en cours..." : !canUse ? "⭐ Limite atteinte — Passer Premium" : "✨ Générer des pseudos"}
+          {loading ? "Génération en cours..." : status === "login_required" ? "🔓 Connecte-toi pour continuer" : status === "limit_reached" ? "⭐ Limite atteinte — Passer Premium" : "✨ Générer des pseudos"}
         </button>
       </div>
 

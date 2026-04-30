@@ -1,6 +1,7 @@
 import { PDFDocument } from "pdf-lib";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
+import { isPremiumRequest } from "@/lib/apiAuth";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -12,6 +13,8 @@ export async function POST(req: NextRequest) {
   const { allowed } = checkRateLimit(`convertir-pdf:${ip}`, 20);
   if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
 
+  const premium = await isPremiumRequest(req);
+
   try {
     const formData = await req.formData();
     const action = formData.get("action") as string;
@@ -19,6 +22,12 @@ export async function POST(req: NextRequest) {
     if (action === "fusionner") {
       const files = formData.getAll("files") as File[];
       if (files.length < 2) return NextResponse.json({ error: "Minimum 2 fichiers PDF requis" }, { status: 400 });
+
+      if (!premium && files.length > 2)
+        return NextResponse.json(
+          { error: "Limite gratuite : 2 PDFs max. Passe Premium pour fusionner plus de fichiers." },
+          { status: 403 }
+        );
 
       const mergedPdf = await PDFDocument.create();
       for (const file of files) {

@@ -13,7 +13,7 @@ export default function SupprimerFondPage() {
   const [progress, setProgress] = useState("");
   const [bgColor, setBgColor] = useState<string>("transparent");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
+  const { canUse, increment, remaining, isPremium, status: aiStatus, ready, limit } = useAiLimit();
 
   function onFile(f: File) {
     setFile(f);
@@ -89,7 +89,7 @@ export default function SupprimerFondPage() {
         <p className="text-gray-400">Supprime le fond de tes images automatiquement grâce à l&apos;IA.</p>
       </div>
 
-      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} />}
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={aiStatus} />}
 
       {/* Drop zone */}
       <div
@@ -133,7 +133,7 @@ export default function SupprimerFondPage() {
           disabled={!canUse}
           className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors mb-4"
         >
-          {!canUse ? "⭐ Limite atteinte — Passer Premium" : "✂️ Supprimer le fond"}
+          {aiStatus === "login_required" ? "🔓 Connecte-toi pour continuer" : aiStatus === "limit_reached" ? "⭐ Limite atteinte — Passer Premium" : "✂️ Supprimer le fond"}
         </button>
       )}
 

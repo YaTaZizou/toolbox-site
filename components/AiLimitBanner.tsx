@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import type { AiLimitStatus } from "@/hooks/useAiLimit";
 
 type Props = {
   remaining: number;
   isPremium: boolean;
   limit: number;
+  status?: AiLimitStatus;
 };
 
 function getTimeUntilReset(): string {
@@ -20,8 +23,9 @@ function getTimeUntilReset(): string {
   return `${hours}h ${mins}min`;
 }
 
-export function AiLimitBanner({ remaining, isPremium, limit }: Props) {
+export function AiLimitBanner({ remaining, isPremium, limit, status }: Props) {
   const [timeLeft, setTimeLeft] = useState(getTimeUntilReset());
+  const pathname = usePathname();
 
   useEffect(() => {
     if (remaining > 0 || isPremium) return;
@@ -31,8 +35,57 @@ export function AiLimitBanner({ remaining, isPremium, limit }: Props) {
 
   if (isPremium) return null;
 
-  // ── Limite atteinte → modale plein écran ──────────────────────────────
-  if (remaining === 0) {
+  // ── Connexion requise → modale plein écran (bleu) ─────────────────────
+  if (status === "login_required") {
+    const redirectParam = pathname ? `?redirect=${encodeURIComponent(pathname)}` : "";
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
+      >
+        <div
+          className="w-full max-w-md rounded-2xl p-8 text-center"
+          style={{ background: "var(--panel)", border: "1px solid rgba(59,130,246,0.35)" }}
+        >
+          {/* Icon */}
+          <div
+            className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center text-3xl"
+            style={{ background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.25)" }}
+          >
+            🔓
+          </div>
+
+          <h2 className="text-xl font-bold text-white mb-2">Connecte-toi pour continuer gratuitement</h2>
+          <p className="text-sm mb-6" style={{ color: "var(--text-2)" }}>
+            Tu as utilisé <strong className="text-white">3 générations</strong> en tant qu&apos;invité.
+            Crée un compte gratuit pour continuer jusqu&apos;à{" "}
+            <strong className="text-white">{limit} générations</strong> par jour.
+          </p>
+
+          {/* CTA Principal */}
+          <Link
+            href={`/inscription${redirectParam}`}
+            className="block w-full font-bold py-3.5 rounded-xl text-sm mb-3 transition-colors"
+            style={{ background: "#3b82f6", color: "#fff" }}
+          >
+            Créer un compte gratuit →
+          </Link>
+
+          {/* CTA Secondaire */}
+          <Link
+            href={`/connexion${redirectParam}`}
+            className="block w-full font-semibold py-3 rounded-xl text-sm transition-colors"
+            style={{ background: "rgba(59,130,246,0.1)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.2)" }}
+          >
+            Se connecter →
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Limite atteinte → modale plein écran (amber/gold) ─────────────────
+  if (status === "limit_reached" || remaining === 0) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
         style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}

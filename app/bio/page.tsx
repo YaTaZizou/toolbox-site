@@ -15,7 +15,7 @@ export default function BioPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState<number | null>(null);
-  const { canUse, increment, remaining, isPremium, ready, limit } = useAiLimit();
+  const { canUse, increment, remaining, isPremium, status, ready, limit } = useAiLimit();
 
   async function generate() {
     if (!input.trim() || !canUse) return;
@@ -60,7 +60,7 @@ export default function BioPage() {
         <p className="text-gray-400">Décris qui tu es et l'IA génère 3 bios percutantes adaptées à ta plateforme.</p>
       </div>
 
-      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} />}
+      {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
         <label className="block text-sm text-gray-400 mb-3">Plateforme cible</label>
@@ -92,7 +92,7 @@ export default function BioPage() {
           disabled={loading || !input.trim() || !canUse}
           className="mt-4 w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
         >
-          {loading ? "Génération en cours..." : !canUse ? "⭐ Limite atteinte — Passer Premium" : "✨ Générer des bios"}
+          {loading ? "Génération en cours..." : status === "login_required" ? "🔓 Connecte-toi pour continuer" : status === "limit_reached" ? "⭐ Limite atteinte — Passer Premium" : "✨ Générer des bios"}
         </button>
       </div>
 

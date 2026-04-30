@@ -3,6 +3,7 @@
 import { useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { usePremiumStatus } from "@/components/PremiumProvider";
 
 type Action = "fusionner" | "image-vers-pdf" | "decouper" | "proteger";
 
@@ -16,6 +17,7 @@ const tabs: { value: Action; emoji: string; label: string; desc: string }[] = [
 function PdfTool() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get("tab") as Action) ?? "fusionner";
+  const { isPremium } = usePremiumStatus();
 
   const [action, setAction] = useState<Action>(initialTab);
   const [files, setFiles] = useState<File[]>([]);
@@ -172,6 +174,18 @@ function PdfTool() {
               <button onClick={() => removeFile(i)} className="text-gray-600 hover:text-red-400 transition-colors text-sm">✕</button>
             </div>
           ))}
+        </div>
+      )}
+
+      {action === "fusionner" && files.length > 2 && !isPremium && (
+        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl px-4 py-3 mb-4 text-sm flex items-center gap-2">
+          <span>⭐</span>
+          <span>
+            Limite gratuite : 2 PDFs max —{" "}
+            <Link href="/premium" className="underline font-semibold hover:text-amber-300">
+              Passe Premium pour en fusionner plus
+            </Link>
+          </span>
         </div>
       )}
 

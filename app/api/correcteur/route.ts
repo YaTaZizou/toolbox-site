@@ -26,6 +26,12 @@ export async function POST(req: NextRequest) {
     if (!text?.trim())
       return NextResponse.json({ error: "Texte manquant" }, { status: 400 });
 
+    if (!premium && text.length > 500)
+      return NextResponse.json(
+        { error: "Limite gratuite : 500 caractères max. Passe Premium pour corriger des textes plus longs." },
+        { status: 403 }
+      );
+
     if (text.length > 5000)
       return NextResponse.json({ error: "Texte trop long (max 5000 caractères)" }, { status: 400 });
 

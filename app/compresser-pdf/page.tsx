@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { usePremiumStatus } from "@/components/PremiumProvider";
 
 const MAX_SIZE_MB = 50;
 
@@ -45,7 +46,10 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} Mo`;
 }
 
+const FREE_MAX_SIZE_MB = 5;
+
 export default function CompresserPdfPage() {
+  const { isPremium } = usePremiumStatus();
   const [file, setFile] = useState<File | null>(null);
   const [level, setLevel] = useState<CompressionLevel>("moyenne");
   const [loading, setLoading] = useState(false);
@@ -228,6 +232,19 @@ export default function CompresserPdfPage() {
         </div>
       )}
 
+      {/* Avertissement limite gratuite taille */}
+      {file && !isPremium && file.size > FREE_MAX_SIZE_MB * 1024 * 1024 && (
+        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl px-4 py-3 mb-6 text-sm flex items-center gap-2">
+          <span>⭐</span>
+          <span>
+            Limite gratuite : 5 Mo max. {" "}
+            <Link href="/premium" className="underline font-semibold hover:text-amber-300">
+              Passe Premium pour compresser des fichiers jusqu&apos;à 50 Mo.
+            </Link>
+          </span>
+        </div>
+      )}
+
       {/* Sélecteur de niveau */}
       {file && !result && (
         <div className="mb-6">
@@ -263,7 +280,7 @@ export default function CompresserPdfPage() {
       {file && !result && (
         <button
           onClick={compress}
-          disabled={loading}
+          disabled={loading || (!isPremium && file.size > FREE_MAX_SIZE_MB * 1024 * 1024)}
           className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
         >
           {loading ? (

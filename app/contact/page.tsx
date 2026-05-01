@@ -79,6 +79,12 @@ export default function ContactPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Nous contacter</h1>
         <p className="text-gray-400 text-sm">Réponse sous 24h en semaine.</p>
+        <p className="text-gray-500 text-sm mt-1">
+          Ou directement par email :{" "}
+          <a href="mailto:contact@alltoolbox.fr" className="text-purple-400 hover:text-white transition-colors">
+            contact@alltoolbox.fr
+          </a>
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">

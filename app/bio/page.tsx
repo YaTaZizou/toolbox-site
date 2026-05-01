@@ -31,7 +31,7 @@ export default function BioPage() {
         body: JSON.stringify({ type: "bio", input: `Plateforme: ${platform}. Infos: ${input}` }),
       });
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!res.ok || data.error) throw new Error(data.error ?? "Erreur inconnue");
       increment();
       setResults(data.result);
     } catch (e: unknown) {
@@ -58,7 +58,7 @@ export default function BioPage() {
           <span className="text-4xl">✍️</span>
           <h1 className="text-3xl font-bold">Générateur de Bio</h1>
         </div>
-        <p className="text-gray-400">Décris qui tu es et l'IA génère 3 bios percutantes adaptées à ta plateforme.</p>
+        <p className="text-gray-400">Décris qui tu es et l&apos;IA génère 3 bios percutantes adaptées à ta plateforme.</p>
       </div>
 
       {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
@@ -85,9 +85,11 @@ export default function BioPage() {
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          maxLength={500}
           placeholder="Ex: Je suis créateur de contenu gaming, j'adore les FPS, je stream le soir..."
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 resize-none h-28 focus:outline-none focus:border-blue-500 transition-colors"
         />
+        <p className="text-xs text-gray-600 mt-1 text-right">{input.length}/500</p>
         <button
           onClick={generate}
           disabled={loading || !input.trim() || !canUse}

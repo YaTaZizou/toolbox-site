@@ -46,7 +46,7 @@ export default function QRCodePage() {
           <span className="text-4xl">📱</span>
           <h1 className="text-3xl font-bold">Générateur de QR Code</h1>
         </div>
-        <p className="text-gray-400">Crée un QR code personnalisé pour n'importe quel lien ou texte.</p>
+        <p className="text-gray-400">Crée un QR code personnalisé pour n&apos;importe quel lien ou texte.</p>
       </div>
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6 space-y-5">

@@ -40,7 +40,7 @@ export default function TextePage() {
         body: JSON.stringify({ type: "texte", input: `Type: ${typeLabel}. Sujet: ${input}` }),
       });
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!res.ok || data.error) throw new Error(data.error ?? "Erreur inconnue");
       increment();
       setResult(data.result);
     } catch (e: unknown) {
@@ -67,7 +67,7 @@ export default function TextePage() {
           <span className="text-4xl">📝</span>
           <h1 className="text-3xl font-bold">Générateur de Texte IA</h1>
         </div>
-        <p className="text-gray-400">Dis ce que tu veux écrire, l'IA le rédige pour toi en quelques secondes.</p>
+        <p className="text-gray-400">Dis ce que tu veux écrire, l&apos;IA le rédige pour toi en quelques secondes.</p>
       </div>
 
       {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
@@ -94,9 +94,11 @@ export default function TextePage() {
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          maxLength={500}
           placeholder="Ex: Un post Instagram pour lancer ma nouvelle collection de sneakers..."
           className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 resize-none h-28 focus:outline-none focus:border-green-500 transition-colors"
         />
+        <p className="text-xs text-gray-600 mt-1 text-right">{input.length}/500</p>
         <button
           onClick={generate}
           disabled={loading || !input.trim() || !canUse}

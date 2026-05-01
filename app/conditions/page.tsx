@@ -82,7 +82,7 @@ export default function Conditions() {
           <p>En cas de litige non résolu avec notre service, vous pouvez recourir gratuitement à la médiation de la consommation. Plateforme européenne de règlement en ligne des litiges : <span className="text-purple-400">https://ec.europa.eu/consumers/odr</span>. Vous pouvez également vous adresser au médiateur compétent de votre secteur d&apos;activité.</p>
         </section>
 
-        <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : avril 2026</p>
+        <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : mai 2026</p>
       </div>
     </div>
   );

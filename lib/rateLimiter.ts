@@ -64,14 +64,6 @@ async function upstashLimit(key: string, limit: number): Promise<{ allowed: bool
 // ── Export principal ──────────────────────────────────────────────────────────
 const DAILY_LIMIT = 5;
 
-/**
- * @deprecated NE PAS UTILISER. Utilisez `checkRateLimitAsync` à la place.
- * Cette fonction est intentionnellement cassée pour prévenir l'utilisation accidentelle.
- */
-export function checkRateLimit(): never {
-  throw new Error("checkRateLimit is deprecated. Use checkRateLimitAsync instead.");
-}
-
 export async function checkRateLimitAsync(key: string, limit = DAILY_LIMIT): Promise<{ allowed: boolean }> {
   return upstashLimit(key, limit);
 }

@@ -87,7 +87,7 @@ export default function ImagePage() {
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-3">
           <span className="text-4xl">🖼️</span>
-          <h1 className="text-3xl font-bold">Convertisseur d'Images</h1>
+          <h1 className="text-3xl font-bold">Convertisseur d&apos;Images</h1>
         </div>
         <p className="text-gray-400">Convertis et compresse tes images en JPG, PNG, WebP ou AVIF instantanément.</p>
       </div>
@@ -110,7 +110,7 @@ export default function ImagePage() {
           <div className="flex flex-col items-center gap-3">
             <img src={preview} alt="preview" className="max-h-48 rounded-xl object-contain" />
             <p className="text-sm text-gray-400">{file?.name} — {sizeKB} Ko</p>
-            <p className="text-xs text-gray-600">Clique pour changer l'image</p>
+            <p className="text-xs text-gray-600">Clique pour changer l&apos;image</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3 text-gray-500">

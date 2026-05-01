@@ -51,7 +51,7 @@ export default function PseudoPage() {
           <span className="text-4xl">🎭</span>
           <h1 className="text-3xl font-bold">Générateur de Pseudo</h1>
         </div>
-        <p className="text-gray-400">Décris ton univers (gaming, sport, musique...) et l'IA crée 8 pseudos originaux pour toi.</p>
+        <p className="text-gray-400">Décris ton univers (gaming, sport, musique...) et l&apos;IA crée 8 pseudos originaux pour toi.</p>
       </div>
 
       {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}

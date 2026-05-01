@@ -31,9 +31,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "URL manquante" }, { status: 400 });
   }
 
-  // Validation basique de l'URL
+  // Validation de l'URL : doit être http ou https uniquement
   try {
-    new URL(url.trim());
+    const parsed = new URL(url.trim());
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return NextResponse.json({ error: "URL invalide (protocole non supporté)" }, { status: 400 });
+    }
   } catch {
     return NextResponse.json({ error: "URL invalide" }, { status: 400 });
   }

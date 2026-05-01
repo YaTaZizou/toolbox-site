@@ -26,11 +26,9 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const stored = localStorage.getItem(COOKIE_KEY);
     if (stored === "accepted" || stored === "declined") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConsent(stored as ConsentStatus);
     }
   }, []);

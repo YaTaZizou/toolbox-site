@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Confidentialite() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
@@ -6,7 +8,7 @@ export default function Confidentialite() {
       <div className="space-y-8 text-gray-300 leading-relaxed">
         <section>
           <h2 className="text-xl font-semibold text-white mb-3">Responsable du traitement</h2>
-          <p>Le responsable du traitement des données personnelles collectées via alltoolbox.fr est : l&apos;éditeur du site, joignable à <span className="text-purple-400">contact@alltoolbox.fr</span>.</p>
+          <p>Le responsable du traitement des données personnelles collectées via alltoolbox.fr est : l&apos;éditeur du site, joignable à <span className="text-purple-400">contact@alltoolbox.fr</span>. Informations complètes dans les <Link href="/mentions-legales" className="text-purple-400 underline hover:text-white transition-colors">mentions légales</Link>.</p>
         </section>
 
         <section>
@@ -83,7 +85,7 @@ export default function Confidentialite() {
           <p className="mt-3"><span className="text-gray-300">Réclamation auprès de la CNIL</span> — Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la Commission Nationale de l&apos;Informatique et des Libertés (CNIL) : <span className="text-purple-400">www.cnil.fr</span>. Lorsqu&apos;un traitement est fondé sur votre consentement, vous pouvez le retirer à tout moment en nous contactant à <span className="text-purple-400">contact@alltoolbox.fr</span>.</p>
         </section>
 
-        <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : avril 2026</p>
+        <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : mai 2026</p>
       </div>
     </div>
   );

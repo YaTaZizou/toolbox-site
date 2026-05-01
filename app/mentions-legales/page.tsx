@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function MentionsLegales() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
@@ -39,17 +41,22 @@ export default function MentionsLegales() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">4. Propriété intellectuelle</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">4. Protection des données personnelles</h2>
+          <p>Le traitement des données personnelles des utilisateurs est détaillé dans notre <Link href="/confidentialite" className="text-purple-400 underline hover:text-white transition-colors">politique de confidentialité</Link>.</p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-3">5. Propriété intellectuelle</h2>
           <p>L&apos;ensemble du contenu de ce site (textes, graphiques, logos, icônes) est la propriété exclusive de ToolBox. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">5. Responsabilité</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">6. Responsabilité</h2>
           <p>ToolBox s&apos;efforce de fournir des informations exactes et à jour. Cependant, nous ne pouvons garantir l&apos;exactitude, la complétude ou l&apos;actualité des informations diffusées sur ce site. L&apos;utilisation des outils proposés se fait sous la responsabilité de l&apos;utilisateur.</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">6. Médiation de la consommation</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">7. Médiation de la consommation</h2>
           <p>
             Conformément aux dispositions du Code de la consommation concernant le règlement amiable des litiges, vous pouvez recourir à la plateforme de règlement en ligne des litiges (RLL) proposée par la Commission européenne :
           </p>
@@ -66,7 +73,7 @@ export default function MentionsLegales() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">7. Droit applicable</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">8. Droit applicable</h2>
           <p>Les présentes mentions légales sont soumises au droit français. En cas de litige, les tribunaux français seront seuls compétents.</p>
         </section>
 

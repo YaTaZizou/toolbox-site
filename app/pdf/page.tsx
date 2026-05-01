@@ -53,7 +53,18 @@ function PdfTool() {
   }
 
   function handleFiles(fl: FileList) {
-    setFiles(Array.from(fl));
+    const newFiles = Array.from(fl);
+
+    // Vérification de type : seuls les PDFs sont acceptés pour les actions PDF
+    if (action !== "image-vers-pdf") {
+      const nonPdf = newFiles.find((f) => f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf"));
+      if (nonPdf) {
+        setError(`"${nonPdf.name}" n'est pas un fichier PDF. Sélectionne uniquement des fichiers .pdf`);
+        return;
+      }
+    }
+
+    setFiles(newFiles);
     setDone(false);
     setError("");
   }
@@ -153,6 +164,19 @@ function PdfTool() {
         ))}
       </div>
 
+      {/* Bandeau limite gratuite visible AVANT upload pour la fusion */}
+      {action === "fusionner" && !isPremium && (
+        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl px-4 py-3 mb-4 text-sm flex items-center gap-2">
+          <span>⭐</span>
+          <span>
+            Version gratuite : <strong>2 PDFs max</strong> par fusion —{" "}
+            <Link href="/premium" className="underline font-semibold hover:text-amber-300">
+              Passe Premium pour en fusionner plus
+            </Link>
+          </span>
+        </div>
+      )}
+
       {/* Zone upload */}
       <div
         onClick={() => inputRef.current?.click()}
@@ -171,6 +195,9 @@ function PdfTool() {
         <span className="text-4xl mb-3 block">📁</span>
         <p className="font-medium text-gray-300">Dépose ton fichier ici</p>
         <p className="text-sm text-gray-600 mt-1">ou clique pour parcourir</p>
+        {action === "fusionner" && (
+          <p className="text-xs text-gray-600 mt-2">Formats acceptés : .pdf uniquement</p>
+        )}
       </div>
 
       {/* Fichiers */}
@@ -182,7 +209,11 @@ function PdfTool() {
                 <span>{f.type === "application/pdf" ? "📄" : "🖼️"}</span>
                 <div>
                   <p className="text-sm text-white truncate max-w-xs">{f.name}</p>
-                  <p className="text-xs text-gray-500">{(f.size / 1024).toFixed(1)} Ko</p>
+                  <p className="text-xs text-gray-500">
+                    {f.size >= 1024 * 1024
+                      ? `${(f.size / (1024 * 1024)).toFixed(2)} Mo`
+                      : `${(f.size / 1024).toFixed(1)} Ko`}
+                  </p>
                 </div>
               </div>
               <button onClick={() => removeFile(i)} className="text-gray-600 hover:text-red-400 transition-colors text-sm">✕</button>
@@ -192,13 +223,14 @@ function PdfTool() {
       )}
 
       {action === "fusionner" && files.length > 2 && !isPremium && (
-        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl px-4 py-3 mb-4 text-sm flex items-center gap-2">
-          <span>⭐</span>
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 mb-4 text-sm flex items-center gap-2">
+          <span>⚠️</span>
           <span>
-            Limite gratuite : 2 PDFs max —{" "}
-            <Link href="/premium" className="underline font-semibold hover:text-amber-300">
-              Passe Premium pour en fusionner plus
+            Tu as sélectionné {files.length} PDFs mais la version gratuite est limitée à 2. Supprime les fichiers en trop ou{" "}
+            <Link href="/premium" className="underline font-semibold hover:text-red-300">
+              passe Premium
             </Link>
+            .
           </span>
         </div>
       )}

@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
     headers: {
       "Content-Type": "image/png",
       "Content-Disposition": `attachment; filename="toolbox-enhanced.png"`,
+      "Cache-Control": "no-store",
     },
   });
 }

@@ -63,13 +63,137 @@ export default function PdfImagesPage() {
     }
   }
 
-  function downloadAll() {
-    images.forEach(({ pageNum, dataUrl }) => {
+  async function downloadAll() {
+    if (images.length === 0) return;
+
+    // Pour un seul fichier, téléchargement direct
+    if (images.length === 1) {
+      downloadOne(images[0]);
+      return;
+    }
+
+    // Pour plusieurs pages : génération d'un ZIP via l'API de compression native
+    try {
+      // Construire un ZIP minimal (format PKZIP non compressé) sans dépendance externe
+      const fileEntries: { name: string; data: Uint8Array }[] = [];
+      for (const { pageNum, dataUrl } of images) {
+        const base64 = dataUrl.split(",")[1];
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        fileEntries.push({ name: `page-${pageNum}.${format}`, data: bytes });
+      }
+
+      // Assemblage ZIP (Store method — pas de compression, compatible partout)
+      const zipParts: Uint8Array[] = [];
+      const centralDir: Uint8Array[] = [];
+      let offset = 0;
+
+      const enc = new TextEncoder();
+      for (const entry of fileEntries) {
+        const nameBytes = enc.encode(entry.name);
+        const crc = crc32(entry.data);
+        const size = entry.data.length;
+
+        // Local file header
+        const localHeader = new Uint8Array(30 + nameBytes.length);
+        const lv = new DataView(localHeader.buffer);
+        lv.setUint32(0, 0x04034b50, true);  // signature
+        lv.setUint16(4, 20, true);           // version needed
+        lv.setUint16(6, 0, true);            // flags
+        lv.setUint16(8, 0, true);            // compression: store
+        lv.setUint16(10, 0, true);           // mod time
+        lv.setUint16(12, 0, true);           // mod date
+        lv.setUint32(14, crc, true);         // crc-32
+        lv.setUint32(18, size, true);        // compressed size
+        lv.setUint32(22, size, true);        // uncompressed size
+        lv.setUint16(26, nameBytes.length, true); // file name length
+        lv.setUint16(28, 0, true);           // extra field length
+        localHeader.set(nameBytes, 30);
+
+        // Central directory entry
+        const cdEntry = new Uint8Array(46 + nameBytes.length);
+        const cv = new DataView(cdEntry.buffer);
+        cv.setUint32(0, 0x02014b50, true);   // signature
+        cv.setUint16(4, 20, true);            // version made by
+        cv.setUint16(6, 20, true);            // version needed
+        cv.setUint16(8, 0, true);             // flags
+        cv.setUint16(10, 0, true);            // compression
+        cv.setUint16(12, 0, true);            // mod time
+        cv.setUint16(14, 0, true);            // mod date
+        cv.setUint32(16, crc, true);          // crc-32
+        cv.setUint32(20, size, true);         // compressed size
+        cv.setUint32(24, size, true);         // uncompressed size
+        cv.setUint16(28, nameBytes.length, true); // file name length
+        cv.setUint16(30, 0, true);            // extra field length
+        cv.setUint16(32, 0, true);            // comment length
+        cv.setUint16(34, 0, true);            // disk start
+        cv.setUint16(36, 0, true);            // internal attrs
+        cv.setUint32(38, 0, true);            // external attrs
+        cv.setUint32(42, offset, true);       // local header offset
+        cdEntry.set(nameBytes, 46);
+
+        zipParts.push(localHeader, entry.data);
+        centralDir.push(cdEntry);
+        offset += localHeader.length + entry.data.length;
+      }
+
+      const cdSize = centralDir.reduce((s, e) => s + e.length, 0);
+      const eocd = new Uint8Array(22);
+      const ev = new DataView(eocd.buffer);
+      ev.setUint32(0, 0x06054b50, true);     // signature
+      ev.setUint16(4, 0, true);              // disk number
+      ev.setUint16(6, 0, true);              // disk with CD
+      ev.setUint16(8, fileEntries.length, true);  // entries on disk
+      ev.setUint16(10, fileEntries.length, true); // total entries
+      ev.setUint32(12, cdSize, true);        // CD size
+      ev.setUint32(16, offset, true);        // CD offset
+      ev.setUint16(20, 0, true);             // comment length
+
+      const allParts = [...zipParts, ...centralDir, eocd];
+      const totalLen = allParts.reduce((s, p) => s + p.length, 0);
+      const zipData = new Uint8Array(totalLen);
+      let pos = 0;
+      for (const part of allParts) { zipData.set(part, pos); pos += part.length; }
+
+      const blob = new Blob([zipData], { type: "application/zip" });
+      const baseName = file?.name.replace(/\.pdf$/i, "") ?? "pages";
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = `page-${pageNum}.${format}`;
+      a.href = url;
+      a.download = `${baseName}-images.zip`;
       a.click();
-    });
+      URL.revokeObjectURL(url);
+    } catch {
+      // Fallback : téléchargements séquentiels si le ZIP échoue
+      for (const img of images) {
+        await new Promise<void>((resolve) => {
+          const a = document.createElement("a");
+          a.href = img.dataUrl;
+          a.download = `page-${img.pageNum}.${format}`;
+          a.click();
+          setTimeout(resolve, 200);
+        });
+      }
+    }
+  }
+
+  // CRC-32 pour le format ZIP
+  function crc32(data: Uint8Array): number {
+    const table = makeCrc32Table();
+    let crc = 0xffffffff;
+    for (let i = 0; i < data.length; i++) crc = (crc >>> 8) ^ table[(crc ^ data[i]) & 0xff];
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  function makeCrc32Table(): Uint32Array {
+    const table = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let j = 0; j < 8; j++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+      table[i] = c;
+    }
+    return table;
   }
 
   function downloadOne(img: PageImage) {
@@ -186,7 +310,7 @@ export default function PdfImagesPage() {
               onClick={downloadAll}
               className="bg-pink-600 hover:bg-pink-500 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
             >
-              ⬇️ Tout télécharger
+              ⬇️ Tout télécharger{images.length > 1 ? " (.zip)" : ""}
             </button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

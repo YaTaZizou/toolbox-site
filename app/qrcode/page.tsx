@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
 import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
+import { useToast } from "@/components/Toast";
 
 const colors = ["#ffffff", "#a855f7", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
@@ -14,6 +15,7 @@ export default function QRCodePage() {
   const [size, setSize] = useState(300);
   const [dataUrl, setDataUrl] = useState("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -92,12 +94,25 @@ export default function QRCodePage() {
       {dataUrl ? (
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center">
           <img src={dataUrl} alt="QR Code" className="mx-auto rounded-xl mb-6" style={{ maxWidth: "280px" }} />
-          <button
-            onClick={download}
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-colors"
-          >
-            ⬇️ Télécharger le QR Code
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={download}
+              className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-colors"
+            >
+              ⬇️ Télécharger le QR Code
+            </button>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(text).then(() =>
+                  showToast("Lien copié dans le presse-papier !", "success")
+                );
+              }}
+              className="px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-3 rounded-xl transition-colors"
+              title="Copier le lien"
+            >
+              📋
+            </button>
+          </div>
         </div>
       ) : (
         <div className="bg-gray-900/50 border border-dashed border-gray-700 rounded-2xl p-16 text-center text-gray-600">

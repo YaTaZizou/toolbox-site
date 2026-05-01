@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
       headers: {
         "Content-Type": mime,
         "Content-Disposition": `attachment; filename="modifie.${ext}"`,
+        "Cache-Control": "no-store",
       },
     });
   } catch (error) {

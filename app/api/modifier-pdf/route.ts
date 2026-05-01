@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
       const outputBuffer = await pdf.save();
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="modifie.pdf"` },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="modifie.pdf"`, "Cache-Control": "no-store" },
       });
     }
 
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
 
       const outputBuffer = await newPdf.save();
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="modifie.pdf"` },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="modifie.pdf"`, "Cache-Control": "no-store" },
       });
     }
 
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
 
       const outputBuffer = await newPdf.save();
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="reorganise.pdf"` },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="reorganise.pdf"`, "Cache-Control": "no-store" },
       });
     }
 

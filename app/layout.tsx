@@ -14,10 +14,11 @@ import { PremiumProvider } from "@/components/PremiumProvider";
 import { ToolUpsellWrapper } from "@/components/ToolUpsellWrapper";
 import { CookieConsentProvider } from "@/components/CookieConsent";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { ToastProvider } from "@/components/Toast";
 
-const geist = Geist({ subsets: ["latin"] });
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
+const geist = Geist({ subsets: ["latin"], display: "swap" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk", display: "swap" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "ToolBox — Outils gratuits en ligne", template: "%s | ToolBox" },
@@ -62,6 +63,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <head>
+        <link rel="dns-prefetch" href="//pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -78,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geist.className} bg-gray-950 text-white min-h-screen transition-colors duration-300 pb-16 xl:pb-0`}>
         <ThemeProvider>
           <CookieConsentProvider>
+          <ToastProvider>
           <PremiumProvider>
           <GoogleAnalytics />
           <PwaRegister />
@@ -140,6 +145,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
           <StickyBottomAd />
           </PremiumProvider>
+          </ToastProvider>
           </CookieConsentProvider>
           <footer style={{
             marginTop: 80,

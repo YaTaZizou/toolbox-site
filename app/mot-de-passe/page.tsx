@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
 import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
+import { useToast } from "@/components/Toast";
 
 function generate(length: number, upper: boolean, numbers: boolean, symbols: boolean): string {
   const lower = "abcdefghijklmnopqrstuvwxyz";
@@ -40,17 +41,16 @@ export default function MotDePassePage() {
   const [numbers, setNumbers] = useState(true);
   const [symbols, setSymbols] = useState(true);
   const [password, setPassword] = useState(() => generate(16, true, true, true));
-  const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
 
   const regenerate = useCallback(() => {
     setPassword(generate(length, upper, numbers, symbols));
-    setCopied(false);
   }, [length, upper, numbers, symbols]);
 
   function copy() {
-    navigator.clipboard.writeText(password);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(password).then(() =>
+      showToast("Mot de passe copié !", "success")
+    );
   }
 
   const str = strength(password);
@@ -74,14 +74,14 @@ export default function MotDePassePage() {
         <div className="flex items-center gap-3 mb-4">
           <p className="flex-1 font-mono text-lg text-white bg-gray-800 rounded-xl px-4 py-3 break-all">{password}</p>
           <button onClick={copy} className="flex-shrink-0 text-sm text-gray-400 hover:text-green-400 transition-colors px-3 py-3 bg-gray-800 rounded-xl">
-            {copied ? "✓" : "📋"}
+            📋
           </button>
         </div>
 
         {/* Force */}
         <div className="mb-1 flex justify-between text-xs text-gray-500">
           <span>Force</span>
-          <span className={copied ? "text-green-400" : ""}>{copied ? "Copié !" : str.label}</span>
+          <span>{str.label}</span>
         </div>
         <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
           <div className={`h-full rounded-full transition-all ${str.color} ${str.width}`} />

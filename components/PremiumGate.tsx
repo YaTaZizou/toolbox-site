@@ -31,20 +31,24 @@ export function PremiumGate({ children }: { children: React.ReactNode }) {
   if (isPremium) return <>{children}</>;
 
   return (
-    <div className="max-w-md mx-auto text-center py-16 px-4">
-      <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-10">
+    <div className="max-w-md mx-auto text-center py-12 px-4">
+      <div className="bg-gradient-to-b from-yellow-500/12 to-yellow-500/5 border border-yellow-500/30 rounded-2xl p-8">
         <p className="text-5xl mb-4">⭐</p>
-        <h2 className="text-2xl font-bold text-white mb-2">Fonctionnalité Premium</h2>
-        <p className="text-gray-400 text-sm mb-6">
-          Cet outil est réservé aux membres Premium. Accès illimité, sans publicité, pour moins d&apos;un café par mois.
+        <h2 className="text-2xl font-bold text-white mb-2">Outil réservé aux membres Premium</h2>
+        <p className="text-gray-400 text-sm mb-1">
+          Tu es à <strong className="text-white">une étape</strong> de débloquer cet outil et 7 autres fonctionnalités exclusives.
+        </p>
+        <p className="text-xs text-yellow-400/80 mb-6 font-medium">
+          Essai gratuit 7 jours · Satisfait ou remboursé · Annulable à tout moment
         </p>
         <div className="space-y-3">
           <Link
             href="/premium"
-            className="block w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-xl transition-colors"
+            className="block w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3.5 rounded-xl transition-colors"
           >
-            ⭐ Passer Premium — 3,99€/mois
+            ⭐ Démarrer l&apos;essai gratuit 7 jours
           </Link>
+          <p className="text-xs text-gray-500">puis 3,99€/mois ou 29,99€/an</p>
           {isLoggedIn ? (
             // Connecté mais pas premium → aller directement payer
             <Link
@@ -73,10 +77,10 @@ export function PremiumGate({ children }: { children: React.ReactNode }) {
         </div>
         <ul className="mt-6 text-left space-y-2 text-sm text-gray-400">
           {[
-            "✅ Accès à tous les outils premium",
-            "✅ Générateurs IA illimités",
-            "✅ Zéro publicité",
-            "✅ Garanti 7 jours — remboursé si insatisfait",
+            "✅ Amélioration d'image jusqu'à 4× (cet outil)",
+            "✅ OCR avancé et 6 autres outils Premium",
+            "✅ Générations IA illimitées chaque jour",
+            "✅ Zéro publicité sur toute la plateforme",
           ].map((item) => (
             <li key={item}>{item}</li>
           ))}

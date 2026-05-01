@@ -607,22 +607,41 @@ export default function Home() {
 
               {/* Upsell Premium inline — after 2nd category */}
               {catIdx === 1 && (
-                <div className="max-w-4xl mx-auto px-4 my-6">
-                  <div className="bg-gradient-to-r from-yellow-500/10 to-purple-600/10 border border-yellow-500/20 rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <span className="text-3xl">⭐</span>
-                      <div>
-                        <p className="font-bold text-white text-lg">ToolBox Premium — 3,99€/mois</p>
-                        <p className="text-gray-400 text-sm">IA illimitée · Zéro publicité · Tous les outils · Annulable à tout moment</p>
+                <div className="max-w-4xl mx-auto px-4 my-8">
+                  <div className="bg-gradient-to-r from-yellow-500/10 to-purple-600/10 border border-yellow-500/25 rounded-2xl px-6 py-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+                      <div className="flex items-start gap-4">
+                        <span className="text-3xl mt-0.5">⭐</span>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <p className="font-bold text-white text-lg">ToolBox Premium</p>
+                            <span className="text-xs bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-2 py-0.5 rounded-full font-semibold">
+                              Rejoint par +2 000 utilisateurs
+                            </span>
+                          </div>
+                          <p className="text-gray-400 text-sm mb-3">Dès 3,99€/mois — essai gratuit 7 jours, satisfait ou remboursé.</p>
+                          <ul className="space-y-1">
+                            {[
+                              "Générations IA illimitées — fini les blocages quotidiens",
+                              "8 outils exclusifs débloqués (amélioration image 4×, OCR avancé...)",
+                              "Navigation sans aucune publicité",
+                            ].map((item) => (
+                              <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
+                                <span className="text-green-400 text-xs">✓</span>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
+                      <a
+                        href="/premium"
+                        aria-label="Découvrir ToolBox Premium"
+                        className="shrink-0 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-3 rounded-xl transition-colors text-sm whitespace-nowrap"
+                      >
+                        Essai gratuit 7 jours →
+                      </a>
                     </div>
-                    <a
-                      href="/premium"
-                      aria-label="Découvrir ToolBox Premium"
-                      className="shrink-0 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-2.5 rounded-xl transition-colors text-sm"
-                    >
-                      Découvrir →
-                    </a>
                   </div>
                 </div>
               )}

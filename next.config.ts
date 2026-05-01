@@ -79,6 +79,16 @@ const nextConfig: NextConfig = {
         ],
       },
 
+      // ── Assets statiques — cache long terme ───────────────────────────
+      {
+        source: "/icon-:size.png",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/google:id.html",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400" }],
+      },
+
       // ── Service worker — ne jamais mettre en cache ─────────────────────
       {
         source: "/sw.js",

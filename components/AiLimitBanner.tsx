@@ -100,26 +100,35 @@ export function AiLimitBanner({ remaining, isPremium, limit, status }: Props) {
             ⭐
           </div>
 
-          <h2 className="text-xl font-bold text-white mb-2">Limite journalière atteinte</h2>
+          <h2 className="text-xl font-bold text-white mb-2">Tu as atteint ta limite du jour</h2>
           <p className="text-sm mb-1" style={{ color: "var(--text-2)" }}>
-            Tu as utilisé tes <strong className="text-white">{limit} générations</strong> gratuites d&apos;aujourd&apos;hui.
+            Tes <strong className="text-white">{limit} générations IA</strong> gratuites sont épuisées.
+            Passe Premium pour une utilisation <strong className="text-white">illimitée</strong>.
           </p>
-          <p className="text-xs mb-6 flex items-center justify-center gap-1" style={{ color: "var(--text-3)" }}>
-            🕐 Réinitialisation dans <span className="font-semibold" style={{ color: "var(--text-2)" }}>{timeLeft}</span>
+          <p className="text-xs mb-5 flex items-center justify-center gap-1" style={{ color: "var(--text-3)" }}>
+            🕐 Réinitialisation gratuite dans <span className="font-semibold" style={{ color: "var(--text-2)" }}>{timeLeft}</span>
           </p>
 
           {/* CTA Principal */}
           <Link
             href="/premium"
-            className="block w-full font-bold py-3.5 rounded-xl text-sm mb-3 transition-colors"
+            className="block w-full font-bold py-3.5 rounded-xl text-sm mb-2 transition-colors"
             style={{ background: "#facc15", color: "#000" }}
           >
-            ⭐ Passer Premium — 3,99€/mois
+            ⭐ Essai gratuit 7 jours — puis 3,99€/mois
           </Link>
+          <p className="text-xs mb-4" style={{ color: "var(--text-3)" }}>
+            Satisfait ou remboursé · Annulable à tout moment
+          </p>
 
           {/* Avantages */}
           <ul className="text-xs text-left space-y-1.5 mb-5" style={{ color: "var(--text-3)" }}>
-            {["Générations IA illimitées", "Zéro publicité", "Accès prioritaire aux nouveaux outils", "Garanti 7 jours — remboursé si insatisfait"].map(item => (
+            {[
+              "Générations IA illimitées — plus jamais bloqué",
+              "8 outils Premium débloqués (amélioration image 4×, OCR...)",
+              "Zéro publicité sur tous les outils",
+              "Accès prioritaire aux nouveaux outils",
+            ].map(item => (
               <li key={item} className="flex items-center gap-2">
                 <span style={{ color: "#4ade80" }}>✓</span> {item}
               </li>
@@ -128,7 +137,7 @@ export function AiLimitBanner({ remaining, isPremium, limit, status }: Props) {
 
           {/* Option secondaire */}
           <p className="text-xs" style={{ color: "var(--text-3)" }}>
-            Ou attends la réinitialisation dans{" "}
+            Ou patiente jusqu&apos;à la réinitialisation dans{" "}
             <span className="font-semibold" style={{ color: "var(--text-2)" }}>{timeLeft}</span>
           </p>
         </div>

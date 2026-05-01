@@ -13,19 +13,23 @@ export function PremiumUpsellBanner() {
   if (loading || isPremium) return null;
 
   return (
-    <div className="mt-8 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div className="mt-8 border border-yellow-500/25 bg-gradient-to-r from-yellow-500/8 to-purple-600/8 rounded-2xl px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <span className="text-xl">⭐</span>
+        <span className="text-2xl">⭐</span>
         <div>
-          <p className="text-sm font-semibold text-white">Passe Premium — 3,99€/mois</p>
-          <p className="text-xs text-gray-500">IA illimitée · Zéro pub · Tous les outils débloqués</p>
+          <p className="text-sm font-bold text-white">
+            Débloquer les 8 outils Premium — dès 3,99€/mois
+          </p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            IA illimitée · Zéro pub · Amélioration d&apos;image 4× · OCR avancé · Satisfait ou remboursé 7 jours
+          </p>
         </div>
       </div>
       <Link
         href="/premium"
-        className="shrink-0 bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold px-4 py-2 rounded-lg transition-colors"
+        className="shrink-0 bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap"
       >
-        Découvrir →
+        Essai gratuit 7 jours →
       </Link>
     </div>
   );

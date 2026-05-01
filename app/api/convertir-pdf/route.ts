@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       }
       const outputBuffer = await mergedPdf.save();
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="fusion.pdf"` },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="fusion.pdf"`, "Cache-Control": "no-store" },
       });
     }
 
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
       }
       const outputBuffer = await pdf.save();
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="images.pdf"` },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="images.pdf"`, "Cache-Control": "no-store" },
       });
     }
 
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
       const outputBuffer = await newPdf.save();
 
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="decoupage.pdf"` },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="decoupage.pdf"`, "Cache-Control": "no-store" },
       });
     }
 
@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
       const outputBuffer = await pdf.save(saveOptions as Parameters<typeof pdf.save>[0]);
 
       return new Response(outputBuffer.buffer as ArrayBuffer, {
-        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="protege.pdf"` },
+        headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="protege.pdf"`, "Cache-Control": "no-store" },
       });
     }
 

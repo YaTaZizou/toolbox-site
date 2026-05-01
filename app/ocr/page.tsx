@@ -93,6 +93,27 @@ export default function OcrPage() {
 
       {ready && <AiLimitBanner remaining={remaining} isPremium={isPremium} limit={limit} status={status} />}
 
+      {/* Bandeau Premium — visible uniquement pour les non-Premium quand il reste des générations */}
+      {ready && !isPremium && remaining > 0 && (
+        <div className="mb-6 bg-yellow-500/8 border border-yellow-500/20 rounded-xl px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-white">
+              ⭐ Premium — extractions illimitées + amélioration d&apos;image 4×
+            </p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Tu utilises <strong className="text-gray-300">{limit - remaining}/{limit}</strong> extractions gratuites aujourd&apos;hui.
+              Premium = illimité, zéro pub, essai gratuit 7 jours.
+            </p>
+          </div>
+          <Link
+            href="/premium"
+            className="shrink-0 text-xs font-bold bg-yellow-500 hover:bg-yellow-400 text-black px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+          >
+            Essai 7 jours gratuit →
+          </Link>
+        </div>
+      )}
+
       {/* Upload zone */}
       {!imagePreview ? (
         <label className="block bg-gray-900 border-2 border-dashed border-gray-700 hover:border-gray-500 rounded-2xl p-12 text-center cursor-pointer transition-colors mb-6">

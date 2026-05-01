@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": mimeType,
         "Content-Disposition": `attachment; filename="${safeOriginalName}.${ext}"`,
         "Content-Length": outputBuffer.length.toString(),
+        "Cache-Control": "no-store",
       },
     });
   } catch (error) {

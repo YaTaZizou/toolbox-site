@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
+export const revalidate = 86400; // re-génère au maximum une fois par jour
 export const alt = "ToolBox — Outils gratuits en ligne";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

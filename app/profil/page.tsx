@@ -25,6 +25,7 @@ export default function ProfilPage() {
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+  const [portalLoading, setPortalLoading] = useState(false);
 
   const router = useRouter();
 
@@ -101,6 +102,23 @@ export default function ProfilPage() {
     router.push("/connexion");
   }
 
+  async function openStripePortal() {
+    setPortalLoading(true);
+    try {
+      const res = await fetch("/api/stripe-portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Impossible d'ouvrir le portail Stripe");
+      }
+    } catch {
+      alert("Erreur réseau");
+    } finally {
+      setPortalLoading(false);
+    }
+  }
+
   async function logout() {
     await supabase.auth.signOut();
     router.push("/connexion");
@@ -175,9 +193,18 @@ export default function ProfilPage() {
         </div>
         <div className="flex items-center gap-3">
           {isPremium ? (
-            <span className="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1 rounded-full font-bold border border-yellow-500/30">
-              ⭐ Premium
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1 rounded-full font-bold border border-yellow-500/30">
+                ⭐ Premium
+              </span>
+              <button
+                onClick={openStripePortal}
+                disabled={portalLoading}
+                className="text-xs text-gray-400 hover:text-white underline transition-colors disabled:opacity-40"
+              >
+                {portalLoading ? "Chargement..." : "Gérer l'abonnement →"}
+              </button>
+            </div>
           ) : (
             <>
               <span className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full font-medium">

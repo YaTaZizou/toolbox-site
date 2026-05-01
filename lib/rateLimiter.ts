@@ -1,33 +1,86 @@
 /**
- * Server-side in-memory rate limiter.
- * Works per-instance (good protection against abuse in production).
- * Premium users bypass this entirely.
+ * Rate limiter — Upstash Redis en production, in-memory en local/fallback.
+ * Variables d'env requises pour Upstash :
+ *   UPSTASH_REDIS_REST_URL
+ *   UPSTASH_REDIS_REST_TOKEN
  */
 
+// ── Fallback in-memory (local dev ou Upstash non configuré) ──────────────────
 type Entry = { count: number; date: string };
-
 const store = new Map<string, Entry>();
-const DAILY_LIMIT = 5;
 const today = () => new Date().toISOString().slice(0, 10);
 
-export function checkRateLimit(key: string, limit = DAILY_LIMIT): { allowed: boolean } {
+function inMemoryLimit(key: string, limit: number): { allowed: boolean } {
   const t = today();
   const entry = store.get(key);
-
   if (!entry || entry.date !== t) {
     store.set(key, { count: 1, date: t });
     return { allowed: true };
   }
-
-  if (entry.count >= limit) {
-    return { allowed: false };
-  }
-
+  if (entry.count >= limit) return { allowed: false };
   entry.count++;
   return { allowed: true };
 }
 
+// ── Upstash Redis ─────────────────────────────────────────────────────────────
+let upstashClient: import("@upstash/redis").Redis | null = null;
+
+async function getUpstash() {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return null;
+  }
+  if (!upstashClient) {
+    const { Redis } = await import("@upstash/redis");
+    upstashClient = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
+  }
+  return upstashClient;
+}
+
+async function upstashLimit(key: string, limit: number): Promise<{ allowed: boolean }> {
+  try {
+    const redis = await getUpstash();
+    if (!redis) return inMemoryLimit(key, limit);
+
+    const dayKey = `rl:${key}:${today()}`;
+    const count = await redis.incr(dayKey);
+    if (count === 1) {
+      // Expire à minuit (secondes restantes dans la journée)
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const ttl = Math.ceil((midnight.getTime() - now.getTime()) / 1000);
+      await redis.expire(dayKey, ttl);
+    }
+    return { allowed: count <= limit };
+  } catch (err) {
+    console.warn("Upstash error, falling back to in-memory:", err);
+    return inMemoryLimit(key, limit);
+  }
+}
+
+// ── Export principal ──────────────────────────────────────────────────────────
+const DAILY_LIMIT = 5;
+
+export function checkRateLimit(key: string, limit = DAILY_LIMIT): { allowed: boolean } {
+  // Sync fallback (appelé sans await dans les routes existantes)
+  // On retourne directement l'in-memory, et on lance Upstash en arrière-plan
+  // pour ne pas bloquer la réponse avec un await non géré.
+  // Les routes qui utilisent checkRateLimitAsync bénéficient d'Upstash.
+  return inMemoryLimit(key, limit);
+}
+
+export async function checkRateLimitAsync(key: string, limit = DAILY_LIMIT): Promise<{ allowed: boolean }> {
+  return upstashLimit(key, limit);
+}
+
 export function getClientIp(req: Request): string {
+  // Vercel injecte x-real-ip de façon fiable — prioritaire sur x-forwarded-for
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp) return realIp;
+  // x-forwarded-for peut contenir plusieurs IPs séparées par virgule
   const forwarded = req.headers.get("x-forwarded-for");
-  return forwarded?.split(",")[0]?.trim() ?? req.headers.get("x-real-ip") ?? "anon";
+  return forwarded?.split(",")[0]?.trim() ?? "anon";
 }

@@ -74,10 +74,11 @@ export async function POST(req: NextRequest) {
     const message = await anthropic.messages.create({
       model: "claude-3-5-haiku-20241022",
       max_tokens: 2048,
+      system: `Tu es un traducteur professionnel. Traduis le texte fourni par l'utilisateur depuis ${source} vers ${safeTo}. Réponds UNIQUEMENT avec la traduction, sans explication ni commentaire.`,
       messages: [
         {
           role: "user",
-          content: `Traduis ce texte depuis ${source} vers ${safeTo}. Réponds UNIQUEMENT avec la traduction, sans explication ni commentaire :\n\n${text}`,
+          content: text,
         },
       ],
     });

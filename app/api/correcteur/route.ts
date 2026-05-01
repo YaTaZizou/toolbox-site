@@ -43,17 +43,11 @@ export async function POST(req: NextRequest) {
     const message = await anthropic.messages.create({
       model: "claude-3-5-haiku-20241022",
       max_tokens: 4096,
+      system: `Tu es un correcteur professionnel en ${safeLang}. Corrige le texte fourni par l'utilisateur : orthographe, grammaire, conjugaison, ponctuation, style. Réponds UNIQUEMENT en JSON avec ce format exact : {"corrected": "texte corrigé", "changes": ["correction 1", "correction 2"]}. Ne mets rien d'autre que le JSON.`,
       messages: [
         {
           role: "user",
-          content: `Tu es un correcteur professionnel. Corrige le texte suivant en ${safeLang}.
-Corrige : orthographe, grammaire, conjugaison, ponctuation, style.
-Réponds en JSON avec exactement ce format :
-{"corrected": "texte corrigé ici", "changes": ["correction 1", "correction 2", ...]}
-Ne mets rien d'autre que le JSON.
-
-Texte à corriger :
-${text}`,
+          content: text,
         },
       ],
     });

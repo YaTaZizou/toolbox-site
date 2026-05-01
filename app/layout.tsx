@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Space_Grotesk, JetBrains_Mono, Inter } from "next/font/google";
+import { Geist, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import NavAuth from "@/components/NavAuth";
@@ -16,7 +16,6 @@ import { ToolUpsellWrapper } from "@/components/ToolUpsellWrapper";
 const geist = Geist({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: { default: "ToolBox — Outils gratuits en ligne", template: "%s | ToolBox" },
@@ -40,18 +39,18 @@ export const metadata: Metadata = {
     siteName: "ToolBox",
     title: "ToolBox — Outils gratuits en ligne",
     description: "Générateurs IA, outils PDF, convertisseurs d'images, traducteur et bien plus. Gratuit, rapide, sans inscription.",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox — Outils gratuits en ligne" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ToolBox — Outils gratuits en ligne",
-    images: ["/icon-512.png"],
+    images: ["/opengraph-image"],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${inter.variable}`}>
+    <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <head>
         <script
           async

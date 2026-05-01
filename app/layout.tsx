@@ -13,6 +13,7 @@ import { NavPremiumBadge } from "@/components/NavPremiumBadge";
 import { PremiumProvider } from "@/components/PremiumProvider";
 import { ToolUpsellWrapper } from "@/components/ToolUpsellWrapper";
 import { CookieConsentProvider } from "@/components/CookieConsent";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const geist = Geist({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <CookieConsentProvider>
           <PremiumProvider>
+          <GoogleAnalytics />
           <PwaRegister />
           <ToolTracker />
           <nav aria-label="Navigation principale" className="tb-nav" style={{

@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Ajouter un Filigrane à une Image en ligne — Texte ou Logo",
+  title: "Ajouter un Filigrane à une Image — Texte ou Logo",
   description: "Ajoutez un filigrane texte ou logo sur vos images en ligne. Personnalisez la position, la taille et l'opacité. Gratuit, rapide, sans inscription.",
   alternates: { canonical: "https://alltoolbox.fr/filigrane" },
   openGraph: {
@@ -24,6 +24,14 @@ export default function FiligraneLayout({ children }: { children: React.ReactNod
         "url": "https://alltoolbox.fr/filigrane",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Ajoutez un filigrane texte ou logo sur vos images en ligne. Personnalisez la position, la taille et l'opacité. Gratuit, rapide, sans inscription."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Ajouter un Filigrane", "item": "https://alltoolbox.fr/filigrane" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">

@@ -435,8 +435,14 @@ function PremiumContent() {
             <button
               onClick={() => startCheckout(selectedPlan)}
               disabled={checkoutLoading}
-              className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-black font-bold py-4 px-10 rounded-2xl transition-colors text-lg"
+              className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-black font-bold py-4 px-10 rounded-2xl transition-colors text-lg flex items-center justify-center gap-2 mx-auto"
             >
+              {checkoutLoading && (
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+              )}
               {checkoutLoading ? "Redirection..." : "⭐ Passer Premium maintenant"}
             </button>
           ) : (

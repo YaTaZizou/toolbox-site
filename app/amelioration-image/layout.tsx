@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Amélioration d'Image par IA — Upscaling Gratuit en ligne",
+  title: "Amélioration d'Image par IA — Upscaling Gratuit",
   description: "Augmentez la résolution de vos images jusqu'à 4x grâce à l'IA. Upscaling intelligent, nettoyage du bruit, photos floues restaurées. Outil Premium ToolBox.",
   alternates: { canonical: "https://alltoolbox.fr/amelioration-image" },
   openGraph: {

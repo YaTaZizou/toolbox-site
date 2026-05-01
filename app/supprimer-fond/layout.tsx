@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Supprimer le Fond d'une Image — Arrière-plan Transparent",
+  title: "Supprimer le Fond d'une Image — PNG Transparent",
   description: "Supprimez automatiquement l'arrière-plan de vos images grâce à l'IA. Résultat PNG transparent en quelques secondes. Gratuit et sans inscription.",
   alternates: { canonical: "https://alltoolbox.fr/supprimer-fond" },
   openGraph: {

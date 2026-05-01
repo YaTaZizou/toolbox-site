@@ -77,10 +77,14 @@ export async function POST(req: NextRequest) {
         metadata: { supabaseId: userId },
       });
       customerId = customer.id;
-      await adminSupabase
+      const { error: updateErr } = await adminSupabase
         .from("profiles")
         .update({ stripe_customer_id: customerId })
         .eq("id", userId);
+      if (updateErr) {
+        console.error("Failed to save stripe_customer_id:", updateErr.message);
+        // Non-fatal: metadata on the Stripe customer still links to supabaseId
+      }
     }
 
     const session = await stripe.checkout.sessions.create({

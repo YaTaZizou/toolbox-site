@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Générateur de QR Code gratuit en ligne — Personnalisable",
+  title: "Générateur de QR Code gratuit — Personnalisable",
   description: "Créez un QR code personnalisé pour n'importe quel lien, texte ou contact. Téléchargement PNG gratuit, sans inscription, personnalisation couleur et logo.",
   alternates: { canonical: "https://alltoolbox.fr/qrcode" },
   openGraph: {

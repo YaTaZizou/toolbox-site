@@ -22,6 +22,8 @@ export default function ProfilPage() {
   const [pwdSuccess, setPwdSuccess] = useState("");
   const [pwdError, setPwdError] = useState("");
 
+  const [logoutLoading, setLogoutLoading] = useState(false);
+
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
@@ -87,7 +89,15 @@ export default function ProfilPage() {
     setPwdSuccess("");
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) {
-      setPwdError(error.message);
+      const m = error.message.toLowerCase();
+      if (m.includes("same password") || m.includes("different from the old"))
+        setPwdError("Le nouveau mot de passe doit être différent de l'ancien.");
+      else if (m.includes("password should be at least"))
+        setPwdError("Le mot de passe doit faire au moins 8 caractères.");
+      else if (m.includes("network") || m.includes("fetch"))
+        setPwdError("Erreur réseau. Vérifie ta connexion et réessaie.");
+      else
+        setPwdError("Impossible de mettre à jour le mot de passe. Réessaie.");
     } else {
       setPwdSuccess("Mot de passe mis à jour !");
       setNewPassword("");
@@ -140,6 +150,7 @@ export default function ProfilPage() {
   }
 
   async function logout() {
+    setLogoutLoading(true);
     await supabase.auth.signOut();
     router.push("/connexion");
     router.refresh();
@@ -147,8 +158,22 @@ export default function ProfilPage() {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-24 text-center text-gray-500">
-        Chargement...
+      <div className="max-w-2xl mx-auto px-4 py-16 animate-pulse">
+        <div className="h-4 w-16 bg-gray-800 rounded mb-8" />
+        {/* Header skeleton */}
+        <div className="flex items-center gap-5 mb-10">
+          <div className="w-16 h-16 rounded-2xl bg-gray-800 flex-shrink-0" />
+          <div className="space-y-2 flex-1">
+            <div className="h-5 w-48 bg-gray-800 rounded" />
+            <div className="h-3 w-32 bg-gray-800 rounded" />
+          </div>
+        </div>
+        {/* Cards skeleton */}
+        <div className="space-y-4">
+          <div className="h-20 bg-gray-900 border border-gray-800 rounded-2xl" />
+          <div className="h-40 bg-gray-900 border border-gray-800 rounded-2xl" />
+          <div className="h-24 bg-gray-900 border border-gray-800 rounded-2xl" />
+        </div>
       </div>
     );
   }
@@ -301,9 +326,16 @@ export default function ProfilPage() {
         <p className="text-gray-500 text-sm mb-4">Tu seras redirigé vers la page de connexion.</p>
         <button
           onClick={logout}
-          className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors"
+          disabled={logoutLoading}
+          className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors flex items-center gap-2"
         >
-          Se déconnecter
+          {logoutLoading && (
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+          )}
+          {logoutLoading ? "Déconnexion..." : "Se déconnecter"}
         </button>
       </div>
 

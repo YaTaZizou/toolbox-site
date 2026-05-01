@@ -42,6 +42,18 @@ export async function DELETE(req: NextRequest) {
 
     // Supprimer le compte avec le service role
     const admin = createServiceClient();
+
+    // Nettoyer les données utilisateur avant de supprimer le compte auth
+    // (au cas où ON DELETE CASCADE n'est pas configuré sur la table profiles)
+    const { error: profileError } = await admin
+      .from("profiles")
+      .delete()
+      .eq("id", user.id);
+    if (profileError) {
+      console.error("Profile deletion error:", profileError.message);
+      // Non-bloquant : continuer la suppression du compte auth
+    }
+
     const { error } = await admin.auth.admin.deleteUser(user.id);
     if (error) {
       console.error("Delete account error:", error.message);

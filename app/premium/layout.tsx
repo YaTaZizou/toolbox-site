@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ToolBox Premium — Accès illimité à tous les outils",
+    description: "Générateurs IA illimités, zéro pub, accès prioritaire aux nouveaux outils. Moins de 3€/mois.",
     images: ["/opengraph-image"],
   },
 };

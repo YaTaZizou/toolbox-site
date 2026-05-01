@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Convertisseur d'Unités en ligne — Distance, Poids, Température",
+  title: "Convertisseur d'Unités — Distance, Poids, Température",
   description: "Convertissez des distances, poids, températures, vitesses, surfaces et volumes en ligne. Gratuit, instantané, toutes les unités du système métrique et impérial.",
   alternates: { canonical: "https://alltoolbox.fr/unites" },
   openGraph: {
@@ -24,6 +24,14 @@ export default function UnitesLayout({ children }: { children: React.ReactNode }
         "url": "https://alltoolbox.fr/unites",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Convertissez des distances, poids, températures, vitesses, surfaces et volumes en ligne. Gratuit, instantané, toutes les unités du système métrique et impérial."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Convertisseur d'Unités", "item": "https://alltoolbox.fr/unites" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">

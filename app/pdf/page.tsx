@@ -64,6 +64,15 @@ function PdfTool() {
 
   async function convert() {
     if (files.length === 0) return;
+
+    // Vérification de taille : 20 Mo max par fichier
+    const MAX_SIZE_MB = 20;
+    const oversize = files.find((f) => f.size > MAX_SIZE_MB * 1024 * 1024);
+    if (oversize) {
+      setError(`Le fichier "${oversize.name}" est trop lourd (max ${MAX_SIZE_MB} Mo). Compresse-le avant de réessayer.`);
+      return;
+    }
+
     setLoading(true);
     setError("");
     setDone(false);
@@ -96,7 +105,11 @@ function PdfTool() {
       URL.revokeObjectURL(url);
       setDone(true);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Erreur lors du traitement");
+      const msg = e instanceof Error ? e.message : "";
+      if (!msg || msg.toLowerCase().includes("failed to fetch") || msg.toLowerCase().includes("network"))
+        setError("Erreur réseau. Vérifie ta connexion et réessaie.");
+      else
+        setError(msg || "Erreur lors du traitement.");
     } finally {
       setLoading(false);
     }

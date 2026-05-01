@@ -44,7 +44,11 @@ export default function CorrecteurPage() {
       setCorrected(data.corrected);
       setChanges(data.changes || []);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Erreur lors de la correction");
+      const msg = e instanceof Error ? e.message : "";
+      if (!msg || msg.toLowerCase().includes("failed to fetch") || msg.toLowerCase().includes("network"))
+        setError("Erreur réseau. Vérifie ta connexion et réessaie.");
+      else
+        setError(msg || "Erreur lors de la correction.");
     } finally {
       setLoading(false);
     }

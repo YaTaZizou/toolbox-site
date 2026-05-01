@@ -1,8 +1,8 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Palette de Couleurs en ligne — Générateur Harmonieux Gratuit",
-  description: "Générez des palettes de couleurs harmonieuses : monochromatique, analogique, complémentaire, triadique. Codes HEX, RGB, HSL. Gratuit pour designers et développeurs.",
+  title: "Palette de Couleurs en ligne — Générateur Gratuit",
+  description: "Générez des palettes harmonieuses : monochromatique, analogique, complémentaire, triadique. Codes HEX, RGB, HSL. Gratuit pour designers.",
   alternates: { canonical: "https://alltoolbox.fr/couleurs" },
   openGraph: {
     title: "Palette de Couleurs — ToolBox",
@@ -24,6 +24,14 @@ export default function CouleursLayout({ children }: { children: React.ReactNode
         "url": "https://alltoolbox.fr/couleurs",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Générez des palettes de couleurs harmonieuses : monochromatique, analogique, complémentaire, triadique. Codes HEX, RGB, HSL. Gratuit pour designers et développeurs."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Palette de Couleurs", "item": "https://alltoolbox.fr/couleurs" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">

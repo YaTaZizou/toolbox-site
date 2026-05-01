@@ -25,5 +25,11 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     categories: ["utilities", "productivity"],
     lang: "fr",
+    shortcuts: [
+      { name: "Outils PDF", url: "/pdf", description: "Fusionner, compresser, modifier des PDFs" },
+      { name: "Convertir Image", url: "/image", description: "Convertir en JPG, PNG, WebP" },
+      { name: "Traducteur IA", url: "/traducteur", description: "Traduire du texte instantanément" },
+      { name: "Générateur QR", url: "/qrcode", description: "Créer des QR codes" },
+    ],
   };
 }

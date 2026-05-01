@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Outils PDF en ligne gratuits — Fusionner, Découper, Protéger",
+  title: "Outils PDF gratuits — Fusionner, Découper, Protéger",
   description: "Fusionner, découper, protéger et convertir des PDFs en ligne. 100% gratuit, sans inscription, traitement local dans le navigateur.",
   alternates: { canonical: "https://alltoolbox.fr/pdf" },
   openGraph: {

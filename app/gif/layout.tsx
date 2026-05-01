@@ -26,6 +26,14 @@ export default function GifLayout({ children }: { children: React.ReactNode }) {
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Créez des GIFs animés depuis vos images JPG et PNG en ligne. Gratuit."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Créateur de GIF", "item": "https://alltoolbox.fr/gif" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Créer un GIF animé en ligne gratuitement</h2>

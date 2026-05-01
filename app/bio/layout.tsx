@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Générateur de Bio en ligne — Instagram, TikTok, LinkedIn",
+  title: "Générateur de Bio — Instagram, TikTok, LinkedIn",
   description: "Générez une bio percutante pour Instagram, TikTok, LinkedIn ou Twitter en quelques secondes grâce à l'IA. Gratuit, personnalisé, sans inscription.",
   alternates: { canonical: "https://alltoolbox.fr/bio" },
   openGraph: {
@@ -24,6 +24,14 @@ export default function BioLayout({ children }: { children: React.ReactNode }) {
         "url": "https://alltoolbox.fr/bio",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Générez une bio percutante pour Instagram, TikTok ou LinkedIn grâce à l'IA."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Générateur de Bio", "item": "https://alltoolbox.fr/bio" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">

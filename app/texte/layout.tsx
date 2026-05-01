@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Générateur de Texte IA en ligne — Posts, Emails, Descriptions",
+  title: "Générateur de Texte IA — Posts, Emails, Descriptions",
   description: "Générez des posts réseaux sociaux, emails, descriptions produit et accroches publicitaires avec l'IA. Rédaction professionnelle en quelques secondes. Gratuit.",
   alternates: { canonical: "https://alltoolbox.fr/texte" },
   openGraph: {
@@ -24,6 +24,14 @@ export default function TexteLayout({ children }: { children: React.ReactNode })
         "url": "https://alltoolbox.fr/texte",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Générez posts, emails et descriptions produit en quelques secondes grâce à l'IA."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Générateur de Texte IA", "item": "https://alltoolbox.fr/texte" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">

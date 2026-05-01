@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Générateur de Pseudo en ligne — Gaming, Discord, Instagram",
+  title: "Générateur de Pseudo — Gaming, Discord, Instagram",
   description: "Créez des pseudos uniques et originaux pour le gaming, Twitch, Discord, Instagram grâce à l'IA. Gratuit et sans inscription.",
   alternates: { canonical: "https://alltoolbox.fr/pseudo" },
   openGraph: {
@@ -24,6 +24,14 @@ export default function PseudoLayout({ children }: { children: React.ReactNode }
         "url": "https://alltoolbox.fr/pseudo",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Créez des pseudos uniques pour le gaming, Discord ou Instagram grâce à l'IA."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Générateur de Pseudo", "item": "https://alltoolbox.fr/pseudo" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">

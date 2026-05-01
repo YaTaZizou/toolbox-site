@@ -26,6 +26,14 @@ export default function PdfImagesLayout({ children }: { children: React.ReactNod
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Convertissez chaque page d'un PDF en image JPG ou PNG en ligne. Aucune installation, traitement local dans votre navigateur, 100% gratuit."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "PDF en Images", "item": "https://alltoolbox.fr/pdf-images" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Convertir un PDF en images en ligne</h2>

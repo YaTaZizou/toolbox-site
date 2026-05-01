@@ -25,6 +25,14 @@ export default function CompteurLayout({ children }: { children: React.ReactNode
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Comptez les mots, caractères, phrases et estimez le temps de lecture de votre texte. Gratuit, instantané, idéal pour les rédacteurs et étudiants."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Compteur de Mots", "item": "https://alltoolbox.fr/compteur" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Compteur de mots et caractères en ligne</h2>

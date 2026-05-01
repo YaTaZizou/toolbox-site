@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Correcteur d'Orthographe et Grammaire en ligne — IA gratuit",
+  title: "Correcteur d'Orthographe et Grammaire IA — Gratuit",
   description: "Corrigez l'orthographe, la grammaire et le style de votre texte avec l'IA. Disponible en français, anglais et espagnol. Gratuit, sans inscription.",
   alternates: { canonical: "https://alltoolbox.fr/correcteur" },
   openGraph: {

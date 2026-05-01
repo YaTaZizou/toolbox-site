@@ -7,6 +7,26 @@ import { createBrowserClient } from "@supabase/ssr";
 
 type Mode = "login" | "signup" | "forgot";
 
+function translateSupabaseError(msg: string): string {
+  if (!msg) return "Une erreur est survenue. Réessaie.";
+  const m = msg.toLowerCase();
+  if (m.includes("user already registered") || m.includes("already been registered"))
+    return "Cette adresse email est déjà utilisée. Connecte-toi ou réinitialise ton mot de passe.";
+  if (m.includes("password should be at least"))
+    return "Le mot de passe doit faire au moins 6 caractères.";
+  if (m.includes("invalid email"))
+    return "Adresse email invalide.";
+  if (m.includes("email not confirmed"))
+    return "Email non confirmé. Vérifie ta boîte mail et clique sur le lien d'activation.";
+  if (m.includes("invalid login credentials") || m.includes("invalid credentials"))
+    return "Email ou mot de passe incorrect.";
+  if (m.includes("too many requests") || m.includes("rate limit"))
+    return "Trop de tentatives. Attends quelques minutes avant de réessayer.";
+  if (m.includes("network") || m.includes("fetch"))
+    return "Erreur réseau. Vérifie ta connexion et réessaie.";
+  return "Une erreur est survenue. Réessaie.";
+}
+
 function ConnexionForm() {
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -68,7 +88,7 @@ function ConnexionForm() {
         },
       });
       if (error) {
-        setError(error.message);
+        setError(translateSupabaseError(error.message));
       } else {
         setSuccess("Compte créé ! Vérifie ton email pour confirmer, puis connecte-toi.");
         switchMode("login");

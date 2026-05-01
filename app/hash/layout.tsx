@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Générateur de Hash MD5 SHA-256 SHA-512 en ligne — Gratuit",
+  title: "Générateur de Hash MD5 SHA-256 en ligne — Gratuit",
   description: "Générez des empreintes MD5, SHA-256 et SHA-512 de n'importe quel texte en ligne. Outil de hachage gratuit, instantané, traitement local dans le navigateur.",
   alternates: { canonical: "https://alltoolbox.fr/hash" },
   openGraph: {

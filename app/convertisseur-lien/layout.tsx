@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Télécharger des Vidéos YouTube TikTok Instagram — Gratuit",
+  title: "Télécharger des Vidéos YouTube TikTok — Gratuit",
   description: "Téléchargez des vidéos depuis YouTube, TikTok, Instagram, X (Twitter) et plus. Format MP4 ou MP3, gratuit, sans logiciel à installer.",
   alternates: { canonical: "https://alltoolbox.fr/convertisseur-lien" },
   openGraph: {
@@ -24,6 +24,14 @@ export default function ConvertisseurLienLayout({ children }: { children: React.
         "url": "https://alltoolbox.fr/convertisseur-lien",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Téléchargez des vidéos depuis YouTube, TikTok, Instagram, X (Twitter) et plus. Format MP4 ou MP3, gratuit, sans logiciel à installer."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Téléchargeur de Vidéos", "item": "https://alltoolbox.fr/convertisseur-lien" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">

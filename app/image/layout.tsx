@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Convertisseur d'Images en ligne — JPG PNG WebP AVIF Gratuit",
+  title: "Convertisseur d'Images — JPG PNG WebP AVIF Gratuit",
   description: "Convertissez vos images en JPG, PNG, WebP ou AVIF en ligne. Compressez et optimisez vos images gratuitement, sans inscription, dans votre navigateur.",
   alternates: { canonical: "https://alltoolbox.fr/image" },
   openGraph: {

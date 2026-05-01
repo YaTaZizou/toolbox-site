@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Dictionnaire en ligne — Définitions, Synonymes, Antonymes",
+  title: "Dictionnaire en ligne — Définitions et Synonymes",
   description: "Trouvez la définition, les synonymes et les antonymes de n'importe quel mot grâce à l'IA. Dictionnaire français et multilingue gratuit en ligne.",
   alternates: { canonical: "https://alltoolbox.fr/dictionnaire" },
   openGraph: {

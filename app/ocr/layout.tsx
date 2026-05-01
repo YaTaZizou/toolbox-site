@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "OCR en ligne — Reconnaissance de Texte dans les Images",
@@ -25,6 +26,14 @@ export default function OcrLayout({ children }: { children: React.ReactNode }) {
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Extrayez le texte de vos images et PDFs scannés en ligne grâce à l'IA. Gratuit."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "OCR — Extraire du texte", "item": "https://alltoolbox.fr/ocr" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">OCR en ligne — Extraire du texte depuis une image</h2>
@@ -42,9 +51,9 @@ export default function OcrLayout({ children }: { children: React.ReactNode }) {
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Outils PDF</a>
-            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
-            <a href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</a>
+            <Link href="/pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Outils PDF</Link>
+            <Link href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</Link>
+            <Link href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</Link>
           </div>
         </div>
       </section>

@@ -6,6 +6,7 @@ import { AdBanner } from "@/components/AdBanner";
 import { SearchBar } from "@/components/SearchBar";
 import { RecentTools } from "@/components/RecentTools";
 import FilterBar from "@/components/FilterBar";
+import { getBadgeStyle } from "@/lib/badgeStyle";
 
 type Tool = {
   href: string;
@@ -75,6 +76,7 @@ const categories: Category[] = [
       { href: "/logo", emoji: "🎨", title: "Générateur de Logo", description: "Crée un logo unique avec l'IA en quelques secondes.", badge: "Bientôt", badgeColor: "soon", available: false },
       { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "free", available: true },
       { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "free", available: true },
+      { href: "/hash", emoji: "🔐", title: "Générateur de Hash", description: "MD5, SHA-256, SHA-512 de n'importe quel texte", badge: "Gratuit", badgeColor: "free", available: true },
     ],
   },
   {
@@ -142,37 +144,6 @@ const categories: Category[] = [
     ],
   },
 ];
-
-// Badge style helper
-function getBadgeStyle(badgeColor: string): React.CSSProperties {
-  switch (badgeColor) {
-    case "free":
-      return {
-        background: "var(--green-soft)",
-        color: "#4ade80",
-        border: "1px solid rgba(34,197,94,0.25)",
-      };
-    case "ai":
-      return {
-        background: "var(--primary-soft)",
-        color: "var(--primary-2)",
-        border: "1px solid rgba(124,58,237,0.3)",
-      };
-    case "premium":
-      return {
-        background: "var(--amber-soft)",
-        color: "var(--amber)",
-        border: "1px solid rgba(250,204,21,0.3)",
-      };
-    case "soon":
-    default:
-      return {
-        background: "rgba(30,30,35,0.8)",
-        color: "#71717a",
-        border: "1px solid #2a2a31",
-      };
-  }
-}
 
 // Sort: available first, then alphabetical
 function sortTools(tools: Tool[]): Tool[] {
@@ -343,6 +314,7 @@ export default function Home() {
             </svg>
           </Link>
           <button
+            aria-label="Aller à la barre de recherche"
             onClick={() => {
               const el = document.querySelector<HTMLInputElement>('input[type="search"], input[placeholder*="recherch" i], input[placeholder*="outil" i]');
               if (el) el.focus();
@@ -572,6 +544,8 @@ export default function Home() {
                     ) : (
                       <div
                         key={tool.href + tool.title}
+                        aria-disabled="true"
+                        aria-label={`${tool.title} — bientôt disponible`}
                         style={{
                           position: "relative",
                           background: "var(--panel)",
@@ -630,6 +604,28 @@ export default function Home() {
                   )}
                 </div>
               </div>
+
+              {/* Upsell Premium inline — after 2nd category */}
+              {catIdx === 1 && (
+                <div className="max-w-4xl mx-auto px-4 my-6">
+                  <div className="bg-gradient-to-r from-yellow-500/10 to-purple-600/10 border border-yellow-500/20 rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <span className="text-3xl">⭐</span>
+                      <div>
+                        <p className="font-bold text-white text-lg">ToolBox Premium — 3,99€/mois</p>
+                        <p className="text-gray-400 text-sm">IA illimitée · Zéro publicité · Tous les outils · Annulable à tout moment</p>
+                      </div>
+                    </div>
+                    <a
+                      href="/premium"
+                      aria-label="Découvrir ToolBox Premium"
+                      className="shrink-0 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-2.5 rounded-xl transition-colors text-sm"
+                    >
+                      Découvrir →
+                    </a>
+                  </div>
+                </div>
+              )}
 
               {/* Ad after category 2 and 4 (index 1 and 3) */}
               {(catIdx === 1 || catIdx === 3) && <AdBanner />}

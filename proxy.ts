@@ -7,7 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
  */
 const PROTECTED_PATHS = ["/profil"];
 
-export async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Toujours laisser passer les assets statiques et API

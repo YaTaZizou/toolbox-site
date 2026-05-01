@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 const types = [
   { label: "Post réseaux sociaux", value: "post" },
@@ -133,6 +134,7 @@ export default function TextePage() {
         </div>
       )}
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

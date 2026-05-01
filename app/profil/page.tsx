@@ -26,8 +26,15 @@ export default function ProfilPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/connexion?redirect=/profil");
+    }
+  }, [loading, user, router]);
 
   const supabase = useMemo(
     () =>
@@ -67,6 +74,10 @@ export default function ProfilPage() {
 
   async function changePassword(e: React.FormEvent) {
     e.preventDefault();
+    if (newPassword.length < 8 || !/\d/.test(newPassword)) {
+      setPwdError("Le mot de passe doit contenir au moins 8 caractères et 1 chiffre.");
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setPwdError("Les mots de passe ne correspondent pas.");
       return;
@@ -91,29 +102,38 @@ export default function ProfilPage() {
     setDeleteError("");
     // Delete first — if signOut happens before the API call and the call fails,
     // the user would be logged out but their account would still exist.
-    const res = await fetch("/api/delete-account", { method: "DELETE" });
+    const res = await fetch("/api/delete-account", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ confirm: "DELETE" }),
+    });
     if (!res.ok) {
       const data = await res.json();
       setDeleteError(data.error || "Erreur lors de la suppression.");
       setDeleteLoading(false);
       return;
     }
-    await supabase.auth.signOut();
-    router.push("/connexion");
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // account already deleted, sign out failed — redirect anyway
+    }
+    router.push("/");
   }
 
   async function openStripePortal() {
     setPortalLoading(true);
+    setPortalError(null);
     try {
       const res = await fetch("/api/stripe-portal", { method: "POST" });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert(data.error || "Impossible d'ouvrir le portail Stripe");
+        setPortalError(data.error || "Impossible d'ouvrir le portail Stripe");
       }
     } catch {
-      alert("Erreur réseau");
+      setPortalError("Erreur réseau");
     } finally {
       setPortalLoading(false);
     }
@@ -133,19 +153,28 @@ export default function ProfilPage() {
     );
   }
 
-  if (!user) {
-    router.replace("/connexion?redirect=/profil");
-    return null;
-  }
+  if (!loading && !user) return null;
 
-  const initials = user.email?.slice(0, 2).toUpperCase() ?? "??";
-  const memberSince = new Date(user.created_at).toLocaleDateString("fr-FR", {
+  const currentUser = user!;
+  const initials = currentUser.email?.slice(0, 2).toUpperCase() ?? "??";
+  const memberSince = new Date(currentUser.created_at).toLocaleDateString("fr-FR", {
     year: "numeric", month: "long", day: "numeric",
   });
 
-  const isPremium = profile?.is_subscribed === true;
-  const endDate = profile?.subscription_end_date
-    ? new Date(profile.subscription_end_date).toLocaleDateString("fr-FR", {
+  // Guard against race condition: if is_subscribed is still true in DB but
+  // subscription_end_date is already in the past, treat the user as non-premium
+  // on the client side. The webhook will eventually correct the DB.
+  const subscriptionEndDateObj = profile?.subscription_end_date
+    ? new Date(profile.subscription_end_date)
+    : null;
+  const isExpiredLocally =
+    subscriptionEndDateObj !== null &&
+    !profile?.subscription_end_date?.startsWith("2099") &&
+    subscriptionEndDateObj < new Date();
+  const isPremium = profile?.is_subscribed === true && !isExpiredLocally;
+
+  const endDate = subscriptionEndDateObj
+    ? subscriptionEndDateObj.toLocaleDateString("fr-FR", {
         year: "numeric", month: "long", day: "numeric",
       })
     : null;
@@ -164,7 +193,7 @@ export default function ProfilPage() {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">{user.email}</h1>
+            <h1 className="text-2xl font-bold">{currentUser.email}</h1>
             {isPremium && (
               <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-0.5 rounded-full font-semibold border border-yellow-500/30">
                 PREMIUM
@@ -176,7 +205,7 @@ export default function ProfilPage() {
       </div>
 
       {/* Statut abonnement */}
-      <div className={`rounded-2xl p-5 mb-4 flex items-center justify-between border ${
+      <div className={`rounded-2xl p-5 mb-4 flex flex-wrap items-center justify-between gap-2 border ${
         isPremium
           ? "bg-yellow-500/5 border-yellow-500/20"
           : "bg-gray-900 border-gray-800"
@@ -185,7 +214,7 @@ export default function ProfilPage() {
           <p className="font-semibold text-white">Abonnement</p>
           {isPremium ? (
             <p className="text-sm text-yellow-400 mt-0.5">
-              {isLifetime ? "⭐ Premium à vie — Merci !" : `Actif jusqu'au ${endDate}`}
+              {isLifetime ? "⭐ Premium à vie — Merci !" : `Prochain renouvellement : ${endDate}`}
             </p>
           ) : (
             <p className="text-sm text-gray-500 mt-0.5">Accès à tous les outils gratuits</p>
@@ -193,18 +222,23 @@ export default function ProfilPage() {
         </div>
         <div className="flex items-center gap-3">
           {isPremium ? (
-            <div className="flex items-center gap-2">
-              <span className="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1 rounded-full font-bold border border-yellow-500/30">
-                ⭐ Premium
-              </span>
-              <button
-                onClick={openStripePortal}
-                disabled={portalLoading}
-                className="text-xs text-gray-400 hover:text-white underline transition-colors disabled:opacity-40"
-              >
-                {portalLoading ? "Chargement..." : "Gérer l'abonnement →"}
-              </button>
-            </div>
+            <>
+              <div className="flex items-center gap-2">
+                <span className="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1 rounded-full font-bold border border-yellow-500/30">
+                  ⭐ Premium
+                </span>
+                <button
+                  onClick={openStripePortal}
+                  disabled={portalLoading}
+                  className="text-xs text-gray-400 hover:text-white underline transition-colors disabled:opacity-40"
+                >
+                  {portalLoading ? "Chargement..." : "Gérer l'abonnement →"}
+                </button>
+              </div>
+              {portalError && (
+                <p className="text-red-400 text-xs mt-2 w-full">{portalError}</p>
+              )}
+            </>
           ) : (
             <>
               <span className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full font-medium">

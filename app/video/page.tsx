@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 const FORMATS = ["mp4", "webm", "mov", "avi", "mkv", "gif"];
 
@@ -29,6 +29,7 @@ export default function VideoPage() {
   const loadFFmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
     const { FFmpeg } = await import("@ffmpeg/ffmpeg");
+    const { toBlobURL } = await import("@ffmpeg/util");
     const ffmpeg = new FFmpeg();
     ffmpeg.on("log", ({ message }) => setLog(message));
     ffmpeg.on("progress", ({ progress: p }) => setProgress(Math.round(p * 100)));
@@ -50,6 +51,7 @@ export default function VideoPage() {
 
     try {
       const ffmpeg = await loadFFmpeg();
+      const { fetchFile } = await import("@ffmpeg/util");
       setStatus("converting");
 
       const inputExt = file.name.split(".").pop() || "mp4";
@@ -269,6 +271,7 @@ export default function VideoPage() {
         <p>Ta vidéo ne quitte jamais ton appareil. La conversion se fait entièrement dans ton navigateur grâce à FFmpeg WebAssembly. Le premier chargement peut prendre quelques secondes.</p>
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 export default function SupprimerFondPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -212,6 +213,7 @@ export default function SupprimerFondPage() {
         <p className="font-medium text-gray-400 mb-1">ℹ️ 100% local & privé</p>
         <p>Ton image ne quitte jamais ton appareil. Le modèle IA tourne entièrement dans ton navigateur.</p>
       </div>
+      <PremiumUpsellBanner />
     </div>
   );
 }

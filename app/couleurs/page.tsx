@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 function hslToHex(h: number, s: number, l: number): string {
   s /= 100; l /= 100;
@@ -118,7 +119,7 @@ export default function CouleursPage() {
       <div className="grid grid-cols-5 gap-2 mb-4">
         {palette.map((color, i) => (
           <button
-            key={i}
+            key={color.hex + i}
             onClick={() => copy(color.hex)}
             className="group relative rounded-2xl overflow-hidden aspect-square transition-transform hover:scale-105"
             style={{ backgroundColor: color.hex }}
@@ -134,7 +135,7 @@ export default function CouleursPage() {
 
       <div className="space-y-2">
         {palette.map((color, i) => (
-          <div key={i} className="flex items-center gap-4 bg-gray-900 border border-gray-800 rounded-xl px-4 py-3">
+          <div key={color.hex + i} className="flex items-center gap-4 bg-gray-900 border border-gray-800 rounded-xl px-4 py-3">
             <div className="w-8 h-8 rounded-lg flex-shrink-0" style={{ backgroundColor: color.hex }} />
             <span className="font-mono text-white text-sm flex-1">{color.hex.toUpperCase()}</span>
             <button
@@ -147,6 +148,7 @@ export default function CouleursPage() {
         ))}
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

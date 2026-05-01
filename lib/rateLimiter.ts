@@ -64,12 +64,12 @@ async function upstashLimit(key: string, limit: number): Promise<{ allowed: bool
 // ── Export principal ──────────────────────────────────────────────────────────
 const DAILY_LIMIT = 5;
 
-export function checkRateLimit(key: string, limit = DAILY_LIMIT): { allowed: boolean } {
-  // Sync fallback (appelé sans await dans les routes existantes)
-  // On retourne directement l'in-memory, et on lance Upstash en arrière-plan
-  // pour ne pas bloquer la réponse avec un await non géré.
-  // Les routes qui utilisent checkRateLimitAsync bénéficient d'Upstash.
-  return inMemoryLimit(key, limit);
+/**
+ * @deprecated NE PAS UTILISER. Utilisez `checkRateLimitAsync` à la place.
+ * Cette fonction est intentionnellement cassée pour prévenir l'utilisation accidentelle.
+ */
+export function checkRateLimit(): never {
+  throw new Error("checkRateLimit is deprecated. Use checkRateLimitAsync instead.");
 }
 
 export async function checkRateLimitAsync(key: string, limit = DAILY_LIMIT): Promise<{ allowed: boolean }> {

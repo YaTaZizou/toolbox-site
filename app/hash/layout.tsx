@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Générateur de Hash MD5 SHA-256 SHA-512 en ligne — Gratuit",
@@ -25,6 +26,14 @@ export default function HashLayout({ children }: { children: React.ReactNode }) 
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Générez des empreintes MD5, SHA-256 et SHA-512 de n'importe quel texte en ligne. Outil de hachage gratuit, instantané, traitement local dans le navigateur."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Générateur de Hash", "item": "https://alltoolbox.fr/hash" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Générateur de hash en ligne — MD5, SHA-256, SHA-512</h2>
@@ -42,9 +51,9 @@ export default function HashLayout({ children }: { children: React.ReactNode }) 
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/mot-de-passe" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de mot de passe</a>
-            <a href="/formateur-json" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Formateur JSON</a>
-            <a href="/convertir-texte" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertisseur de texte</a>
+            <Link href="/mot-de-passe" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de mot de passe</Link>
+            <Link href="/formateur-json" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Formateur JSON</Link>
+            <Link href="/convertir-texte" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertisseur de texte</Link>
           </div>
         </div>
       </section>

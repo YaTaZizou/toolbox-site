@@ -3,6 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
 import { isPremiumRequest } from "@/lib/apiAuth";
 
+interface EncryptedSaveOptions {
+  userPassword?: string;
+  ownerPassword?: string;
+  permissions?: {
+    printing?: "highResolution" | "lowResolution";
+    copying?: boolean;
+    modifying?: boolean;
+    annotating?: boolean;
+    fillingForms?: boolean;
+    contentAccessibility?: boolean;
+    documentAssembly?: boolean;
+  };
+}
+
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
@@ -50,7 +64,15 @@ export async function POST(req: NextRequest) {
     if (action === "image-vers-pdf") {
       const files = formData.getAll("files") as File[];
       if (files.length === 0) return NextResponse.json({ error: "Aucune image reçue" }, { status: 400 });
+
+      const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
       for (const f of files) {
+        if (!ALLOWED_MIME_TYPES.includes(f.type)) {
+          return NextResponse.json(
+            { error: `Type de fichier non supporté : ${f.type}. Seuls JPEG, PNG et WebP sont acceptés.` },
+            { status: 400 }
+          );
+        }
         if (f.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 50 Mo)" }, { status: 413 });
       }
 
@@ -117,12 +139,12 @@ export async function POST(req: NextRequest) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const pdf = await PDFDocument.load(buffer);
       const ownerPassword = crypto.randomUUID() + crypto.randomUUID();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const outputBuffer = await pdf.save({
+      const saveOptions: unknown = {
         userPassword: password,
         ownerPassword,
         permissions: { printing: "lowResolution", copying: false, modifying: false },
-      } as any);
+      } satisfies EncryptedSaveOptions;
+      const outputBuffer = await pdf.save(saveOptions as Parameters<typeof pdf.save>[0]);
 
       return new Response(outputBuffer.buffer as ArrayBuffer, {
         headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="protege.pdf"` },

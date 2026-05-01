@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 const formats = [
   { value: "jpeg", label: "JPG", desc: "Idéal pour photos" },
@@ -188,6 +189,7 @@ export default function ImagePage() {
         </div>
       )}
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 type Action = "redimensionner" | "pivoter" | "retourner";
 
@@ -235,6 +236,8 @@ export default function ModifierImagePage() {
           {error}
         </div>
       )}
+      <div className="mt-8" />
+      <PremiumUpsellBanner />
     </div>
   );
 }

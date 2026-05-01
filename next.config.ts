@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Évite de bundler les packages natifs Node.js dans les Server Components
+  serverExternalPackages: ["pdf-lib", "pdfjs-dist"],
+  // Améliore le tree-shaking des packages à nombreux exports
+  experimental: {
+    optimizePackageImports: ["@supabase/supabase-js", "@supabase/ssr", "@stripe/stripe-js"],
+  },
   async headers() {
     return [
       // ── Headers de sécurité appliqués à toutes les routes ─────────────
@@ -17,7 +23,7 @@ const nextConfig: NextConfig = {
           // Limite les infos de referrer envoyées aux tiers
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           // Protection XSS legacy (IE/Edge)
-          { key: "X-XSS-Protection", value: "1; mode=block" },
+          { key: "X-XSS-Protection", value: "0" },
           // Force HTTPS (HSTS)
           {
             key: "Strict-Transport-Security",
@@ -27,6 +33,23 @@ const nextConfig: NextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(), payment=(self)",
+          },
+          // Content Security Policy
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://adservice.google.com https://www.googletagmanager.com https://js.stripe.com https://partner.googleadservices.com https://tpc.googlesyndication.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https: http:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://*.supabase.co https://api.anthropic.com https://api.resend.com https://api.stripe.com https://pagead2.googlesyndication.com",
+              "frame-src https://js.stripe.com https://www.googletagmanager.com",
+              "worker-src 'self' blob:",
+              "media-src 'self' blob:",
+              "object-src 'none'",
+              "base-uri 'self'",
+            ].join("; "),
           },
         ],
       },

@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Correcteur d'Orthographe et Grammaire en ligne — IA gratuit",
@@ -25,6 +26,14 @@ export default function CorrecteurLayout({ children }: { children: React.ReactNo
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Correcteur d'orthographe et grammaire en ligne avec IA. Français, anglais, espagnol. Gratuit."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Correcteur de texte IA", "item": "https://alltoolbox.fr/correcteur" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Correcteur d'orthographe et de grammaire en ligne</h2>
@@ -42,9 +51,9 @@ export default function CorrecteurLayout({ children }: { children: React.ReactNo
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/traducteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Traducteur</a>
-            <a href="/dictionnaire" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Dictionnaire</a>
-            <a href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</a>
+            <Link href="/traducteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Traducteur</Link>
+            <Link href="/dictionnaire" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Dictionnaire</Link>
+            <Link href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</Link>
           </div>
         </div>
       </section>

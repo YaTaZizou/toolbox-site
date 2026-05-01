@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Modifier une Image — Redimensionner, Recadrer, Pivoter",
@@ -42,9 +43,9 @@ export default function ModifierImageLayout({ children }: { children: React.Reac
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
-            <a href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</a>
-            <a href="/filigrane" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Ajouter un filigrane</a>
+            <Link href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</Link>
+            <Link href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</Link>
+            <Link href="/filigrane" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Ajouter un filigrane</Link>
           </div>
         </div>
       </section>

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
-import QRCode from "qrcode";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 const colors = ["#ffffff", "#a855f7", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
@@ -16,12 +16,15 @@ export default function QRCodePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!text.trim()) { setDataUrl(""); return; }
-    QRCode.toDataURL(text, {
-      width: size,
-      margin: 2,
-      color: { dark: color, light: bg },
-    }).then(setDataUrl).catch(() => setDataUrl(""));
+    import("qrcode").then(({ default: QRCode }) =>
+      QRCode.toDataURL(text, {
+        width: size,
+        margin: 2,
+        color: { dark: color, light: bg },
+      }).then(setDataUrl).catch(() => setDataUrl(""))
+    );
   }, [text, color, bg, size]);
 
   function download() {
@@ -53,7 +56,7 @@ export default function QRCodePage() {
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="https://toolbox-site-blue.vercel.app"
+            placeholder="https://alltoolbox.fr"
             className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
           />
         </div>
@@ -104,6 +107,7 @@ export default function QRCodePage() {
 
       <canvas ref={canvasRef} className="hidden" />
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

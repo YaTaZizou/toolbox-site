@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 export default function PseudoPage() {
   const [input, setInput] = useState("");
@@ -79,7 +80,7 @@ export default function PseudoPage() {
         <div className="space-y-3">
           <h2 className="text-lg font-semibold text-gray-300 mb-4">Vos pseudos générés :</h2>
           {results.map((pseudo, i) => (
-            <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl px-5 py-4 flex items-center justify-between hover:border-gray-600 transition-colors">
+            <div key={pseudo + i} className="bg-gray-900 border border-gray-800 rounded-xl px-5 py-4 flex items-center justify-between hover:border-gray-600 transition-colors">
               <span className="font-medium text-white">{pseudo}</span>
               <button onClick={() => copy(pseudo)} className="text-sm text-gray-500 hover:text-purple-400 transition-colors ml-4 flex-shrink-0">
                 {copied === pseudo ? "✓ Copié !" : "Copier"}
@@ -93,6 +94,7 @@ export default function PseudoPage() {
         </div>
       )}
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

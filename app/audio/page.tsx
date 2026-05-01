@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 const FORMATS = [
   { label: "MP3", value: "mp3", mime: "audio/mpeg", codec: ["-c:a", "libmp3lame", "-q:a", "2"] },
@@ -36,6 +36,7 @@ export default function AudioPage() {
   const loadFFmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
     const { FFmpeg } = await import("@ffmpeg/ffmpeg");
+    const { fetchFile, toBlobURL } = await import("@ffmpeg/util");
     const ffmpeg = new FFmpeg();
     ffmpeg.on("log", ({ message }) => setLog(message));
     ffmpeg.on("progress", ({ progress: p }) => setProgress(Math.round(p * 100)));
@@ -56,6 +57,7 @@ export default function AudioPage() {
 
     try {
       const ffmpeg = await loadFFmpeg();
+      const { fetchFile } = await import("@ffmpeg/util");
       setStatus("converting");
 
       const ext = file.name.split(".").pop() || "mp3";
@@ -249,6 +251,7 @@ export default function AudioPage() {
         <p>Ton audio ne quitte jamais ton appareil. La conversion se fait dans ton navigateur via FFmpeg WebAssembly.</p>
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

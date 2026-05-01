@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 function generate(length: number, upper: boolean, numbers: boolean, symbols: boolean): string {
   const lower = "abcdefghijklmnopqrstuvwxyz";
@@ -121,6 +122,7 @@ export default function MotDePassePage() {
         🔄 Générer un nouveau mot de passe
       </button>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

@@ -9,20 +9,26 @@ export function MobileMenu() {
       <button
         onClick={() => setOpen(!open)}
         aria-label="Menu"
+        aria-expanded={open}
+        aria-controls="mobile-menu-panel"
         className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
       >
         {open ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 6 6 18M6 6l12 12"/>
           </svg>
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M3 12h18M3 6h18M3 18h18"/>
           </svg>
         )}
       </button>
       {open && (
         <div
+          id="mobile-menu-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu de navigation"
           className="fixed inset-x-0 top-[57px] z-40 border-b p-4 flex flex-col gap-2"
           style={{ background: "var(--bg-2)", borderColor: "var(--tb-border)" }}
         >

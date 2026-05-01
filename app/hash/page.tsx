@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 // Compact MD5 implementation (pure JS, no dependencies)
 function md5(input: string): string {
@@ -145,6 +146,7 @@ export default function HashPage() {
   const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!text.trim()) { setHashes([]); return; }
     const run = async () => {
       const [sha256, sha384, sha512] = await Promise.all([
@@ -229,6 +231,7 @@ export default function HashPage() {
         </p>
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

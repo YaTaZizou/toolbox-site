@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 import { usePremiumStatus } from "@/components/PremiumProvider";
 
 const MAX_SIZE_MB = 50;
@@ -375,6 +376,7 @@ export default function CompresserPdfPage() {
         </p>
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

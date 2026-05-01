@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
     <div className="max-w-md mx-auto px-4 py-24">
       <div className="text-center mb-10">
         <Link href="/" className="text-4xl block mb-4 hover:scale-110 transition-transform inline-block">⚡</Link>
-        <h1 className="text-2xl font-bold">Nouveau mot de passe</h1>
+        <h2 className="text-2xl font-bold">Nouveau mot de passe</h2>
         <p className="text-gray-400 mt-2">Choisis un mot de passe sécurisé</p>
       </div>
 

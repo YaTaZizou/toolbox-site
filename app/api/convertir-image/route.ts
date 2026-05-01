@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
+import { isPremiumRequest } from "@/lib/apiAuth";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -13,6 +14,9 @@ export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
   const { allowed } = await checkRateLimitAsync(`convertir-image:${ip}`, 30);
   if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
+
+  const isPremium = await isPremiumRequest(req);
+  if (!isPremium) return NextResponse.json({ error: "Cette fonctionnalité est réservée aux abonnés Premium." }, { status: 403 });
 
   try {
     const formData = await req.formData();
@@ -40,12 +44,15 @@ export async function POST(req: NextRequest) {
     const outputBuffer = await sharpInstance.toBuffer();
     const mimeType = format === "jpeg" ? "image/jpeg" : `image/${format}`;
     const ext = format === "jpeg" ? "jpg" : format;
-    const originalName = file.name.replace(/\.[^.]+$/, "");
+    const safeOriginalName = file.name
+      .replace(/\.[^.]+$/, "")           // retire l'extension
+      .replace(/[^\w\-_.]/g, "_")        // remplace les caractères spéciaux
+      .slice(0, 100);                    // limite la longueur
 
     return new Response(outputBuffer.buffer as ArrayBuffer, {
       headers: {
         "Content-Type": mimeType,
-        "Content-Disposition": `attachment; filename="${originalName}.${ext}"`,
+        "Content-Disposition": `attachment; filename="${safeOriginalName}.${ext}"`,
         "Content-Length": outputBuffer.length.toString(),
       },
     });

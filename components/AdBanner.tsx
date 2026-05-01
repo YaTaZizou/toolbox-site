@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { usePremiumStatus } from "@/components/PremiumProvider";
+import { useCookieConsent } from "@/components/CookieConsent";
 
 declare global {
   interface Window { adsbygoogle: unknown[] }
@@ -14,12 +15,32 @@ function pushAd() {
   } catch {}
 }
 
+/** Inject the AdSense script once, only after consent is granted. */
+function useAdSenseScript(enabled: boolean) {
+  useEffect(() => {
+    if (!enabled) return;
+    const id = "adsense-script";
+    if (document.getElementById(id)) return; // already injected
+    const script = document.createElement("script");
+    script.id = id;
+    script.async = true;
+    script.src =
+      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9277300744556228";
+    script.crossOrigin = "anonymous";
+    document.head.appendChild(script);
+  }, [enabled]);
+}
+
 /* ── Bannière horizontale (homepage entre catégories) ── */
 export function AdBanner() {
   const { isPremium, loading } = usePremiumStatus();
-  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+  const { consent } = useCookieConsent();
+  const canShow = !isPremium && !loading && consent === "accepted";
 
-  if (loading || isPremium) return null;
+  useAdSenseScript(canShow);
+  useEffect(() => { if (canShow) pushAd(); }, [canShow]);
+
+  if (loading || isPremium || consent !== "accepted") return null;
 
   return (
     <div className="w-full text-center my-6">
@@ -42,9 +63,13 @@ export function AdBanner() {
 /* ── Sidebar verticale gauche / droite ── */
 export function SidebarAd({ slot }: { slot: "left" | "right" }) {
   const { isPremium, loading } = usePremiumStatus();
-  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+  const { consent } = useCookieConsent();
+  const canShow = !isPremium && !loading && consent === "accepted";
 
-  if (loading || isPremium) return null;
+  useAdSenseScript(canShow);
+  useEffect(() => { if (canShow) pushAd(); }, [canShow]);
+
+  if (loading || isPremium || consent !== "accepted") return null;
 
   return (
     <div className="flex flex-col items-center gap-2 pt-2">
@@ -67,9 +92,13 @@ export function SidebarAd({ slot }: { slot: "left" | "right" }) {
 /* ── Bannière sticky en bas (mobile) ── */
 export function StickyBottomAd() {
   const { isPremium, loading } = usePremiumStatus();
-  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+  const { consent } = useCookieConsent();
+  const canShow = !isPremium && !loading && consent === "accepted";
 
-  if (loading || isPremium) return null;
+  useAdSenseScript(canShow);
+  useEffect(() => { if (canShow) pushAd(); }, [canShow]);
+
+  if (loading || isPremium || consent !== "accepted") return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-gray-950/95 backdrop-blur border-t border-gray-800/60 py-1 px-2 flex items-center justify-center gap-3">
@@ -94,16 +123,25 @@ export function StickyBottomAd() {
 /* ── Pop-up pub avant téléchargement ── */
 export function AdBeforeDownload({ onContinue }: { onContinue: () => void }) {
   const { isPremium, loading } = usePremiumStatus();
+  const { consent } = useCookieConsent();
+  const canShow = !isPremium && !loading && consent === "accepted";
+
+  useAdSenseScript(canShow);
 
   // Tous les hooks AVANT tout return conditionnel
-  useEffect(() => { if (!isPremium && !loading) pushAd(); }, [isPremium, loading]);
+  useEffect(() => { if (canShow) pushAd(); }, [canShow]);
 
   // Premium : téléchargement direct sans pub
   useEffect(() => {
     if (!loading && isPremium) onContinue();
   }, [isPremium, loading, onContinue]);
 
-  if (loading || isPremium) return null;
+  // Pas de consentement ou pas encore chargé : téléchargement direct aussi
+  useEffect(() => {
+    if (!loading && consent === "declined") onContinue();
+  }, [consent, loading, onContinue]);
+
+  if (loading || isPremium || consent !== "accepted") return null;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur z-50 flex items-center justify-center p-4">

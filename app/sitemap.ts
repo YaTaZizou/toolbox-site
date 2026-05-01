@@ -40,14 +40,16 @@ const tools: { path: string; priority: number }[] = [
   { path: "/formateur-json",     priority: 0.75 },
   // Pages importantes
   { path: "/premium",            priority: 0.85 },
-  { path: "/contact",            priority: 0.5  },
+  // Auth (pages publiques indexables)
+  { path: "/connexion",          priority: 0.5  },
+  { path: "/inscription",        priority: 0.5  },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: BASE,
-      lastModified: new Date("2025-04-01"),
+      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
     },
@@ -57,5 +59,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority,
     })),
+    {
+      url: `${BASE}/conditions`,
+      lastModified: new Date(NOW),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${BASE}/confidentialite`,
+      lastModified: new Date(NOW),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${BASE}/mentions-legales`,
+      lastModified: new Date(NOW),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${BASE}/contact`,
+      lastModified: new Date(NOW),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
   ];
 }

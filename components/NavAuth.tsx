@@ -68,6 +68,7 @@ export default function NavAuth() {
           href="/profil"
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           title={email}
+          aria-label={`Profil de ${email}`}
         >
           <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
             {email.slice(0, 2).toUpperCase()}

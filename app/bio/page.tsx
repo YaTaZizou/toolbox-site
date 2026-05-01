@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 const platforms = ["Instagram", "TikTok", "Twitter/X", "LinkedIn", "YouTube", "Twitch"];
 
@@ -106,7 +107,7 @@ export default function BioPage() {
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-gray-300 mb-4">Vos bios générées :</h2>
           {results.map((bio, i) => (
-            <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-600 transition-colors">
+            <div key={bio + i} className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-600 transition-colors">
               <div className="flex items-start justify-between gap-4">
                 <p className="text-gray-200 leading-relaxed flex-1">{bio}</p>
                 <button
@@ -128,6 +129,7 @@ export default function BioPage() {
         </div>
       )}
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

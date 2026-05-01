@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 interface DictResult {
   word: string;
@@ -115,7 +116,7 @@ export default function DictionnairePage() {
               <h3 className="text-sm font-semibold text-gray-400 mb-3">💬 Exemples</h3>
               <ul className="space-y-2">
                 {result.examples.map((ex, i) => (
-                  <li key={i} className="text-gray-300 text-sm italic border-l-2 border-indigo-500/40 pl-3">
+                  <li key={ex + i} className="text-gray-300 text-sm italic border-l-2 border-indigo-500/40 pl-3">
                     &ldquo;{ex}&rdquo;
                   </li>
                 ))}
@@ -130,7 +131,7 @@ export default function DictionnairePage() {
                 <div className="flex flex-wrap gap-2">
                   {result.synonymes.map((s, i) => (
                     <button
-                      key={i}
+                      key={s + i}
                       onClick={() => { setWord(s); }}
                       className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
                     >
@@ -146,7 +147,7 @@ export default function DictionnairePage() {
                 <div className="flex flex-wrap gap-2">
                   {result.antonymes.map((a, i) => (
                     <button
-                      key={i}
+                      key={a + i}
                       onClick={() => { setWord(a); }}
                       className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
                     >
@@ -160,6 +161,7 @@ export default function DictionnairePage() {
         </div>
       )}
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

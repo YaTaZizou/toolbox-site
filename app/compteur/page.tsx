@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 export default function CompteurPage() {
   const [text, setText] = useState("");
@@ -61,6 +62,7 @@ export default function CompteurPage() {
         )}
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

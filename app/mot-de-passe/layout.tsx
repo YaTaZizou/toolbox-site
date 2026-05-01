@@ -25,6 +25,14 @@ export default function MotDePasseLayout({ children }: { children: React.ReactNo
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Générez des mots de passe forts et sécurisés en ligne. Longueur, caractères spéciaux et chiffres personnalisables. Gratuit, aucune donnée stockée."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Générateur de mot de passe", "item": "https://alltoolbox.fr/mot-de-passe" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Générateur de mot de passe fort et sécurisé</h2>

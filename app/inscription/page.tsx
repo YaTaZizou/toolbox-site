@@ -14,6 +14,9 @@ function InscriptionForm() {
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+  const safeRedirect = (redirect && redirect.startsWith("/") && !redirect.startsWith("//"))
+    ? redirect
+    : "/";
 
   const supabase = useMemo(
     () =>
@@ -28,7 +31,7 @@ function InscriptionForm() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin + "/api/auth/callback",
+        redirectTo: `${window.location.origin}/api/auth/callback${safeRedirect !== "/" ? `?next=${encodeURIComponent(safeRedirect)}` : ""}`,
       },
     });
   }
@@ -96,7 +99,7 @@ function InscriptionForm() {
             </p>
 
             <Link
-              href={`/connexion${redirect !== "/" ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
+              href={`/connexion${safeRedirect !== "/" ? `?redirect=${encodeURIComponent(safeRedirect)}` : ""}`}
               className="block w-full text-center bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 rounded-xl transition-colors"
             >
               Aller à la connexion →
@@ -123,7 +126,7 @@ function InscriptionForm() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Créer un compte</h1>
           <p className="text-gray-400">Gratuit et sans carte bancaire</p>
-          {redirect !== "/" && (
+          {safeRedirect !== "/" && (
             <p className="text-xs text-yellow-400 mt-2 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg inline-block">
               ⭐ Tu seras redirigé vers Premium après connexion
             </p>
@@ -208,7 +211,7 @@ function InscriptionForm() {
           <p className="text-center text-gray-500 text-sm mt-6">
             Déjà un compte ?{" "}
             <Link
-              href={`/connexion${redirect !== "/" ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
+              href={`/connexion${safeRedirect !== "/" ? `?redirect=${encodeURIComponent(safeRedirect)}` : ""}`}
               className="text-purple-400 hover:text-purple-300"
             >
               Se connecter

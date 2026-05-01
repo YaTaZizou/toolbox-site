@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Créateur de GIF en ligne gratuit — Animer des Images",
@@ -42,9 +43,9 @@ export default function GifLayout({ children }: { children: React.ReactNode }) {
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/video" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une vidéo</a>
-            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
-            <a href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</a>
+            <Link href="/video" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une vidéo</Link>
+            <Link href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</Link>
+            <Link href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</Link>
           </div>
         </div>
       </section>

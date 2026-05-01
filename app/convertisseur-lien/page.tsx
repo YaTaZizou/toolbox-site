@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 import { usePremiumStatus } from "@/components/PremiumProvider";
 
 // ── Logos SVG des plateformes ──────────────────────────────────────────────
@@ -368,6 +369,7 @@ export default function ConvertisseurLienPage() {
         </p>
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

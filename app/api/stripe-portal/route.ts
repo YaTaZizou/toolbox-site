@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase";
 import { cookies } from "next/headers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -28,10 +28,7 @@ export async function POST(req: NextRequest) {
     if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
     // Récupérer le stripe_customer_id depuis la base (fiable, pas de recherche par email)
-    const adminSupabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const adminSupabase = createServiceClient();
     const { data: profile } = await adminSupabase
       .from("profiles")
       .select("stripe_customer_id")

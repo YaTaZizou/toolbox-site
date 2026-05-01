@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 export default function OcrPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -172,6 +173,7 @@ export default function OcrPage() {
           </p>
         </div>
       )}
+      <PremiumUpsellBanner />
     </div>
   );
 }

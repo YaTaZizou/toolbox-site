@@ -1,12 +1,20 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting : 10 tentatives par jour par IP
+    const ip = getClientIp(req);
+    const { allowed } = await checkRateLimitAsync(`stripe-checkout:${ip}`, 10);
+    if (!allowed) {
+      return NextResponse.json({ error: "Trop de requêtes. Réessaie plus tard." }, { status: 429 });
+    }
+
     // ── Vérification de session côté serveur (JAMAIS faire confiance au body) ──
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -45,10 +53,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Récupérer ou créer le customer Stripe ────────────────────────────
-    const adminSupabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const adminSupabase = createServiceClient();
 
     const { data: profile } = await adminSupabase
       .from("profiles")
@@ -86,6 +91,9 @@ export async function POST(req: NextRequest) {
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/premium?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/premium?canceled=true`,
       locale: "fr",
+      subscription_data: {
+        trial_period_days: 7,
+      },
     });
 
     return NextResponse.json({ url: session.url });

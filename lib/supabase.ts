@@ -10,9 +10,6 @@ export function createSupabaseBrowser() {
   return createBrowserClient(supabaseUrl, supabaseAnonKey);
 }
 
-// Gardé pour compatibilité côté serveur uniquement
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 export function createServiceClient() {
   return createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
     auth: { autoRefreshToken: false, persistSession: false },

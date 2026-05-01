@@ -6,39 +6,71 @@ export default function MentionsLegales() {
       <div className="space-y-8 text-gray-300 leading-relaxed">
         <section>
           <h2 className="text-xl font-semibold text-white mb-3">1. Éditeur du site</h2>
-          <p>Le site ToolBox (accessible à l'adresse https://alltoolbox.fr) est édité par :</p>
+          <p>Le site ToolBox (accessible à l&apos;adresse https://alltoolbox.fr) est édité par :</p>
           <ul className="mt-3 space-y-1 text-gray-400">
-            <li><span className="text-gray-300">Éditeur :</span> Elias B.</li>
+            <li><span className="text-gray-300">Éditeur :</span> Elias Benabdelkader</li>
             <li><span className="text-gray-300">Email :</span> contact@alltoolbox.fr</li>
+            <li><span className="text-gray-300">Adresse :</span> 13 Rue de la Justice, 91290 Arpajon, France</li>
+            <li><span className="text-gray-300">SIRET :</span> 942 985 755 00019</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">2. Hébergement</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">2. Directeur de la publication</h2>
+          <ul className="mt-3 space-y-1 text-gray-400">
+            <li><span className="text-gray-300">Directeur de la publication :</span> Elias Benabdelkader</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-3">3. Hébergement</h2>
           <p>Le site est hébergé par :</p>
           <ul className="mt-3 space-y-1 text-gray-400">
             <li><span className="text-gray-300">Société :</span> Vercel Inc.</li>
-            <li><span className="text-gray-300">Adresse :</span> 340 Pine Street, Suite 701, San Francisco, CA 94104, États-Unis</li>
-            <li><span className="text-gray-300">Site web :</span> vercel.com</li>
+            <li><span className="text-gray-300">Adresse :</span> 340 Pine Street, Suite 1506, San Francisco, CA 94104, États-Unis</li>
+            <li><span className="text-gray-300">Contact légal :</span> legal@vercel.com</li>
+            <li>
+              <span className="text-gray-300">Site web :</span>{" "}
+              <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">
+                https://vercel.com
+              </a>
+            </li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">3. Propriété intellectuelle</h2>
-          <p>L'ensemble du contenu de ce site (textes, graphiques, logos, icônes) est la propriété exclusive de ToolBox. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.</p>
+          <h2 className="text-xl font-semibold text-white mb-3">4. Propriété intellectuelle</h2>
+          <p>L&apos;ensemble du contenu de ce site (textes, graphiques, logos, icônes) est la propriété exclusive de ToolBox. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">4. Responsabilité</h2>
-          <p>ToolBox s'efforce de fournir des informations exactes et à jour. Cependant, nous ne pouvons garantir l'exactitude, la complétude ou l'actualité des informations diffusées sur ce site. L'utilisation des outils proposés se fait sous la responsabilité de l'utilisateur.</p>
+          <h2 className="text-xl font-semibold text-white mb-3">5. Responsabilité</h2>
+          <p>ToolBox s&apos;efforce de fournir des informations exactes et à jour. Cependant, nous ne pouvons garantir l&apos;exactitude, la complétude ou l&apos;actualité des informations diffusées sur ce site. L&apos;utilisation des outils proposés se fait sous la responsabilité de l&apos;utilisateur.</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white mb-3">5. Droit applicable</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">6. Médiation de la consommation</h2>
+          <p>
+            Conformément aux dispositions du Code de la consommation concernant le règlement amiable des litiges, vous pouvez recourir à la plateforme de règlement en ligne des litiges (RLL) proposée par la Commission européenne :
+          </p>
+          <p className="mt-3">
+            <a
+              href="https://ec.europa.eu/consumers/odr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-white transition-colors"
+            >
+              https://ec.europa.eu/consumers/odr
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-3">7. Droit applicable</h2>
           <p>Les présentes mentions légales sont soumises au droit français. En cas de litige, les tribunaux français seront seuls compétents.</p>
         </section>
 
-        <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : avril 2026</p>
+        <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : mai 2026</p>
       </div>
     </div>
   );

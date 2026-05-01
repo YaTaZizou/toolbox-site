@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 type Mode = "format" | "minify" | "validate";
 
@@ -183,6 +184,7 @@ export default function FormateurJsonPage() {
         </button>
       </div>
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

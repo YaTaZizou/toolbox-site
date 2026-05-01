@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Inscription",
   description: "Crée ton compte ToolBox gratuitement et accède à tous les outils en ligne.",
   robots: { index: false },
+  alternates: { canonical: "https://alltoolbox.fr/inscription" },
 };
 
 export default function InscriptionLayout({ children }: { children: React.ReactNode }) {

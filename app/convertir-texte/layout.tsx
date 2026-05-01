@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Convertisseur de Texte — Majuscules, Slug, CamelCase",
@@ -25,6 +26,14 @@ export default function ConvertirTexteLayout({ children }: { children: React.Rea
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Convertissez votre texte en majuscules, minuscules, slug URL, camelCase, snake_case et plus. Gratuit et instantané, sans installation."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Convertisseur de Texte", "item": "https://alltoolbox.fr/convertir-texte" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Convertisseur de texte en ligne gratuit</h2>
@@ -42,9 +51,9 @@ export default function ConvertirTexteLayout({ children }: { children: React.Rea
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</a>
-            <a href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</a>
-            <a href="/formateur-json" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Formateur JSON</a>
+            <Link href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</Link>
+            <Link href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</Link>
+            <Link href="/formateur-json" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Formateur JSON</Link>
           </div>
         </div>
       </section>

@@ -25,6 +25,14 @@ export default function QrcodeLayout({ children }: { children: React.ReactNode }
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Créez un QR code personnalisé pour n'importe quel lien, texte ou contact. Téléchargement PNG gratuit, sans inscription, personnalisation couleur et logo."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Générateur QR Code", "item": "https://alltoolbox.fr/qrcode" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Générateur de QR Code gratuit et personnalisable</h2>

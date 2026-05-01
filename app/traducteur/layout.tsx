@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Traducteur en ligne gratuit — Traduction IA instantanée",
@@ -25,6 +26,14 @@ export default function TraducteurLayout({ children }: { children: React.ReactNo
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Traduisez du texte dans plus de 12 langues grâce à l'IA. Gratuit, sans inscription."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Traducteur IA", "item": "https://alltoolbox.fr/traducteur" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Traducteur en ligne gratuit propulsé par l'IA</h2>
@@ -42,9 +51,9 @@ export default function TraducteurLayout({ children }: { children: React.ReactNo
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</a>
-            <a href="/dictionnaire" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Dictionnaire</a>
-            <a href="/ocr" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">OCR — Image en texte</a>
+            <Link href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</Link>
+            <Link href="/dictionnaire" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Dictionnaire</Link>
+            <Link href="/ocr" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">OCR — Image en texte</Link>
           </div>
         </div>
       </section>

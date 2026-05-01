@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Convertir PDF en Images JPG PNG en ligne — Gratuit",
@@ -42,9 +43,9 @@ export default function PdfImagesLayout({ children }: { children: React.ReactNod
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Fusionner / Découper un PDF</a>
-            <a href="/compresser-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compresser un PDF</a>
-            <a href="/modifier-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier un PDF</a>
+            <Link href="/pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Fusionner / Découper un PDF</Link>
+            <Link href="/compresser-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compresser un PDF</Link>
+            <Link href="/modifier-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier un PDF</Link>
           </div>
         </div>
       </section>

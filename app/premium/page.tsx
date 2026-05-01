@@ -75,6 +75,7 @@ function PremiumContent() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -104,6 +105,7 @@ function PremiumContent() {
 
   async function startCheckout(plan: Plan) {
     if (!user) return;
+    setCheckoutError(null);
     setCheckoutLoading(true);
     const res = await fetch("/api/stripe-checkout", {
       method: "POST",
@@ -113,7 +115,10 @@ function PremiumContent() {
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
-    else setCheckoutLoading(false);
+    else {
+      setCheckoutLoading(false);
+      setCheckoutError(data.error || "Une erreur est survenue. Réessaie.");
+    }
   }
 
   if (loading) {
@@ -263,6 +268,14 @@ function PremiumContent() {
                     </Link>
                   </div>
                 )}
+                {/* Badge essai gratuit 7 jours */}
+                <div className="flex items-center justify-center gap-2 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2">
+                  <span className="text-green-400 text-sm">🛡️</span>
+                  <span className="text-xs text-green-400 font-semibold">7 jours satisfait ou remboursé — sans question</span>
+                </div>
+                {checkoutError && (
+                  <p className="text-red-400 text-sm text-center mt-2">{checkoutError}</p>
+                )}
                 {/* Badges de confiance */}
                 <div className="flex items-center justify-center gap-3 mt-1">
                   <span className="text-xs text-gray-600 flex items-center gap-1">🔒 SSL</span>
@@ -297,7 +310,7 @@ function PremiumContent() {
           </div>
           {FEATURES_FREE.map((feat, i) => (
             <div
-              key={i}
+              key={feat.label}
               className={`grid grid-cols-3 border-b border-gray-800/50 last:border-0 ${i % 2 === 0 ? "" : "bg-gray-900/50"}`}
             >
               <div className="p-4 text-sm text-gray-300">{feat.label}</div>
@@ -337,7 +350,7 @@ function PremiumContent() {
               initials: "M.L.",
               role: "Freelance créatif",
               stars: 5,
-              text: "J'utilise les générateurs IA tous les jours pour mes clients. La limite gratuite était frustrante, Premium vaut vraiment le coup pour 2€/mois.",
+              text: "J'utilise les générateurs IA tous les jours pour mes clients. La limite gratuite était frustrante, Premium vaut vraiment le coup pour 3,99€/mois.",
             },
             {
               initials: "S.K.",
@@ -392,7 +405,7 @@ function PremiumContent() {
         <h2 className="text-2xl font-bold text-center mb-6">Questions fréquentes</h2>
         <div className="space-y-2">
           {FAQ.map((faq, i) => (
-            <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+            <div key={faq.q} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 aria-expanded={openFaq === i}

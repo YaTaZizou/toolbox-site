@@ -1,6 +1,7 @@
 import { PDFDocument, degrees } from "pdf-lib";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
+import { isPremiumRequest } from "@/lib/apiAuth";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -11,6 +12,9 @@ export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
   const { allowed } = await checkRateLimitAsync(`modifier-pdf:${ip}`, 20);
   if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
+
+  const premium = await isPremiumRequest(req);
+  if (!premium) return NextResponse.json({ error: "Cette fonctionnalité est réservée aux membres Premium." }, { status: 403 });
 
   try {
     const formData = await req.formData();
@@ -25,6 +29,9 @@ export async function POST(req: NextRequest) {
 
     if (action === "pivoter") {
       const pagesParam = formData.get("pages") as string;
+      if (pagesParam && pagesParam.length > 1000) {
+        return NextResponse.json({ error: "Paramètre pages trop long." }, { status: 400 });
+      }
       const angle = Number(formData.get("angle") || 90);
 
       const pdf = await PDFDocument.load(buffer);
@@ -47,6 +54,9 @@ export async function POST(req: NextRequest) {
 
     if (action === "supprimer") {
       const pagesParam = formData.get("pages") as string;
+      if (pagesParam && pagesParam.length > 1000) {
+        return NextResponse.json({ error: "Paramètre pages trop long." }, { status: 400 });
+      }
 
       const srcPdf = await PDFDocument.load(buffer);
       const total = srcPdf.getPageCount();

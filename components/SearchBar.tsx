@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { getBadgeStyle } from "@/lib/badgeStyle";
 
 type Tool = {
   href: string;
@@ -71,6 +72,7 @@ export function SearchBar({ tools }: { tools: Tool[] }) {
         {query && (
           <button
             onClick={() => { setQuery(""); inputRef.current?.focus(); }}
+            aria-label="Effacer la recherche"
             className="text-gray-500 hover:text-white transition-colors text-lg leading-none"
           >
             ×
@@ -80,7 +82,12 @@ export function SearchBar({ tools }: { tools: Tool[] }) {
 
       {/* Résultats */}
       {open && query.trim() && (
-        <div className="absolute top-full mt-2 left-0 right-0 bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl z-50">
+        <div
+          role="listbox"
+          aria-label="Résultats de recherche"
+          aria-live="polite"
+          className="absolute top-full mt-2 left-0 right-0 bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl z-50"
+        >
           {filtered.length === 0 ? (
             <div className="px-4 py-6 text-center text-gray-500 text-sm">
               Aucun outil trouvé pour &quot;{query}&quot;
@@ -91,6 +98,9 @@ export function SearchBar({ tools }: { tools: Tool[] }) {
                 <Link
                   key={tool.href + tool.title}
                   href={tool.href}
+                  role="option"
+                  aria-selected={false}
+                  aria-label={`${tool.title} — ${tool.description}`}
                   onClick={() => { setQuery(""); setOpen(false); }}
                   className="flex items-center gap-4 px-4 py-3 hover:bg-gray-800 transition-colors group"
                 >
@@ -103,7 +113,7 @@ export function SearchBar({ tools }: { tools: Tool[] }) {
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-xs text-gray-600">{tool.categoryEmoji} {tool.category}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${tool.badgeColor}`}>{tool.badge}</span>
+                    <span style={{ fontSize: 10.5, padding: "3px 8px", borderRadius: 999, fontFamily: '"JetBrains Mono", monospace', fontWeight: 500, ...getBadgeStyle(tool.badgeColor) }}>{tool.badge}</span>
                   </div>
                 </Link>
               ))}

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import { PwaRegister } from "@/components/PwaRegister";
 import { NavPremiumBadge } from "@/components/NavPremiumBadge";
 import { PremiumProvider } from "@/components/PremiumProvider";
 import { ToolUpsellWrapper } from "@/components/ToolUpsellWrapper";
+import { CookieConsentProvider } from "@/components/CookieConsent";
 
 const geist = Geist({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   description: "Générateurs IA, outils PDF, convertisseurs d'images, traducteur et bien plus. Gratuit, rapide, sans inscription.",
   keywords: ["outils en ligne", "générateur IA", "convertisseur PDF", "traducteur", "compresseur image", "gratuit"],
   authors: [{ name: "ToolBox" }],
+  verification: { google: "7GCR9p-L0MkHAKFMvq-JMxBnmGmNoVH_w9v6Yc0nXhw" },
   metadataBase: new URL("https://alltoolbox.fr"),
   icons: {
     icon: [
@@ -44,19 +46,21 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ToolBox — Outils gratuits en ligne",
+    description: "Générateurs IA, outils PDF, convertisseurs d'images, traducteur et bien plus.",
     images: ["/opengraph-image"],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#030712",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9277300744556228"
-          crossOrigin="anonymous"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -72,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${geist.className} bg-gray-950 text-white min-h-screen transition-colors duration-300 pb-16 xl:pb-0`}>
         <ThemeProvider>
+          <CookieConsentProvider>
           <PremiumProvider>
           <PwaRegister />
           <ToolTracker />
@@ -133,6 +138,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
           <StickyBottomAd />
           </PremiumProvider>
+          </CookieConsentProvider>
           <footer style={{
             marginTop: 80,
             borderTop: '1px solid var(--tb-border)',

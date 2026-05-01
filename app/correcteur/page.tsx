@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AdBanner } from "@/components/AdBanner";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 import { usePremiumStatus } from "@/components/PremiumProvider";
 import { useAiLimit } from "@/hooks/useAiLimit";
 import { AiLimitBanner } from "@/components/AiLimitBanner";
@@ -148,7 +149,7 @@ export default function CorrecteurPage() {
               <h2 className="font-semibold text-gray-300 text-sm mb-3">📝 Corrections apportées ({changes.length})</h2>
               <ul className="space-y-1.5">
                 {changes.map((change, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-gray-400">
+                  <li key={change + i} className="flex items-start gap-2 text-sm text-gray-400">
                     <span className="text-green-500 mt-0.5 flex-shrink-0">•</span>
                     {change}
                   </li>
@@ -159,6 +160,7 @@ export default function CorrecteurPage() {
         </div>
       )}
       <div className="mt-8" />
+      <PremiumUpsellBanner />
       <AdBanner />
     </div>
   );

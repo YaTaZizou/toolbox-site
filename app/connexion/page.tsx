@@ -17,6 +17,9 @@ function ConnexionForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+  const safeRedirect = (redirect && redirect.startsWith("/") && !redirect.startsWith("//"))
+    ? redirect
+    : "/";
 
   const supabase = useMemo(
     () =>
@@ -37,7 +40,7 @@ function ConnexionForm() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin + "/api/auth/callback",
+        redirectTo: `${window.location.origin}/api/auth/callback${safeRedirect !== "/" ? `?next=${encodeURIComponent(safeRedirect)}` : ""}`,
       },
     });
   }
@@ -53,7 +56,6 @@ function ConnexionForm() {
       if (error) {
         setError("Email ou mot de passe incorrect.");
       } else {
-        const safeRedirect = redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "/";
         window.location.href = safeRedirect;
       }
 

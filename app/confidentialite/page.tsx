@@ -5,10 +5,15 @@ export default function Confidentialite() {
 
       <div className="space-y-8 text-gray-300 leading-relaxed">
         <section>
+          <h2 className="text-xl font-semibold text-white mb-3">Responsable du traitement</h2>
+          <p>Le responsable du traitement des données personnelles collectées via alltoolbox.fr est : l&apos;éditeur du site, joignable à <span className="text-purple-400">contact@alltoolbox.fr</span>.</p>
+        </section>
+
+        <section>
           <h2 className="text-xl font-semibold text-white mb-3">1. Données collectées</h2>
           <p>ToolBox collecte les données suivantes :</p>
           <ul className="mt-3 space-y-2 text-gray-400 list-disc list-inside">
-            <li><span className="text-gray-300">Adresse email</span> — lors de la création d'un compte</li>
+            <li><span className="text-gray-300">Adresse email</span> — lors de la création d&apos;un compte</li>
             <li><span className="text-gray-300">Données de paiement</span> — gérées exclusivement par Stripe (nous ne stockons aucune carte bancaire)</li>
             <li><span className="text-gray-300">Données de navigation</span> — via Google AdSense (cookies publicitaires)</li>
             <li><span className="text-gray-300">Fichiers uploadés</span> — images et PDF traités temporairement puis supprimés immédiatement</li>
@@ -47,6 +52,18 @@ export default function Confidentialite() {
         </section>
 
         <section>
+          <h2 className="text-xl font-semibold text-white mb-3">4bis. Transferts de données hors Union Européenne</h2>
+          <p>Certains de nos prestataires sont basés aux États-Unis et peuvent traiter vos données hors de l&apos;UE. Ces transferts sont encadrés par des garanties appropriées :</p>
+          <ul className="mt-3 space-y-2 text-gray-400 list-disc list-inside">
+            <li><span className="text-gray-300">Stripe</span> — certifié EU-U.S. Data Privacy Framework</li>
+            <li><span className="text-gray-300">Google/AdSense</span> — certifié EU-U.S. Data Privacy Framework</li>
+            <li><span className="text-gray-300">Supabase</span> — Clauses Contractuelles Types</li>
+            <li><span className="text-gray-300">Anthropic</span> — Clauses Contractuelles Types</li>
+            <li><span className="text-gray-300">Resend</span> — Clauses Contractuelles Types. Resend est également utilisé comme prestataire d&apos;envoi d&apos;emails transactionnels.</li>
+          </ul>
+        </section>
+
+        <section>
           <h2 className="text-xl font-semibold text-white mb-3">5. Conservation des données</h2>
           <p>Vos données sont conservées tant que votre compte est actif. Vous pouvez demander la suppression de votre compte et de toutes vos données en nous contactant par email.</p>
         </section>
@@ -55,13 +72,15 @@ export default function Confidentialite() {
           <h2 className="text-xl font-semibold text-white mb-3">6. Vos droits (RGPD)</h2>
           <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :</p>
           <ul className="mt-3 space-y-2 text-gray-400 list-disc list-inside">
-            <li>Droit d'accès à vos données</li>
+            <li>Droit d&apos;accès à vos données</li>
             <li>Droit de rectification</li>
-            <li>Droit à l'effacement (droit à l'oubli)</li>
+            <li>Droit à l&apos;effacement (droit à l&apos;oubli)</li>
             <li>Droit à la portabilité</li>
-            <li>Droit d'opposition au traitement</li>
+            <li>Droit d&apos;opposition au traitement</li>
+            <li><span className="text-gray-300">Droit à la limitation du traitement</span> — Vous pouvez demander la limitation du traitement de vos données dans les cas prévus par le RGPD.</li>
           </ul>
           <p className="mt-3">Pour exercer ces droits, contactez-nous à : <span className="text-purple-400">contact@alltoolbox.fr</span></p>
+          <p className="mt-3"><span className="text-gray-300">Réclamation auprès de la CNIL</span> — Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la Commission Nationale de l&apos;Informatique et des Libertés (CNIL) : <span className="text-purple-400">www.cnil.fr</span>. Lorsqu&apos;un traitement est fondé sur votre consentement, vous pouvez le retirer à tout moment en nous contactant à <span className="text-purple-400">contact@alltoolbox.fr</span>.</p>
         </section>
 
         <p className="text-gray-600 text-sm pt-4 border-t border-gray-800">Dernière mise à jour : avril 2026</p>

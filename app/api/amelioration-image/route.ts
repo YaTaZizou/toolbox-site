@@ -1,37 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { isPremiumRequest } from "@/lib/apiAuth";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
+
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   // Vérifier auth + premium
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => cookieStore.getAll(),
-        setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+  const isPremium = await isPremiumRequest(req);
+  if (!isPremium) {
+    return NextResponse.json({ error: "Cette fonctionnalité est réservée aux abonnés Premium." }, { status: 403 });
+  }
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("is_subscribed")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile?.is_subscribed) {
-    return NextResponse.json({ error: "Réservé aux membres Premium" }, { status: 403 });
+  // Rate limiting
+  const ip = getClientIp(req);
+  const { allowed } = await checkRateLimitAsync(`amelioration-image:${ip}`, 100);
+  if (!allowed) {
+    return NextResponse.json({ error: "Limite journalière atteinte. Réessaie demain." }, { status: 429 });
   }
 
   const formData = await req.formData();
@@ -54,8 +39,9 @@ export async function POST(req: NextRequest) {
   const image = sharp(buffer);
   const meta = await image.metadata();
 
-  const newW = Math.round((meta.width || 800) * scale);
-  const newH = Math.round((meta.height || 600) * scale);
+  const MAX_OUTPUT_DIM = 8000;
+  const newW = Math.min(Math.round((meta.width || 800) * scale), MAX_OUTPUT_DIM);
+  const newH = Math.min(Math.round((meta.height || 600) * scale), MAX_OUTPUT_DIM);
 
   // Paramètres selon le mode
   const sharpParams = {

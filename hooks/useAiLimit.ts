@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 
 const DAILY_LIMIT = 5;
@@ -15,14 +15,20 @@ export function useAiLimit() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [ready, setReady] = useState(false);
 
+  const supabase = useMemo(
+    () =>
+      createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      ),
+    []
+  );
+
   useEffect(() => {
     const stored = parseInt(localStorage.getItem(storageKey()) ?? "0");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCount(stored);
 
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
     supabase.auth.getUser().then(async ({ data }) => {
       if (data.user) {
         setIsLoggedIn(true);

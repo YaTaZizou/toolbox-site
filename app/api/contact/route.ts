@@ -13,15 +13,13 @@ function escapeHtml(str: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  // Rate limit: 5 messages par jour par IP
-  const ip = getClientIp(req);
-  const { allowed } = await checkRateLimitAsync(`contact:${ip}`, 5);
-  if (!allowed) {
-    return NextResponse.json({ error: "Trop de messages envoyés. Réessaie demain." }, { status: 429 });
-  }
-
   try {
-    const { subject, category, message, email } = await req.json();
+    const { subject, category, message, email, website } = await req.json();
+
+    // Honeypot anti-spam : les bots remplissent ce champ caché, les humains non
+    if (website) {
+      return NextResponse.json({ success: true });
+    }
 
     if (!subject || !message?.trim() || !email?.trim()) {
       return NextResponse.json({ error: "Champs manquants" }, { status: 400 });
@@ -34,6 +32,19 @@ export async function POST(req: NextRequest) {
     // Validate email format
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       return NextResponse.json({ error: "Adresse email invalide" }, { status: 400 });
+    }
+
+    // Rate limit: 5 messages par jour par IP
+    const ip = getClientIp(req);
+    const { allowed: allowedIp } = await checkRateLimitAsync(`contact:${ip}`, 5);
+    if (!allowedIp) {
+      return NextResponse.json({ error: "Trop de messages envoyés. Réessaie demain." }, { status: 429 });
+    }
+
+    // Rate limit: 5 messages par jour par email
+    const { allowed: allowedEmail } = await checkRateLimitAsync(`contact:email:${email.trim().toLowerCase()}`, 5);
+    if (!allowedEmail) {
+      return NextResponse.json({ error: "Trop de messages envoyés depuis cette adresse. Réessaie demain." }, { status: 429 });
     }
 
     if (message.trim().length < 10) {
@@ -99,6 +110,22 @@ export async function POST(req: NextRequest) {
       console.error("Resend error:", error);
       return NextResponse.json({ error: "Erreur lors de l'envoi. Réessaie dans quelques minutes." }, { status: 500 });
     }
+
+    // Accusé de réception à l'expéditeur
+    await resend.emails.send({
+      from: "ToolBox <contact@alltoolbox.fr>",
+      to: email.trim(),
+      subject: "Nous avons bien reçu votre message — ToolBox",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #0f172a; color: #e2e8f0; padding: 32px; border-radius: 12px;">
+          <h2 style="color: #a78bfa; margin-bottom: 16px;">✅ Message reçu !</h2>
+          <p style="color: #94a3b8; line-height: 1.6;">Bonjour,</p>
+          <p style="color: #94a3b8; line-height: 1.6;">Nous avons bien reçu votre message concernant <strong style="color: #e2e8f0;">${escapeHtml(String(subject))}</strong>.</p>
+          <p style="color: #94a3b8; line-height: 1.6;">Nous vous répondrons dans les meilleurs délais à cette adresse email.</p>
+          <p style="color: #475569; font-size: 12px; margin-top: 24px;">L'équipe ToolBox — <a href="https://alltoolbox.fr" style="color: #a78bfa;">alltoolbox.fr</a></p>
+        </div>
+      `,
+    }).catch(() => {}); // Erreur silencieuse — l'email admin est prioritaire
 
     return NextResponse.json({ success: true });
   } catch (err) {

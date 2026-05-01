@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Convertisseur Audio en ligne gratuit — MP3 WAV FLAC OGG",
@@ -25,6 +26,14 @@ export default function AudioLayout({ children }: { children: React.ReactNode })
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Convertissez vos fichiers audio en MP3, WAV, FLAC ou OGG gratuitement en ligne."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Convertir Audio", "item": "https://alltoolbox.fr/audio" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Convertir un fichier audio en ligne gratuitement</h2>
@@ -42,8 +51,8 @@ export default function AudioLayout({ children }: { children: React.ReactNode })
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/video" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une vidéo</a>
-            <a href="/convertisseur-lien" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Télécharger une vidéo</a>
+            <Link href="/video" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une vidéo</Link>
+            <Link href="/convertisseur-lien" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Télécharger une vidéo</Link>
           </div>
         </div>
       </section>

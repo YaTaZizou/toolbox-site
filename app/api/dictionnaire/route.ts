@@ -41,13 +41,13 @@ export async function POST(req: NextRequest) {
     const message = await anthropic.messages.create({
       model: "claude-3-5-haiku-20241022",
       max_tokens: 1024,
+      system: `Tu es un dictionnaire. Réponds en ${safeLang} en JSON avec exactement ce format :
+{"word": "<le mot>", "nature": "nom/verbe/adjectif/etc", "definition": "définition claire", "examples": ["exemple 1", "exemple 2"], "synonymes": ["syn1", "syn2", "syn3"], "antonymes": ["ant1", "ant2"]}
+Ne mets rien d'autre que le JSON.`,
       messages: [
         {
           role: "user",
-          content: `Donne la définition du mot "${word}" en ${safeLang}.
-Réponds en JSON avec exactement ce format :
-{"word": "${word}", "nature": "nom/verbe/adjectif/etc", "definition": "définition claire", "examples": ["exemple 1", "exemple 2"], "synonymes": ["syn1", "syn2", "syn3"], "antonymes": ["ant1", "ant2"]}
-Ne mets rien d'autre que le JSON.`,
+          content: `Définis le mot : ${word}`,
         },
       ],
     });

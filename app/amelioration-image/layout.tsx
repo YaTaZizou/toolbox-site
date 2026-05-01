@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Amélioration d'Image par IA — Upscaling Gratuit en ligne",
@@ -22,8 +23,16 @@ export default function AmeliorationImageLayout({ children }: { children: React.
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Web",
         "url": "https://alltoolbox.fr/amelioration-image",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "offers": { "@type": "Offer", "price": "3.99", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "billingDuration": "P1M" } },
         "description": "Augmentez la résolution de vos images jusqu'à 4x grâce à l'IA. Upscaling intelligent, nettoyage du bruit, photos floues restaurées."
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Amélioration d'Image par IA", "item": "https://alltoolbox.fr/amelioration-image" }
+        ]
       }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
@@ -42,9 +51,9 @@ export default function AmeliorationImageLayout({ children }: { children: React.
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
-            <a href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</a>
-            <a href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</a>
+            <Link href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</Link>
+            <Link href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</Link>
+            <Link href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</Link>
           </div>
         </div>
       </section>

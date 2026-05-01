@@ -4,6 +4,7 @@ import { useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { usePremiumStatus } from "@/components/PremiumProvider";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 type Action = "fusionner" | "image-vers-pdf" | "decouper" | "proteger";
 
@@ -229,6 +230,8 @@ function PdfTool() {
           {error}
         </div>
       )}
+      <div className="mt-8" />
+      <PremiumUpsellBanner />
     </div>
   );
 }

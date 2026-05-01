@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 const FONT_SIZES = [10, 12, 14, 16, 18, 24, 32, 48];
 const COLORS = [
@@ -109,8 +110,10 @@ export default function ModifierPdfPage() {
         // Extract text with accurate canvas positions
         const tc = await page.getTextContent();
         const pageIndex = i - 1;
-        (tc.items as any[]).forEach((item, idx) => {
-          if (!item.str?.trim()) return;
+        let idx = 0;
+        tc.items.forEach((item) => {
+          if (!('str' in item)) return;
+          if (!item.str?.trim()) { idx++; return; }
 
           // PDF user-space origin = bottom-left
           const pdfX      = item.transform[4];
@@ -135,6 +138,7 @@ export default function ModifierPdfPage() {
             editedText: item.str,
             isEdited: false, isDeleted: false,
           });
+          idx++;
         });
       }
       setRenderedPages(resultPages);
@@ -174,6 +178,7 @@ export default function ModifierPdfPage() {
     if (editingExtId) { confirmEditExt(editingExtId); return; }
     if (editingId) { finalizeEditing(); return; }
     const rect = e.currentTarget.getBoundingClientRect();
+    // eslint-disable-next-line react-hooks/purity
     const id = `tb_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     setTextBoxes(prev => [...prev, { id, pageIndex, x: e.clientX - rect.left, y: e.clientY - rect.top, text: "", fontSize, color }]);
     setEditingId(id);
@@ -727,6 +732,8 @@ export default function ModifierPdfPage() {
             className="mt-3 text-xs text-gray-600 hover:text-gray-400 w-full text-center">
             Charger un autre PDF
           </button>
+          <div className="mt-8" />
+          <PremiumUpsellBanner />
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Formateur JSON en ligne — Valider et Indenter du JSON",
@@ -25,6 +26,14 @@ export default function FormateurJsonLayout({ children }: { children: React.Reac
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Formatez, minifiez et validez vos fichiers JSON en ligne gratuitement. Indentation automatique, détection d'erreurs, mise en forme colorée. Sans inscription."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Formateur JSON", "item": "https://alltoolbox.fr/formateur-json" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Formateur et validateur JSON en ligne</h2>
@@ -42,9 +51,9 @@ export default function FormateurJsonLayout({ children }: { children: React.Reac
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/hash" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de hash</a>
-            <a href="/convertir-texte" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertisseur de texte</a>
-            <a href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</a>
+            <Link href="/hash" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de hash</Link>
+            <Link href="/convertir-texte" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertisseur de texte</Link>
+            <Link href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</Link>
           </div>
         </div>
       </section>

@@ -1,4 +1,5 @@
 ﻿import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Convertisseur d'Images en ligne — JPG PNG WebP AVIF Gratuit",
@@ -25,6 +26,14 @@ export default function ImageLayout({ children }: { children: React.ReactNode })
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
         "description": "Convertissez vos images en JPG, PNG, WebP ou AVIF gratuitement dans le navigateur."
       }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alltoolbox.fr" },
+          { "@type": "ListItem", "position": 2, "name": "Convertir Image", "item": "https://alltoolbox.fr/image" }
+        ]
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Convertir des images en ligne gratuitement</h2>
@@ -42,10 +51,10 @@ export default function ImageLayout({ children }: { children: React.ReactNode })
         <div className="mt-6 pt-4 border-t border-gray-800/40">
           <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</a>
-            <a href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</a>
-            <a href="/gif" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Créer un GIF</a>
-            <a href="/filigrane" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Ajouter un filigrane</a>
+            <Link href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</Link>
+            <Link href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</Link>
+            <Link href="/gif" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Créer un GIF</Link>
+            <Link href="/filigrane" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Ajouter un filigrane</Link>
           </div>
         </div>
       </section>

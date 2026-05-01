@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { PremiumUpsellBanner } from "@/components/PremiumUpsellBanner";
 
 interface PageImage {
   pageNum: number;
@@ -206,6 +207,8 @@ export default function PdfImagesPage() {
           </div>
         </div>
       )}
+      <div className="mt-8" />
+      <PremiumUpsellBanner />
     </div>
   );
 }

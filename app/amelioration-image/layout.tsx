@@ -1,14 +1,14 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Amélioration d'Image par IA — Augmenter la Résolution en ligne",
+  title: "Amélioration d'Image par IA — Upscaling Gratuit en ligne",
   description: "Augmentez la résolution de vos images jusqu'à 4x grâce à l'IA. Upscaling intelligent, nettoyage du bruit, photos floues restaurées. Outil Premium ToolBox.",
   alternates: { canonical: "https://alltoolbox.fr/amelioration-image" },
   openGraph: {
     title: "Amélioration d'Image par IA — ToolBox",
     description: "Augmentez la résolution de vos images jusqu'à 4x grâce à l'IA.",
     url: "https://alltoolbox.fr/amelioration-image",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Amélioration d'Image par IA — ToolBox", description: "Augmentez la résolution de vos images jusqu'à 4x grâce à l'IA." },
 };
@@ -16,6 +16,15 @@ export const metadata: Metadata = {
 export default function AmeliorationImageLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        "name": "Amélioration d'Image par IA — ToolBox",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "url": "https://alltoolbox.fr/amelioration-image",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "description": "Augmentez la résolution de vos images jusqu'à 4x grâce à l'IA. Upscaling intelligent, nettoyage du bruit, photos floues restaurées."
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Améliorer la qualité d'une image par IA</h2>
@@ -30,6 +39,14 @@ export default function AmeliorationImageLayout({ children }: { children: React.
         <p className="text-gray-500 text-xs leading-relaxed">
           L'amélioration d'image par IA est une fonctionnalité Premium de ToolBox. Les abonnés bénéficient d'un nombre illimité de traitements et d'une résolution de sortie maximale.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
+            <a href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</a>
+            <a href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</a>
+          </div>
+        </div>
       </section>
     </>
   );

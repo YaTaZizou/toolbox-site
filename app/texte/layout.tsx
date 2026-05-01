@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Générateur de Texte IA en ligne — Posts, Emails, Descriptions",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Générateur de Texte IA — ToolBox",
     description: "Générez des posts, emails et descriptions professionnels avec l'IA en secondes.",
     url: "https://alltoolbox.fr/texte",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Générateur de Texte IA — ToolBox", description: "Générez des posts, emails et descriptions professionnels avec l'IA en secondes." },
 };
@@ -39,6 +39,14 @@ export default function TexteLayout({ children }: { children: React.ReactNode })
         <p className="text-gray-500 text-xs leading-relaxed">
           Oui, chaque génération produit un texte original. Vous pouvez relancer la génération autant de fois que nécessaire pour obtenir des variantes différentes.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/bio" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de bio</a>
+            <a href="/pseudo" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de pseudo</a>
+            <a href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</a>
+          </div>
+        </div>
       </section>
     </>
   );

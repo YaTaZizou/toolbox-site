@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Générateur de Mot de Passe sécurisé en ligne — Gratuit",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Générateur de Mot de Passe — ToolBox",
     description: "Générez des mots de passe forts et sécurisés, personnalisables, gratuitement.",
     url: "https://alltoolbox.fr/mot-de-passe",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Générateur de Mot de Passe — ToolBox", description: "Générez des mots de passe forts et sécurisés, personnalisables, gratuitement." },
 };
@@ -16,6 +16,15 @@ export const metadata: Metadata = {
 export default function MotDePasseLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        "name": "Générateur de Mot de Passe — ToolBox",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "url": "https://alltoolbox.fr/mot-de-passe",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "description": "Générez des mots de passe forts et sécurisés en ligne. Longueur, caractères spéciaux et chiffres personnalisables. Gratuit, aucune donnée stockée."
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Générateur de mot de passe fort et sécurisé</h2>
@@ -30,6 +39,13 @@ export default function MotDePasseLayout({ children }: { children: React.ReactNo
         <p className="text-gray-500 text-xs leading-relaxed">
           Oui, la génération utilise l'API cryptographique de votre navigateur (Web Crypto API), garantissant un aléa de qualité cryptographique. Aucun mot de passe généré n'est enregistré.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/hash" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de hash</a>
+            <a href="/qrcode" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de QR Code</a>
+          </div>
+        </div>
       </section>
     </>
   );

@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -26,13 +27,22 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
-    // Récupérer le customerId Stripe depuis les métadonnées ou chercher par email
-    const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
-    if (customers.data.length === 0) {
+    // Récupérer le stripe_customer_id depuis la base (fiable, pas de recherche par email)
+    const adminSupabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+    const { data: profile } = await adminSupabase
+      .from("profiles")
+      .select("stripe_customer_id")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.stripe_customer_id) {
       return NextResponse.json({ error: "Aucun abonnement Stripe trouvé" }, { status: 404 });
     }
 
-    const customerId = customers.data[0].id;
+    const customerId = profile.stripe_customer_id;
     const { origin } = new URL(req.url);
 
     const session = await stripe.billingPortal.sessions.create({

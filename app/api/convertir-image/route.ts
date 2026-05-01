@@ -1,6 +1,6 @@
 import sharp from "sharp";
 import { NextRequest, NextResponse } from "next/server";
-import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -11,7 +11,7 @@ type Format = (typeof FORMATS)[number];
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const { allowed } = checkRateLimit(`convertir-image:${ip}`, 30);
+  const { allowed } = await checkRateLimitAsync(`convertir-image:${ip}`, 30);
   if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
 
   try {
@@ -24,6 +24,9 @@ export async function POST(req: NextRequest) {
     if (!file) return NextResponse.json({ error: "Aucun fichier reçu" }, { status: 400 });
     if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 20 Mo)" }, { status: 413 });
     if (!format || !FORMATS.includes(format)) return NextResponse.json({ error: "Format invalide" }, { status: 400 });
+    const ALLOWED_INPUT_MIMES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+    if (!ALLOWED_INPUT_MIMES.includes(file.type))
+      return NextResponse.json({ error: "Format d'entrée non supporté. Utilisez JPG, PNG, WebP, AVIF ou GIF." }, { status: 400 });
 
     const buffer = Buffer.from(await file.arrayBuffer());
 

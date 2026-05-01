@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Générateur de Pseudo en ligne — Gaming, Discord, Instagram",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Générateur de Pseudo — ToolBox",
     description: "Créez des pseudos uniques pour le gaming, Discord et Instagram grâce à l'IA.",
     url: "https://alltoolbox.fr/pseudo",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Générateur de Pseudo — ToolBox", description: "Créez des pseudos uniques pour le gaming, Discord et Instagram grâce à l'IA." },
 };
@@ -39,6 +39,13 @@ export default function PseudoLayout({ children }: { children: React.ReactNode }
         <p className="text-gray-500 text-xs leading-relaxed">
           L'IA génère des pseudos originaux à chaque requête. Il vous revient de vérifier la disponibilité sur la plateforme de votre choix avant de l'adopter.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/bio" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de bio</a>
+            <a href="/texte" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de texte</a>
+          </div>
+        </div>
       </section>
     </>
   );

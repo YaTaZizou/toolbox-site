@@ -1,14 +1,14 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Modifier une Image en ligne — Redimensionner, Recadrer, Pivoter",
+  title: "Modifier une Image — Redimensionner, Recadrer, Pivoter",
   description: "Redimensionnez, recadrez, pivotez ou retournez vos images gratuitement en ligne. Aucun logiciel requis, traitement local dans le navigateur.",
   alternates: { canonical: "https://alltoolbox.fr/modifier-image" },
   openGraph: {
     title: "Modifier une Image en ligne — ToolBox",
     description: "Redimensionnez, recadrez ou pivotez vos images gratuitement en ligne.",
     url: "https://alltoolbox.fr/modifier-image",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Modifier une Image — ToolBox", description: "Redimensionnez, recadrez ou pivotez vos images gratuitement en ligne." },
 };
@@ -39,6 +39,14 @@ export default function ModifierImageLayout({ children }: { children: React.Reac
         <p className="text-gray-500 text-xs leading-relaxed">
           L'outil accepte les formats JPG, PNG, WebP et GIF. Le fichier modifié est exporté dans le format de votre choix, immédiatement téléchargeable.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
+            <a href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</a>
+            <a href="/filigrane" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Ajouter un filigrane</a>
+          </div>
+        </div>
       </section>
     </>
   );

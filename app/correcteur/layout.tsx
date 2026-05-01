@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Correcteur d'Orthographe et Grammaire en ligne — IA gratuit",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Correcteur Orthographe et Grammaire — ToolBox",
     description: "Corrigez votre texte avec l'IA : orthographe, grammaire, style.",
     url: "https://alltoolbox.fr/correcteur",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Correcteur IA — ToolBox", description: "Corrigez votre texte avec l'IA : orthographe, grammaire, style." },
 };
@@ -39,6 +39,14 @@ export default function CorrecteurLayout({ children }: { children: React.ReactNo
         <p className="text-gray-500 text-xs leading-relaxed">
           Non, vos textes ne sont pas stockés après correction. La confidentialité de vos données est notre priorité.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/traducteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Traducteur</a>
+            <a href="/dictionnaire" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Dictionnaire</a>
+            <a href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</a>
+          </div>
+        </div>
       </section>
     </>
   );

@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Convertir PDF en Images JPG PNG en ligne — Gratuit",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Convertir PDF en Images — ToolBox",
     description: "Convertissez chaque page d'un PDF en image JPG ou PNG en ligne.",
     url: "https://alltoolbox.fr/pdf-images",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Convertir PDF en Images — ToolBox", description: "Convertissez chaque page d'un PDF en image JPG ou PNG en ligne." },
 };
@@ -16,6 +16,15 @@ export const metadata: Metadata = {
 export default function PdfImagesLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        "name": "Convertir PDF en Images — ToolBox",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "url": "https://alltoolbox.fr/pdf-images",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "description": "Convertissez chaque page d'un PDF en image JPG ou PNG en ligne. Aucune installation, traitement local dans votre navigateur, 100% gratuit."
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Convertir un PDF en images en ligne</h2>
@@ -30,6 +39,14 @@ export default function PdfImagesLayout({ children }: { children: React.ReactNod
         <p className="text-gray-500 text-xs leading-relaxed">
           Non, aucun compte n'est nécessaire. L'outil est entièrement gratuit et accessible immédiatement depuis votre navigateur, sans limite de conversions.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Fusionner / Découper un PDF</a>
+            <a href="/compresser-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compresser un PDF</a>
+            <a href="/modifier-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier un PDF</a>
+          </div>
+        </div>
       </section>
     </>
   );

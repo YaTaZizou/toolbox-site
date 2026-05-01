@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Compresser un PDF en ligne gratuit — Réduire la taille",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Compresser un PDF gratuit — ToolBox",
     description: "Réduisez la taille de vos PDFs jusqu'à 80% sans perte visible de qualité.",
     url: "https://alltoolbox.fr/compresser-pdf",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Compresser un PDF — ToolBox", description: "Réduisez la taille de vos PDFs jusqu'à 80% sans perte visible de qualité." },
 };
@@ -39,6 +39,14 @@ export default function CompresserPdfLayout({ children }: { children: React.Reac
         <p className="text-gray-500 text-xs leading-relaxed">
           L'outil accepte les PDF jusqu'à plusieurs dizaines de mégaoctets. Le traitement est entièrement local — aucun fichier n'est transmis à nos serveurs.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Fusionner / Découper un PDF</a>
+            <a href="/modifier-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier un PDF</a>
+            <a href="/pdf-images" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">PDF en images</a>
+          </div>
+        </div>
       </section>
     </>
   );

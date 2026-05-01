@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Email de réception des messages (configurer dans les variables d'env)
-const TO_EMAIL = process.env.CONTACT_EMAIL ?? "contact@alltoolbox.fr";
+const TO_EMAIL = process.env.CONTACT_EMAIL || "contact@alltoolbox.fr";
 
 // Escape HTML to prevent injection into the email template
 function escapeHtml(str: string): string {
@@ -15,7 +15,7 @@ function escapeHtml(str: string): string {
 export async function POST(req: NextRequest) {
   // Rate limit: 5 messages par jour par IP
   const ip = getClientIp(req);
-  const { allowed } = checkRateLimit(`contact:${ip}`, 5);
+  const { allowed } = await checkRateLimitAsync(`contact:${ip}`, 5);
   if (!allowed) {
     return NextResponse.json({ error: "Trop de messages envoyés. Réessaie demain." }, { status: 429 });
   }

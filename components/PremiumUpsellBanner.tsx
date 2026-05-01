@@ -17,7 +17,7 @@ export function PremiumUpsellBanner() {
       <div className="flex items-center gap-3">
         <span className="text-xl">⭐</span>
         <div>
-          <p className="text-sm font-semibold text-white">Passe Premium — 2,08€/mois</p>
+          <p className="text-sm font-semibold text-white">Passe Premium — 3,99€/mois</p>
           <p className="text-xs text-gray-500">IA illimitée · Zéro pub · Tous les outils débloqués</p>
         </div>
       </div>

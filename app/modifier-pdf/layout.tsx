@@ -1,14 +1,14 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Modifier un PDF en ligne gratuitement — Texte, Pages, Rotation",
+  title: "Modifier un PDF en ligne — Texte, Pages, Rotation",
   description: "Ajoutez du texte, pivotez, supprimez ou réorganisez les pages d'un PDF directement en ligne. Gratuit, sans inscription, traitement dans le navigateur.",
   alternates: { canonical: "https://alltoolbox.fr/modifier-pdf" },
   openGraph: {
     title: "Modifier un PDF en ligne — ToolBox",
     description: "Ajoutez du texte, pivotez ou supprimez des pages d'un PDF en ligne.",
     url: "https://alltoolbox.fr/modifier-pdf",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Modifier un PDF en ligne — ToolBox", description: "Ajoutez du texte, pivotez ou supprimez des pages d'un PDF en ligne." },
 };
@@ -39,6 +39,14 @@ export default function ModifierPdfLayout({ children }: { children: React.ReactN
         <p className="text-gray-500 text-xs leading-relaxed">
           Totalement. Toutes les modifications sont réalisées localement dans votre navigateur. Aucun fichier n'est envoyé sur nos serveurs, garantissant une confidentialité totale de vos documents.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Fusionner / Découper un PDF</a>
+            <a href="/compresser-pdf" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compresser un PDF</a>
+            <a href="/pdf-images" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">PDF en images</a>
+          </div>
+        </div>
       </section>
     </>
   );

@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Palette de Couleurs en ligne — Générateur Harmonieux Gratuit",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Palette de Couleurs — ToolBox",
     description: "Générez des palettes harmonieuses avec codes HEX, RGB et HSL. Gratuit.",
     url: "https://alltoolbox.fr/couleurs",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Palette de Couleurs — ToolBox", description: "Générez des palettes harmonieuses avec codes HEX, RGB et HSL. Gratuit." },
 };
@@ -16,6 +16,15 @@ export const metadata: Metadata = {
 export default function CouleursLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        "name": "Palette de Couleurs — ToolBox",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "url": "https://alltoolbox.fr/couleurs",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "description": "Générez des palettes de couleurs harmonieuses : monochromatique, analogique, complémentaire, triadique. Codes HEX, RGB, HSL. Gratuit pour designers et développeurs."
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Générateur de palette de couleurs pour designers</h2>
@@ -30,6 +39,13 @@ export default function CouleursLayout({ children }: { children: React.ReactNode
         <p className="text-gray-500 text-xs leading-relaxed">
           Oui, entrez un code HEX ou utilisez le sélecteur de couleur pour partir de votre couleur de marque, et l'outil génère automatiquement les teintes complémentaires adaptées.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
+            <a href="/qrcode" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de QR Code</a>
+          </div>
+        </div>
       </section>
     </>
   );

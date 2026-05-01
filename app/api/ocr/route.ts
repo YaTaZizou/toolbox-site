@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { isPremiumRequest } from "@/lib/apiAuth";
-import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
 
 const client = new Anthropic();
 
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const premium = await isPremiumRequest(req);
     if (!premium) {
       const ip = getClientIp(req);
-      const { allowed } = checkRateLimit(`ocr:${ip}`, 3);
+      const { allowed } = await checkRateLimitAsync(`ocr:${ip}`, 3);
       if (!allowed) {
         return NextResponse.json(
           { error: "Limite quotidienne atteinte. Passe Premium pour un accès illimité." },

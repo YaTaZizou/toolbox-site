@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Convertisseur d'Images en ligne — JPG PNG WebP AVIF Gratuit",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Convertisseur d'Images en ligne — ToolBox",
     description: "Convertissez vos images en JPG, PNG, WebP ou AVIF gratuitement.",
     url: "https://alltoolbox.fr/image",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Convertisseur d'Images — ToolBox", description: "Convertissez vos images en JPG, PNG, WebP ou AVIF gratuitement." },
 };
@@ -39,6 +39,15 @@ export default function ImageLayout({ children }: { children: React.ReactNode })
         <p className="text-gray-500 text-xs leading-relaxed">
           Oui, la conversion en lot est prise en charge. Glissez-déposez plusieurs fichiers simultanément et téléchargez tous les résultats en une seule fois.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</a>
+            <a href="/supprimer-fond" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Supprimer le fond</a>
+            <a href="/gif" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Créer un GIF</a>
+            <a href="/filigrane" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Ajouter un filigrane</a>
+          </div>
+        </div>
       </section>
     </>
   );

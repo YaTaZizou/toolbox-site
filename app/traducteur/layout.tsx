@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Traducteur en ligne gratuit — Traduction IA instantanée",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Traducteur en ligne gratuit — ToolBox",
     description: "Traduisez du texte dans plus de 12 langues grâce à l'IA, en temps réel.",
     url: "https://alltoolbox.fr/traducteur",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Traducteur en ligne — ToolBox", description: "Traduisez du texte dans plus de 12 langues grâce à l'IA, en temps réel." },
 };
@@ -39,6 +39,14 @@ export default function TraducteurLayout({ children }: { children: React.ReactNo
         <p className="text-gray-500 text-xs leading-relaxed">
           Le traducteur gratuit accepte des textes de plusieurs centaines de mots. Pour des documents longs, la version Premium de ToolBox offre des limites étendues.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</a>
+            <a href="/dictionnaire" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Dictionnaire</a>
+            <a href="/ocr" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">OCR — Image en texte</a>
+          </div>
+        </div>
       </section>
     </>
   );

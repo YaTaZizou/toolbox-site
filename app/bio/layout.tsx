@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Générateur de Bio en ligne — Instagram, TikTok, LinkedIn",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Générateur de Bio — ToolBox",
     description: "Créez une bio percutante pour Instagram, TikTok ou LinkedIn avec l'IA.",
     url: "https://alltoolbox.fr/bio",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Générateur de Bio — ToolBox", description: "Créez une bio percutante pour Instagram, TikTok ou LinkedIn avec l'IA." },
 };
@@ -39,6 +39,13 @@ export default function BioLayout({ children }: { children: React.ReactNode }) {
         <p className="text-gray-500 text-xs leading-relaxed">
           Oui, l'outil tient compte des contraintes de chaque plateforme : 150 caractères pour Instagram, 160 pour Twitter, 220 pour LinkedIn, etc.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/pseudo" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de pseudo</a>
+            <a href="/texte" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Générateur de texte</a>
+          </div>
+        </div>
       </section>
     </>
   );

@@ -8,12 +8,12 @@ export const metadata: Metadata = {
     title: "ToolBox Premium — Accès illimité à tous les outils",
     description: "Générateurs IA illimités, zéro pub, accès prioritaire aux nouveaux outils. Moins de 3€/mois.",
     url: "https://alltoolbox.fr/premium",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox Premium" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox Premium" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ToolBox Premium — Accès illimité à tous les outils",
-    images: ["/icon-512.png"],
+    images: ["/opengraph-image"],
   },
 };
 

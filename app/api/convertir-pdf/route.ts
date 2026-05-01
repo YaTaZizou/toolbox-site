@@ -1,6 +1,6 @@
 import { PDFDocument } from "pdf-lib";
 import { NextRequest, NextResponse } from "next/server";
-import { checkRateLimit, getClientIp } from "@/lib/rateLimiter";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimiter";
 import { isPremiumRequest } from "@/lib/apiAuth";
 
 export const runtime = "nodejs";
@@ -10,7 +10,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const { allowed } = checkRateLimit(`convertir-pdf:${ip}`, 20);
+  const { allowed } = await checkRateLimitAsync(`convertir-pdf:${ip}`, 20);
   if (!allowed) return NextResponse.json({ error: "Limite atteinte. Réessaie plus tard." }, { status: 429 });
 
   const premium = await isPremiumRequest(req);
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
 
       for (const f of files) {
         if (f.size > MAX_FILE_SIZE) return NextResponse.json({ error: `Fichier trop volumineux (max 50 Mo par fichier)` }, { status: 413 });
+        if (f.type !== "application/pdf") return NextResponse.json({ error: "Seuls les fichiers PDF sont acceptés." }, { status: 400 });
       }
 
       if (!premium && files.length > 2)
@@ -72,6 +73,7 @@ export async function POST(req: NextRequest) {
 
     if (action === "decouper") {
       const file = formData.get("files") as File;
+      if (file?.type !== "application/pdf") return NextResponse.json({ error: "Seuls les fichiers PDF sont acceptés." }, { status: 400 });
       if (file?.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 50 Mo)" }, { status: 413 });
       const pagesParam = formData.get("pages") as string;
       if (!file || !pagesParam) return NextResponse.json({ error: "Fichier ou pages manquants" }, { status: 400 });
@@ -108,6 +110,7 @@ export async function POST(req: NextRequest) {
       const file = formData.get("files") as File;
       const password = formData.get("password") as string;
       if (!file || !password) return NextResponse.json({ error: "Fichier ou mot de passe manquant" }, { status: 400 });
+      if (file.type !== "application/pdf") return NextResponse.json({ error: "Seuls les fichiers PDF sont acceptés." }, { status: 400 });
       if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 50 Mo)" }, { status: 413 });
       if (password.length > 128) return NextResponse.json({ error: "Mot de passe trop long (max 128 caractères)" }, { status: 400 });
 

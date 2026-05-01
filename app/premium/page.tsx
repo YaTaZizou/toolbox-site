@@ -196,7 +196,7 @@ function PremiumContent() {
                 <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
                   selectedPlan === "annual" ? "bg-black/20 text-black" : "bg-yellow-500/20 text-yellow-400"
                 }`}>
-                  -30%
+                  -37%
                 </span>
               </button>
             </div>

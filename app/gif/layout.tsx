@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Créateur de GIF en ligne gratuit — Animer des Images",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Créateur de GIF en ligne — ToolBox",
     description: "Créez des GIFs animés depuis vos images JPG et PNG en ligne.",
     url: "https://alltoolbox.fr/gif",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Créateur de GIF — ToolBox", description: "Créez des GIFs animés depuis vos images JPG et PNG en ligne." },
 };
@@ -39,6 +39,14 @@ export default function GifLayout({ children }: { children: React.ReactNode }) {
         <p className="text-gray-500 text-xs leading-relaxed">
           Oui, l'outil génère des GIFs en haute qualité. La taille du fichier final dépend du nombre d'images et de la résolution — vous pouvez redimensionner les images au préalable pour alléger le GIF.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/video" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une vidéo</a>
+            <a href="/image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertir une image</a>
+            <a href="/modifier-image" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Modifier une image</a>
+          </div>
+        </div>
       </section>
     </>
   );

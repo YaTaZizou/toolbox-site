@@ -1,14 +1,14 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Convertisseur de Texte en ligne — Majuscules, Slug, CamelCase",
+  title: "Convertisseur de Texte — Majuscules, Slug, CamelCase",
   description: "Convertissez votre texte en majuscules, minuscules, slug URL, camelCase, snake_case et plus. Gratuit et instantané, sans installation.",
   alternates: { canonical: "https://alltoolbox.fr/convertir-texte" },
   openGraph: {
     title: "Convertisseur de Texte en ligne — ToolBox",
     description: "Convertissez votre texte en majuscules, slug, camelCase et plus, instantanément.",
     url: "https://alltoolbox.fr/convertir-texte",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Convertisseur de Texte — ToolBox", description: "Convertissez votre texte en majuscules, slug, camelCase et plus, instantanément." },
 };
@@ -16,6 +16,15 @@ export const metadata: Metadata = {
 export default function ConvertirTexteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        "name": "Convertisseur de Texte en ligne — ToolBox",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "url": "https://alltoolbox.fr/convertir-texte",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "description": "Convertissez votre texte en majuscules, minuscules, slug URL, camelCase, snake_case et plus. Gratuit et instantané, sans installation."
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Convertisseur de texte en ligne gratuit</h2>
@@ -30,6 +39,14 @@ export default function ConvertirTexteLayout({ children }: { children: React.Rea
         <p className="text-gray-500 text-xs leading-relaxed">
           MAJUSCULES, minuscules, Première Lettre En Majuscule, camelCase, PascalCase, snake_case, kebab-case et slug URL. Copiez le résultat en un clic.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/compteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Compteur de mots</a>
+            <a href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</a>
+            <a href="/formateur-json" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Formateur JSON</a>
+          </div>
+        </div>
       </section>
     </>
   );

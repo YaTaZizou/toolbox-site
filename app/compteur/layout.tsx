@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Compteur de Mots et Caractères en ligne — Gratuit",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Compteur de Mots en ligne — ToolBox",
     description: "Comptez les mots, caractères et estimez le temps de lecture de votre texte.",
     url: "https://alltoolbox.fr/compteur",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "ToolBox" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "ToolBox" }],
   },
   twitter: { card: "summary_large_image", title: "Compteur de Mots — ToolBox", description: "Comptez les mots, caractères et estimez le temps de lecture de votre texte." },
 };
@@ -16,6 +16,15 @@ export const metadata: Metadata = {
 export default function CompteurLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        "name": "Compteur de Mots et Caractères — ToolBox",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "url": "https://alltoolbox.fr/compteur",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "description": "Comptez les mots, caractères, phrases et estimez le temps de lecture de votre texte. Gratuit, instantané, idéal pour les rédacteurs et étudiants."
+      }) }} />
       {children}
       <section className="max-w-2xl mx-auto px-4 py-12 border-t border-gray-800/60 mt-8">
         <h2 className="text-xl font-bold mb-4 text-white">Compteur de mots et caractères en ligne</h2>
@@ -30,6 +39,13 @@ export default function CompteurLayout({ children }: { children: React.ReactNode
         <p className="text-gray-500 text-xs leading-relaxed">
           Oui, les statistiques se mettent à jour instantanément à chaque frappe de clavier. Collez ou saisissez votre texte et les résultats s'affichent immédiatement.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-800/40">
+          <p className="text-gray-500 text-xs mb-2">Outils connexes :</p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/correcteur" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Correcteur</a>
+            <a href="/convertir-texte" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Convertisseur de texte</a>
+          </div>
+        </div>
       </section>
     </>
   );

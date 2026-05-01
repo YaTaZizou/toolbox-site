@@ -75,7 +75,6 @@ const categories: Category[] = [
       { href: "/logo", emoji: "🎨", title: "Générateur de Logo", description: "Crée un logo unique avec l'IA en quelques secondes.", badge: "Bientôt", badgeColor: "soon", available: false },
       { href: "/qrcode", emoji: "📱", title: "Générateur de QR Code", description: "Crée un QR code pour n'importe quel lien ou texte.", badge: "Gratuit", badgeColor: "free", available: true },
       { href: "/mot-de-passe", emoji: "🔑", title: "Générateur de Mot de Passe", description: "Génère des mots de passe sécurisés.", badge: "Gratuit", badgeColor: "free", available: true },
-      { href: "/hash", emoji: "🔐", title: "Générateur de Hash", description: "MD5, SHA-256, SHA-512 en temps réel.", badge: "Gratuit", badgeColor: "free", available: true },
     ],
   },
   {

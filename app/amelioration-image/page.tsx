@@ -42,22 +42,26 @@ function Tool() {
     setStatus("processing");
     setOutputUrl(null);
 
-    const fd = new FormData();
-    fd.append("image", file);
-    fd.append("scale", String(scale));
-    fd.append("mode", mode);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      fd.append("scale", String(scale));
+      fd.append("mode", mode);
 
-    const res = await fetch("/api/amelioration-image", { method: "POST", body: fd });
+      const res = await fetch("/api/amelioration-image", { method: "POST", body: fd });
 
-    if (!res.ok) {
+      if (!res.ok) {
+        setStatus("error");
+        return;
+      }
+
+      const blob = await res.blob();
+      setOutputSize(blob.size);
+      setOutputUrl(URL.createObjectURL(blob));
+      setStatus("done");
+    } catch {
       setStatus("error");
-      return;
     }
-
-    const blob = await res.blob();
-    setOutputSize(blob.size);
-    setOutputUrl(URL.createObjectURL(blob));
-    setStatus("done");
   }
 
   function formatSize(bytes: number) {

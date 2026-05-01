@@ -26,7 +26,6 @@ export default function TextePage() {
 
   async function generate() {
     if (!input.trim() || !canUse) return;
-    increment();
     setLoading(true);
     setError("");
     setResult("");
@@ -41,6 +40,7 @@ export default function TextePage() {
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
+      increment();
       setResult(data.result);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Une erreur est survenue");
@@ -125,7 +125,8 @@ export default function TextePage() {
           <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">{result}</p>
           <button
             onClick={generate}
-            className="w-full mt-6 border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white py-3 rounded-xl transition-colors text-sm"
+            disabled={loading || !canUse}
+            className="w-full mt-6 border border-gray-700 hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed text-gray-400 hover:text-white py-3 rounded-xl transition-colors text-sm"
           >
             🔄 Régénérer
           </button>

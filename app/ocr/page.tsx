@@ -30,7 +30,6 @@ export default function OcrPage() {
 
   async function extract() {
     if (!imageFile || !canUse) return;
-    increment();
     setLoading(true);
     setError("");
     setResult("");
@@ -54,6 +53,7 @@ export default function OcrPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Erreur lors de l'extraction");
+      increment();
       setResult(data.text);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Une erreur est survenue");

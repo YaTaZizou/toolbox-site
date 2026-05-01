@@ -114,7 +114,7 @@ export function AiLimitBanner({ remaining, isPremium, limit, status }: Props) {
             className="block w-full font-bold py-3.5 rounded-xl text-sm mb-3 transition-colors"
             style={{ background: "#facc15", color: "#000" }}
           >
-            ⭐ Passer Premium — 2,99€/mois
+            ⭐ Passer Premium — 3,99€/mois
           </Link>
 
           {/* Avantages */}

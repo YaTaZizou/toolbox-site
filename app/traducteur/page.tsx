@@ -32,7 +32,6 @@ export default function TraducteurPage() {
 
   async function translate(value: string, fromLang: string, toLang: string) {
     if (!value.trim() || value.trim().length < 2 || !canUse || translateBlocked) { setResult(""); return; }
-    increment();
     setLoading(true);
     setError("");
     try {
@@ -43,6 +42,7 @@ export default function TraducteurPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+      increment();
       setResult(data.translation);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Erreur lors de la traduction");

@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const file = formData.get("file") as File | null;
     const format = formData.get("format") as Format | null;
     const qualityRaw = formData.get("quality");
-    const quality = qualityRaw ? parseInt(qualityRaw as string) : 80;
+    const quality = Math.min(100, Math.max(1, parseInt(qualityRaw as string) || 80));
 
     if (!file) return NextResponse.json({ error: "Aucun fichier reçu" }, { status: 400 });
     if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 20 Mo)" }, { status: 413 });

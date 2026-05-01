@@ -41,6 +41,15 @@ export async function POST(req: NextRequest) {
 
   if (!file) return NextResponse.json({ error: "Aucun fichier" }, { status: 400 });
 
+  const ALLOWED_MIMES = ["image/jpeg", "image/png", "image/webp"];
+  if (!ALLOWED_MIMES.includes(file.type)) {
+    return NextResponse.json({ error: "Format non supporté. Utilise JPG, PNG ou WebP." }, { status: 400 });
+  }
+  const MAX_SIZE = 20 * 1024 * 1024;
+  if (file.size > MAX_SIZE) {
+    return NextResponse.json({ error: "Fichier trop volumineux (max 20 Mo)" }, { status: 413 });
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
   const image = sharp(buffer);
   const meta = await image.metadata();

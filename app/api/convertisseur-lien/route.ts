@@ -23,7 +23,9 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const { url, quality = "1080", audioOnly = false } = await req.json().catch(() => ({}));
+  const { url, quality: rawQuality = "1080", audioOnly = false } = await req.json().catch(() => ({}));
+  const ALLOWED_QUALITIES = ["144", "360", "480", "720", "1080", "1440", "2160", "max"];
+  const quality = ALLOWED_QUALITIES.includes(rawQuality) ? rawQuality : "1080";
 
   if (!url?.trim()) {
     return NextResponse.json({ error: "URL manquante" }, { status: 400 });

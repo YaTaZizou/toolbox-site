@@ -28,10 +28,15 @@ export async function POST(req: NextRequest) {
 
     if (!file) return NextResponse.json({ error: "Fichier manquant" }, { status: 400 });
 
+    const ALLOWED_MIMES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
+    const mime = ALLOWED_MIMES.includes(file.type) ? file.type : "image/jpeg";
+    const ext = mime === "image/jpeg" ? "jpg" : (mime.split("/")[1] || "jpg");
+
+    const MAX_SIZE = 20 * 1024 * 1024;
+    if (file.size > MAX_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 20 Mo)" }, { status: 413 });
+
     const buffer = Buffer.from(await file.arrayBuffer());
     let pipeline = sharp(buffer);
-    const mime = file.type || "image/jpeg";
-    const ext = mime === "image/jpeg" ? "jpg" : (mime.split("/")[1] || "jpg");
 
     if (action === "redimensionner") {
       const width = formData.get("width") ? Number(formData.get("width")) : undefined;

@@ -115,7 +115,10 @@ export default function ProfilPage() {
     );
   }
 
-  if (!user) return null;
+  if (!user) {
+    router.replace("/connexion?redirect=/profil");
+    return null;
+  }
 
   const initials = user.email?.slice(0, 2).toUpperCase() ?? "??";
   const memberSince = new Date(user.created_at).toLocaleDateString("fr-FR", {

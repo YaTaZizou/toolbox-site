@@ -26,7 +26,6 @@ export default function SupprimerFondPage() {
 
   const removeBackground = useCallback(async () => {
     if (!file || !canUse) return;
-    increment();
     setStatus("loading");
     setProgress("Chargement du modèle IA...");
     setOutputUrl(null);
@@ -46,6 +45,7 @@ export default function SupprimerFondPage() {
         output: { format: "image/png", quality: 1 },
       });
 
+      increment();
       setOutputUrl(URL.createObjectURL(blob));
       setStatus("done");
     } catch (e) {

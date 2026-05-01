@@ -19,7 +19,6 @@ export default function PseudoPage() {
     setLoading(true);
     setError("");
     setResults([]);
-    increment();
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -28,6 +27,7 @@ export default function PseudoPage() {
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
+      increment();
       setResults(data.result);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Une erreur est survenue");

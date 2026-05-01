@@ -19,7 +19,6 @@ export default function BioPage() {
 
   async function generate() {
     if (!input.trim() || !canUse) return;
-    increment();
     setLoading(true);
     setError("");
     setResults([]);
@@ -32,6 +31,7 @@ export default function BioPage() {
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
+      increment();
       setResults(data.result);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Une erreur est survenue");
@@ -120,7 +120,8 @@ export default function BioPage() {
           ))}
           <button
             onClick={generate}
-            className="w-full mt-2 border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white py-3 rounded-xl transition-colors text-sm"
+            disabled={loading || !canUse}
+            className="w-full mt-2 border border-gray-700 hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed text-gray-400 hover:text-white py-3 rounded-xl transition-colors text-sm"
           >
             🔄 Régénérer
           </button>

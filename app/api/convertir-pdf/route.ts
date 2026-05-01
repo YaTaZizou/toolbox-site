@@ -23,6 +23,10 @@ export async function POST(req: NextRequest) {
       const files = formData.getAll("files") as File[];
       if (files.length < 2) return NextResponse.json({ error: "Minimum 2 fichiers PDF requis" }, { status: 400 });
 
+      for (const f of files) {
+        if (f.size > MAX_FILE_SIZE) return NextResponse.json({ error: `Fichier trop volumineux (max 50 Mo par fichier)` }, { status: 413 });
+      }
+
       if (!premium && files.length > 2)
         return NextResponse.json(
           { error: "Limite gratuite : 2 PDFs max. Passe Premium pour fusionner plus de fichiers." },
@@ -45,6 +49,9 @@ export async function POST(req: NextRequest) {
     if (action === "image-vers-pdf") {
       const files = formData.getAll("files") as File[];
       if (files.length === 0) return NextResponse.json({ error: "Aucune image reçue" }, { status: 400 });
+      for (const f of files) {
+        if (f.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 50 Mo)" }, { status: 413 });
+      }
 
       const pdf = await PDFDocument.create();
       for (const file of files) {
@@ -65,6 +72,7 @@ export async function POST(req: NextRequest) {
 
     if (action === "decouper") {
       const file = formData.get("files") as File;
+      if (file?.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 50 Mo)" }, { status: 413 });
       const pagesParam = formData.get("pages") as string;
       if (!file || !pagesParam) return NextResponse.json({ error: "Fichier ou pages manquants" }, { status: 400 });
 
@@ -100,13 +108,16 @@ export async function POST(req: NextRequest) {
       const file = formData.get("files") as File;
       const password = formData.get("password") as string;
       if (!file || !password) return NextResponse.json({ error: "Fichier ou mot de passe manquant" }, { status: 400 });
+      if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Fichier trop volumineux (max 50 Mo)" }, { status: 413 });
+      if (password.length > 128) return NextResponse.json({ error: "Mot de passe trop long (max 128 caractères)" }, { status: 400 });
 
       const buffer = Buffer.from(await file.arrayBuffer());
       const pdf = await PDFDocument.load(buffer);
+      const ownerPassword = crypto.randomUUID() + crypto.randomUUID();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const outputBuffer = await pdf.save({
         userPassword: password,
-        ownerPassword: password + "_owner",
+        ownerPassword,
         permissions: { printing: "lowResolution", copying: false, modifying: false },
       } as any);
 

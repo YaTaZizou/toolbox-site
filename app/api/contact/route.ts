@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Champs manquants" }, { status: 400 });
     }
 
+    if (String(subject).length > 200) {
+      return NextResponse.json({ error: "Sujet trop long (max 200 caractères)" }, { status: 400 });
+    }
+
     // Validate email format
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       return NextResponse.json({ error: "Adresse email invalide" }, { status: 400 });
